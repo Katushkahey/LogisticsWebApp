@@ -34,7 +34,11 @@
       <artifactId>spring-core</artifactId>
       <version>${spring.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>5.1.6.RELEASE</version>
+    </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
@@ -57,12 +61,6 @@
       <artifactId>spring-webmvc</artifactId>
       <version>${spring.version}</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring5 -->
-    <dependency>
-      <groupId>org.thymeleaf</groupId>
-      <artifactId>thymeleaf-spring5</artifactId>
-      <version>3.0.11.RELEASE</version>
-    </dependency>
       <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -76,24 +74,26 @@
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
     <dependency>
-      <groupId>org.springframework.sequrity</groupId>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-dbcp</artifactId>
+      <version>9.0.1</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.12</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
-      <version>4.0.1.RELEASE</version>
+      <version>3.2.7.RELEASE</version>
     </dependency>
     <dependency>
-      <groupId>org.springframework.sequrity</groupId>
+      <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
-      <version>4.0.1.RELEASE</version>
-    </dependency>
-    <dependency>
-        <groupId>org.springframework.sequrity</groupId>
-        <artifactId>spring-security-taglibs</artifactId>
-        <version>4.0.1.RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>org.thymeleaf.extras</groupId>
-      <artifactId>thymeleaf-extras-springsecurity5</artifactId>
-      <version>3.0.4.RELEASE</version>
+      <version>3.2.7.RELEASE</version>
     </dependency>
   </dependencies>
 
