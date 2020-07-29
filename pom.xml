@@ -74,6 +74,27 @@
       <artifactId>postgresql</artifactId>
       <version>42.2.14</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security -->
+    <dependency>
+      <groupId>org.springframework.sequrity</groupId>
+      <artifactId>spring-security-config</artifactId>
+      <version>4.0.1.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.sequrity</groupId>
+      <artifactId>spring-security-web</artifactId>
+      <version>4.0.1.RELEASE</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.sequrity</groupId>
+        <artifactId>spring-security-taglibs</artifactId>
+        <version>4.0.1.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.thymeleaf.extras</groupId>
+      <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+      <version>3.0.4.RELEASE</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -111,5 +132,15 @@
         </plugin>
       </plugins>
     </pluginManagement>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                  <source>8</source>
+                  <target>8</target>
+              </configuration>
+          </plugin>
+      </plugins>
   </build>
 </project>

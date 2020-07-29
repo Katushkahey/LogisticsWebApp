@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">
+            jdbc:postgresql://localhost:5432/postgres?currentSchema=logisticswebapp
+        </property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">admin</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.temp.use_jdbc_metadata_defaults">false</property>
+
+        <property name="connection_pool_size">1</property>
+
+        <property name="hbm2ddl.auto">update</property>
+        <property name="show_sql">true</property>
+
+
+        <mapping class="com.tsystems.entities.Cargo"/>
+        <mapping class="com.tsystems.entities.City"/>
+        <mapping class="com.tsystems.entities.Driver"/>
+        <mapping class="com.tsystems.entities.Order"/>
+        <mapping class="com.tsystems.entities.Truck"/>
+    </session-factory>
+</hibernate-configuration>
