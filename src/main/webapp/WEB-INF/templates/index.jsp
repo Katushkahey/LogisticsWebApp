@@ -1,8 +1,7 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
-    <meta charset="utf-8">
     <title>Start Page</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -37,7 +36,7 @@
             <div class="panel-title">Sign In</div>
         </div>
         <div style="..." class="panel-body">
-            <form th:action="@{/authenticateTheUser}" method="POST" class="form-horizontal">
+            <form action="/authenticateTheUser" method="post" class="form-horizontal">
                 <div style="..." class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                     <input type="text" name="username" placeholder="username" class="form-control">
