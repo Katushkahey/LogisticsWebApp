@@ -1,21 +1,23 @@
 package com.tsystems.logisticsProject.controller;
-;
-import com.tsystems.logisticsProject.entity.User;
+
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.util.WebUtils;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
+
+import static com.tsystems.logisticsProject.entity.enums.Authority.ROLE_ADMIN;
 
 @Controller
 public class MainController {
 
     @GetMapping("/")
-    public String login() {
-        return "index";
+    public String homePage(Authentication authentication) {
+        if (authentication.getAuthorities().toString().equals(ROLE_ADMIN.toString())) {
+            return "redirect:/admin";
+        } else {
+            return "redirect:/driver";
+        }
     }
 
     @GetMapping("/driver")
@@ -28,4 +30,24 @@ public class MainController {
         return "admin_menu";
     }
 
+    @RequestMapping("/login")
+    public String login(@RequestParam(name = "error", required = false) Boolean error, Model model) {
+        if(Boolean.TRUE.equals(error)) {
+            model.addAttribute("error", "true");
+        }
+        return "login";
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+

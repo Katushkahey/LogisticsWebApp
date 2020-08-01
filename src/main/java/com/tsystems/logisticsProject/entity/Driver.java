@@ -1,17 +1,14 @@
 package com.tsystems.logisticsProject.entity;
 
 import com.tsystems.logisticsProject.entity.enums.DriverState;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @EqualsAndHashCode
-@ToString
+@NoArgsConstructor
 @Table(name = "drivers")
 public class Driver {
 
@@ -60,4 +57,14 @@ public class Driver {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Override
+    public String toString() {
+        return "Driver{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", telephoneNumber='" + telephoneNumber + '\'' +
+                ", hoursThisMonth=" + hoursThisMonth +
+                '}';
+    }
 }

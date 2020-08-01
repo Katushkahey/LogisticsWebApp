@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 
 <head>
-    <title>Start Page</title>
+    <title>Login Page</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -27,8 +27,16 @@
             bottom: 10%;
             opacity: 0.9;
         }
+        .error-message {
+            color: #ee2e10;
+        }
     </style>
 </head>
+<%  String message = "";
+    if (request.getParameter("error") != null) {
+        message = "Invalid login or password";
+    }
+%>
 <body>
 <div id="loginbox" style="..." class="mainbox col-md-2 col-md-offset-1 col-sm-3 col-sm-offset-1">
     <div class="panel panel-info">
@@ -50,6 +58,7 @@
                         <button type="submit" class="btn btn-success">Login</button>
                     </div>
                 </div>
+                <div class = "error-message"><%=message%></div>
             </form>
         </div>
     </div>

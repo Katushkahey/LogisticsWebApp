@@ -2,10 +2,7 @@ package com.tsystems.logisticsProject.entity;
 
 
 import com.tsystems.logisticsProject.entity.enums.Authority;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -13,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @Entity
 @EqualsAndHashCode
-@ToString
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -24,8 +21,8 @@ public class User {
 
     @NonNull
     @NotEmpty
-    @Column(name = "login")
-    private String login;
+    @Column(name = "username")
+    private String username;
 
     @NonNull
     @NotEmpty
@@ -33,10 +30,17 @@ public class User {
     private String password;
 
     @NonNull
-    @Column(name = "authority_id")
-    private String authority;
+    @Enumerated(EnumType.STRING)
+    private Authority authority;
 
     @OneToOne(mappedBy = "user")
     private Driver driver;
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }
