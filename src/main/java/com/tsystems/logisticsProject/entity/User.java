@@ -1,13 +1,14 @@
 package com.tsystems.logisticsProject.entity;
 
 
-import com.tsystems.logisticsProject.entity.enums.Role;
+import com.tsystems.logisticsProject.entity.enums.Authority;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Data
 @Entity
@@ -22,17 +23,18 @@ public class User {
     private Long id;
 
     @NonNull
+    @NotEmpty
     @Column(name = "login")
     private String login;
 
     @NonNull
+    @NotEmpty
     @Column(name = "password")
     private String password;
 
     @NonNull
     @Column(name = "authority_id")
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private String authority;
 
     @OneToOne(mappedBy = "user")
     private Driver driver;

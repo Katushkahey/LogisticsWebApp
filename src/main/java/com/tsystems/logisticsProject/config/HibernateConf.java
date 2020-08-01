@@ -27,7 +27,7 @@ public class HibernateConf {
         final LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setPackagesToScan(
-                "com.tsystems.logisticsProject.entity");
+                "com.tsystems.logisticsProject");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
         return sessionFactory;
@@ -37,7 +37,7 @@ public class HibernateConf {
     public DataSource dataSource() {
         final BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres?currentSchema=logisticswebapp");
         dataSource.setUsername("postgres");
         dataSource.setPassword("admin");
 
@@ -58,7 +58,7 @@ public class HibernateConf {
         hibernateProperties.setProperty(
                 "hibernate.hbm2ddl.auto", "update");
         hibernateProperties.setProperty(
-                "hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
+                "hibernate.dialect", "org.hibernate.dialect.PostgreSQL94Dialect");
         return hibernateProperties;
     }
 }
