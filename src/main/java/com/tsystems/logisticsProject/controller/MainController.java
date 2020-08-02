@@ -5,19 +5,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-
-import static com.tsystems.logisticsProject.entity.enums.Authority.ROLE_ADMIN;
-
 @Controller
 public class MainController {
 
     @GetMapping("/")
     public String homePage(Authentication authentication) {
-        if (authentication.getAuthorities().toString().equals(ROLE_ADMIN.toString())) {
+        if (authentication.toString().equals("ROLE_ADMIN")) {
             return "redirect:/admin";
         } else {
             return "redirect:/driver";
         }
+    }
+
+    @RequestMapping("/login")
+    public String login(@RequestParam(name = "error", required = false) Boolean error, Model model) {
+        if(Boolean.TRUE.equals(error)) {
+            model.addAttribute("error", "true");
+        }
+        return "login";
     }
 
     @GetMapping("/driver")
@@ -29,15 +34,6 @@ public class MainController {
     public String adminPage() {
         return "admin_menu";
     }
-
-    @RequestMapping("/login")
-    public String login(@RequestParam(name = "error", required = false) Boolean error, Model model) {
-        if(Boolean.TRUE.equals(error)) {
-            model.addAttribute("error", "true");
-        }
-        return "login";
-    }
-
 }
 
 

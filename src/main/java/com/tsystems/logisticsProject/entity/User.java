@@ -1,7 +1,6 @@
 package com.tsystems.logisticsProject.entity;
 
-
-import com.tsystems.logisticsProject.entity.enums.Authority;
+import com.tsystems.logisticsProject.entity.Authority;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Table(name = "users")
-public class User {
+public class User extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +29,8 @@ public class User {
     private String password;
 
     @NonNull
-    @Enumerated(EnumType.STRING)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="authority_id")
     private Authority authority;
 
     @OneToOne(mappedBy = "user")
@@ -40,7 +40,8 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", username='" + username + '\'' +
+                ", username='" + username +
+                "role = " + authority.toString() +'\'' +
                 '}';
     }
 }

@@ -1,36 +1,34 @@
 package com.tsystems.logisticsProject.dao.implementation;
 
+import com.tsystems.logisticsProject.dao.abstraction.UserDao;
 import com.tsystems.logisticsProject.entity.User;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 @Repository
-public class UserDaoImpl {
+public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
-    @Autowired
-    private SessionFactory sessionFactory;
-
-    public void add(User user) {
-        Session session = sessionFactory.openSession();
-        session.save(user);
+    public Long add(User user) {
+        sessionFactory.openSession().save(user);
+        return user.getId();
     }
-
 
     public void update(User user) {
-        Session session = sessionFactory.openSession();
-        session.update(user);
+       sessionFactory.openSession().update(user);
     }
 
-    public void remove(User user) {
-        Session session = sessionFactory.openSession();
-        session.delete(user);
+    public void delete(User user) {
+        sessionFactory.openSession().delete(user);
     }
 
     public User getUserByUsername(String username) {
-        return sessionFactory.openSession().get(User.class, 2L);
+        if (username == null) {
+            return null;
+        }
+        return sessionFactory.openSession().createQuery("SELECT d FROM User d WHERE d.username=:username", User.class)
+                .setParameter("username", username)
+                .getSingleResult();
+
     }
 }

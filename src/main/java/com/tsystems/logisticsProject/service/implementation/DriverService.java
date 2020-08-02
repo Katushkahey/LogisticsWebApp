@@ -1,4 +1,4 @@
-package com.tsystems.logisticsProject.service;
+package com.tsystems.logisticsProject.service.implementation;
 
 import com.tsystems.logisticsProject.dao.implementation.DriverDao;
 import org.springframework.beans.factory.annotation.Autowired;

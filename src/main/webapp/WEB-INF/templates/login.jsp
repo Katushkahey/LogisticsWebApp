@@ -32,12 +32,12 @@
         }
     </style>
 </head>
+<body>
 <%  String message = "";
     if (request.getParameter("error") != null) {
         message = "Invalid login or password";
     }
 %>
-<body>
 <div id="loginbox" style="..." class="mainbox col-md-2 col-md-offset-1 col-sm-3 col-sm-offset-1">
     <div class="panel panel-info">
         <div class="panel-heading">
