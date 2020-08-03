@@ -15,5 +15,7 @@
 </head>
 <body>
 <h1>Вы зашли как водитель</h1>
+<security:authrize access="hasRole('ROLE_DRIVER')">
+</security:authrize>
 </body>
 </html>

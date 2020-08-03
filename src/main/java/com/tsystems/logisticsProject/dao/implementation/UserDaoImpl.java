@@ -26,7 +26,7 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         if (username == null) {
             return null;
         }
-        return sessionFactory.openSession().createQuery("SELECT d FROM User d WHERE d.username=:username", User.class)
+        return sessionFactory.openSession().createQuery("FROM User WHERE username=:username", User.class)
                 .setParameter("username", username)
                 .getSingleResult();
 

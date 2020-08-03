@@ -41,7 +41,7 @@ public class User extends AbstractEntity {
         return "User{" +
                 "id=" + id +
                 ", username='" + username +
-                "role = " + authority.toString() +'\'' +
+                "', role = " + authority.toString() +'\'' +
                 '}';
     }
 }
