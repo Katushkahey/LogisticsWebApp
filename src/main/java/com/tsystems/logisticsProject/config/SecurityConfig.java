@@ -1,7 +1,7 @@
 package com.tsystems.logisticsProject.config;
 
 import com.tsystems.logisticsProject.service.MySimpleUrlAuthenticationSuccessHandler;
-import com.tsystems.logisticsProject.service.MyUserDetailService;
+import com.tsystems.logisticsProject.service.implementation.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,6 +22,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
+    UserServiceImpl userServiceImpl;
+    @Autowired
     private AuthProviderImpl authProvider;
 
     @Override
@@ -37,19 +39,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        http.authorizeRequests().
+        http.
+                authorizeRequests().
                 antMatchers("/login").anonymous().
                 antMatchers("/", "/driver/**", "/admin/**").authenticated().
+                antMatchers("/driver/**").hasRole("DRIVER").
+                antMatchers("/admin/**").hasRole("ADMIN").
 
                 and().
-                    formLogin().
-                    loginPage("/login").
-                    loginProcessingUrl("/authenticateTheUser").
-                    failureUrl("/login?error=true").
-                    and().exceptionHandling().accessDeniedPage("/").
+                formLogin().
+                loginPage("/login").
+                loginProcessingUrl("/authenticateTheUser").
+                failureUrl("/login?error=true").
+                successHandler(myAuthenticationSuccessHandler()).
+                and().exceptionHandling().accessDeniedPage("/").
 
                 and().
-                    csrf().disable();
+                csrf().disable();
     }
 
     @Bean
@@ -58,8 +64,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationSuccessHandler myAuthenticationSuccessHandler(){
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler() {
         return new MySimpleUrlAuthenticationSuccessHandler();
+    }
+
+    @Autowired
+    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userServiceImpl).passwordEncoder(passwordEncoder());
     }
 
 }

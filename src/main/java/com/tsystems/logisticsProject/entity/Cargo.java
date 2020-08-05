@@ -6,11 +6,11 @@ import lombok.*;
 import javax.persistence.*;
 
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @Entity
 @Table(name = "cargoes")
-public class Cargo {
+public class Cargo extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

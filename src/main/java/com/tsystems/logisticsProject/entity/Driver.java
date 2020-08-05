@@ -7,10 +7,10 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @Table(name = "drivers")
-public class Driver {
+public class Driver extends AbstractEntity {
 
     public static final int MAX_HOURS_IN_MONTH = 176;
 

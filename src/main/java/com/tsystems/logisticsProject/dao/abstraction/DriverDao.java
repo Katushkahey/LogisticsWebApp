@@ -1,18 +1,19 @@
 package com.tsystems.logisticsProject.dao.abstraction;
 
+import com.tsystems.logisticsProject.entity.City;
 import com.tsystems.logisticsProject.entity.Driver;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
-public interface DriverDao {
+public interface DriverDao extends GenericDao<Driver> {
 
-    void add(Driver driver);
+    Driver findById(Long id);
 
-    List<Driver> getAllDrivers();
+    Driver findByUsername(String username);
 
-    Driver getById(Long id);
+    List<Driver> getAll();
 
-    void update(Driver driver);
+    List<Driver> findAllAvailable(City currentCity, LocalDateTime requiredTime);
 
-    void remove(Driver driver);
 }

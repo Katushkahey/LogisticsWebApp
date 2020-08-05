@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,12 +40,12 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
     }
 
     protected void handle(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Authentication authentication
     ) throws IOException {
 
-        String targetUrl = determineTargetUrl(authentication);
+        final String targetUrl = determineTargetUrl(authentication);
 
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
@@ -52,8 +55,8 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 
-    protected String determineTargetUrl(final Authentication authentication) {
-
+    private String determineTargetUrl(final Authentication authentication) {
+        System.out.println(authentication);
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_DRIVER", "/driver");
         roleTargetUrlMap.put("ROLE_ADMIN", "/admin");
@@ -61,15 +64,14 @@ public class MySimpleUrlAuthenticationSuccessHandler implements AuthenticationSu
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {
             String authorityName = grantedAuthority.getAuthority();
-            if(roleTargetUrlMap.containsKey(authorityName)) {
+            if (roleTargetUrlMap.containsKey(authorityName)) {
                 return roleTargetUrlMap.get(authorityName);
             }
         }
-
         throw new IllegalStateException();
     }
 
-    protected final void clearAuthenticationAttributes(final HttpServletRequest request) {
+    private void clearAuthenticationAttributes(@NotNull HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
             return;

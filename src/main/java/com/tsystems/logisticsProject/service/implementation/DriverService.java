@@ -1,16 +1,16 @@
 package com.tsystems.logisticsProject.service.implementation;
 
-import com.tsystems.logisticsProject.dao.implementation.DriverDao;
+import com.tsystems.logisticsProject.dao.implementation.DriverDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DriverService {
 
-    private DriverDao driverDao;
+    private DriverDaoImpl driverDao;
 
     @Autowired
-    public void setDriverDao(DriverDao driverDao) {
+    public void setDriverDao(DriverDaoImpl driverDao) {
         this.driverDao = driverDao;
     }
 }

@@ -1,6 +1,6 @@
 package com.tsystems.logisticsProject.config;
 
-import com.tsystems.logisticsProject.service.MyUserDetailService;
+import com.tsystems.logisticsProject.service.implementation.UserServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
     @Bean
     public UserDetailsService getUserDetailsService() {
-        return new MyUserDetailService();
+        return new UserServiceImpl();
     }
 
 }

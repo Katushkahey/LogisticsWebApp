@@ -1,40 +1,35 @@
 package com.tsystems.logisticsProject.dao.implementation;
 
-import com.tsystems.logisticsProject.entity.City;
+import com.tsystems.logisticsProject.entity.Driver;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Repository
-public class CityDao {
+public class DriverDaoImpl {
 
     @Autowired
     private SessionFactory sessionFactory;
 
-
-    @Transactional
-    public City findById(int id) {
-        return sessionFactory.openSession().get(City.class, id);
+    public Driver findById(int id) {
+        return sessionFactory.openSession().get(Driver.class, id);
     }
 
-    @Transactional
-    public void save(City city) {
+    public void save(Driver driver) {
         Session session = sessionFactory.openSession();
-        session.save(city);
+        session.save(driver);
     }
 
-    @Transactional
-    public void update(City city) {
+    public void update(Driver driver) {
         Session session = sessionFactory.openSession();
-        session.update(city);
+        session.update(driver);
     }
 
-    @Transactional
-    public void delete(City city) {
+    public void delete(Driver driver) {
         Session session = sessionFactory.openSession();
-        session.delete(city);
+        session.delete(driver);
     }
 }
-

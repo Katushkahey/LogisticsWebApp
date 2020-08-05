@@ -1,4 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
+
 <!DOCTYPE html>
 
 <head>
@@ -27,13 +29,14 @@
             bottom: 10%;
             opacity: 0.9;
         }
+
         .error-message {
             color: #ee2e10;
         }
     </style>
 </head>
 <body>
-<%  String message = "";
+<% String message = "";
     if (request.getParameter("error") != null) {
         message = "Invalid login or password";
     }
@@ -58,7 +61,8 @@
                         <button type="submit" class="btn btn-success">Login</button>
                     </div>
                 </div>
-                <div class = "error-message"><%=message%></div>
+                <div class="error-message"><%=message%>
+                </div>
             </form>
         </div>
     </div>

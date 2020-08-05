@@ -37,11 +37,13 @@ public class AuthProviderImpl implements AuthenticationProvider {
             throw new BadCredentialsException("Bad credentials");
         }
         List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(user.getAuthority());
         return new UsernamePasswordAuthenticationToken(user, null, authorities);
     }
 
     @Override
-    public boolean supports(Class<?> aClass) {
-        return aClass.equals(UsernamePasswordAuthenticationToken.class);
+    public boolean supports(Class<? extends Object> authentication) {
+        return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
+
 }
