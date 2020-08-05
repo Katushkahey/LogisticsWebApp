@@ -19,6 +19,8 @@
     <maven.compiler.target>1.7</maven.compiler.target>
 
     <spring.version>5.2.7.RELEASE</spring.version>
+    <spring.security.version>5.3.3.RELEASE</spring.security.version>
+
   </properties>
 
   <dependencies>
@@ -100,17 +102,28 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-config</artifactId>
-      <version>5.2.5.RELEASE</version>
+      <version>${spring.security.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
-      <version>5.2.5.RELEASE</version>
+      <version>${spring.security.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-taglibs</artifactId>
+      <version>${spring.security.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
       <version>2.0.1.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>16.0.2</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 

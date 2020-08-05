@@ -1,20 +1,17 @@
 package com.tsystems.logisticsProject.entity;
 
 import com.sun.istack.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @Entity
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
 @Table(name = "cities")
-public class City {
+public class City extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +36,13 @@ public class City {
     @OneToMany(mappedBy = "currentCity")
     List<Driver> drivers;
 
+    @Override
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", lat=" + lat +
+                ", lng=" + lng +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

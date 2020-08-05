@@ -1,19 +1,16 @@
 package com.tsystems.logisticsProject.entity;
 
 import com.tsystems.logisticsProject.entity.enums.CargoState;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Data
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
 @Entity
 @Table(name = "cargoes")
-public class Cargo {
+public class Cargo extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,4 +34,12 @@ public class Cargo {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Override
+    public String toString() {
+        return "Cargo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", weight=" + weight +
+                '}';
+    }
 }

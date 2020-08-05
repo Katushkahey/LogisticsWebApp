@@ -2,17 +2,11 @@ package com.tsystems.logisticsProject.dao.abstraction;
 
 import com.tsystems.logisticsProject.entity.User;
 
-import java.util.List;
+public interface UserDao extends GenericDao<User> {
 
-public interface UserDao {
+    public void add(User user);
 
-    void add(User user);
+    public void update(User user);
 
-    List<User> getAllUsers();
-
-    User getById(Long id);
-
-    void update(User truck);
-
-    void remove(User truck);
+    public User findByUsername(String username);
 }

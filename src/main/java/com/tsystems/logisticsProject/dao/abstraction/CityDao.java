@@ -4,15 +4,11 @@ import com.tsystems.logisticsProject.entity.City;
 
 import java.util.List;
 
-public interface CityDao {
+public interface CityDao extends GenericDao<City> {
 
-    void add(City city);
+    List<City> findAll();
 
-    List<City> getAllCities();
+    City findById(Long id);
 
-    City getById(Long id);
-
-    void update(City city);
-
-    void remove(City city);
+    boolean containsCityName(String name);
 }

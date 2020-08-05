@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 
 <head>
@@ -15,5 +15,7 @@
 </head>
 <body>
 <h1>Вы зашли как водитель</h1>
+<security:authrize access="hasRole('ROLE_DRIVER')">
+</security:authrize>
 </body>
 </html>

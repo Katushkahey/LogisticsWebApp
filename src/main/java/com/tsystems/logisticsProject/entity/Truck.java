@@ -1,20 +1,17 @@
 package com.tsystems.logisticsProject.entity;
 
 import com.tsystems.logisticsProject.entity.enums.TruckState;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @Entity
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
 @Table(name = "trucks")
-public class Truck {
+public class Truck extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,4 +46,13 @@ public class Truck {
     @OneToMany(mappedBy = "currentTruck")
     List<Driver> drivers;
 
+    @Override
+    public String toString() {
+        return "Truck{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", crewSize=" + crewSize +
+                ", capacity=" + capacity +
+                '}';
+    }
 }

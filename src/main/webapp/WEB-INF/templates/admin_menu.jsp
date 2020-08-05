@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 
 <head>
@@ -14,6 +14,7 @@
     </style>
 </head>
 <body>
-    <h1>Вы зашли как администратор</h1>
+<h1>Вы зашли как администратор</h1>
+
 </body>
 </html>

@@ -1,37 +1,77 @@
 package com.tsystems.logisticsProject.config;
 
+import com.tsystems.logisticsProject.service.MySimpleUrlAuthenticationSuccessHandler;
+import com.tsystems.logisticsProject.service.implementation.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
+@ComponentScan("com.tsystems.logisticsProject")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private DataSource dataSource;
 
     @Autowired
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    UserServiceImpl userServiceImpl;
+    @Autowired
+    private AuthProviderImpl authProvider;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication().dataSource(dataSource);
+        auth.authenticationProvider(authProvider);
+    }
+
+    @Bean("authenticationManager")
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().
-                antMatchers("/driver/**").hasAnyRole("DRIVER").
-                and().formLogin().loginPage("/").permitAll().loginProcessingUrl("/authenticateTheUser");
-        http.authorizeRequests().
-                antMatchers("/admin/**").hasAnyRole("ADMIN").
-                and().formLogin().loginPage("/").permitAll().loginProcessingUrl("/authenticateTheUser");
+    protected void configure(final HttpSecurity http) throws Exception {
+        http.
+                authorizeRequests().
+                antMatchers("/login").anonymous().
+                antMatchers("/", "/driver/**", "/admin/**").authenticated().
+                antMatchers("/driver/**").hasRole("DRIVER").
+                antMatchers("/admin/**").hasRole("ADMIN").
+
+                and().
+                formLogin().
+                loginPage("/login").
+                loginProcessingUrl("/authenticateTheUser").
+                failureUrl("/login?error=true").
+                successHandler(myAuthenticationSuccessHandler()).
+                and().exceptionHandling().accessDeniedPage("/").
+
+                and().
+                csrf().disable();
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler() {
+        return new MySimpleUrlAuthenticationSuccessHandler();
+    }
+
+    @Autowired
+    protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userServiceImpl).passwordEncoder(passwordEncoder());
+    }
+
 }
 

@@ -1,19 +1,16 @@
 package com.tsystems.logisticsProject.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @Entity
-@EqualsAndHashCode
-@ToString
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
 @Table(name = "orders")
-public class Order {
+public class Order extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +32,11 @@ public class Order {
     @OneToMany(mappedBy = "currentOrder")
     private List<Driver> drivers;
 
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", isCompleted=" + isCompleted +
+                '}';
+    }
 }
