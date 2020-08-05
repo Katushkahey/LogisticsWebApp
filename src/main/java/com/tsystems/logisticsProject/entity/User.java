@@ -1,17 +1,21 @@
 package com.tsystems.logisticsProject.entity;
 
-import com.tsystems.logisticsProject.entity.Authority;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @Table(name = "users")
-public class User extends AbstractEntity {
+public class User extends AbstractEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,19 +33,62 @@ public class User extends AbstractEntity {
     private String password;
 
     @NonNull
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="authority_id")
-    private Authority authority;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "authority_id")
+    private Role authority;
 
+    @Transient
     @OneToOne(mappedBy = "user")
     private Driver driver;
+
+    public User(String username, String password, Role authority) {
+        this.username = username;
+        this.password = password;
+        this.authority = authority;
+    }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username +
-                "role = " + authority.toString() +'\'' +
-                '}';
+                "' " + '}';
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<Role> authorities = new ArrayList<>();
+        authorities.add(authority);
+        return authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

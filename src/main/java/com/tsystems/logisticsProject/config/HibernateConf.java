@@ -1,9 +1,9 @@
 package com.tsystems.logisticsProject.config;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -19,19 +19,16 @@ import java.util.Properties;
 @PropertySource("classpath:datasource.properties")
 public class HibernateConf {
 
-    @Autowired
-    private Environment env;
-
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
-        final LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan(
+        final LocalSessionFactoryBean localSessionFactoryBean = new LocalSessionFactoryBean();
+        localSessionFactoryBean.setDataSource(dataSource());
+        localSessionFactoryBean.setPackagesToScan(
                 "com.tsystems.logisticsProject");
-        sessionFactory.setHibernateProperties(hibernateProperties());
-
-        return sessionFactory;
+        localSessionFactoryBean.setHibernateProperties(hibernateProperties());
+        return localSessionFactoryBean;
     }
+
 
     @Bean
     public DataSource dataSource() {
@@ -61,4 +58,10 @@ public class HibernateConf {
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQL94Dialect");
         return hibernateProperties;
     }
+
+    @Bean
+    public Session session(SessionFactory sessionFactory) {
+        return sessionFactory.openSession();
+    }
+
 }

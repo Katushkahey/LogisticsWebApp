@@ -1,6 +1,5 @@
 package com.tsystems.logisticsProject.config;
 
-
 import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
