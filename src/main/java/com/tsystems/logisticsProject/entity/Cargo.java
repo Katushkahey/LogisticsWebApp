@@ -4,6 +4,7 @@ import com.tsystems.logisticsProject.entity.enums.CargoState;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -33,6 +34,9 @@ public class Cargo extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @OneToMany(mappedBy = "cargo")
+    List<Waypoint> waypoints;
 
     @Override
     public String toString() {

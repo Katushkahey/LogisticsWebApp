@@ -36,6 +36,9 @@ public class City extends AbstractEntity {
     @OneToMany(mappedBy = "currentCity")
     List<Driver> drivers;
 
+    @OneToMany(mappedBy = "city")
+    List<Waypoint> waypoints;
+
     @Override
     public String toString() {
         return "City{" +

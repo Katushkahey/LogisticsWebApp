@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -24,8 +24,8 @@ public class Role extends AbstractEntity implements GrantedAuthority {
     private String authority;
 
     @Transient
-    @OneToOne(mappedBy = "authority")
-    private Set<User> users;
+    @OneToMany(mappedBy = "authority")
+    private List<User> users;
 
     public Role(Long id, String authority) {
         this.id = id;

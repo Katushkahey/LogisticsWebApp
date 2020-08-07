@@ -17,7 +17,6 @@ public class Order extends AbstractEntity {
     @Column(name = "id")
     private Long id;
 
-    @NonNull
     @Column(name = "is_completed")
     private boolean isCompleted;
 
@@ -25,12 +24,15 @@ public class Order extends AbstractEntity {
     @JoinColumn(name = "truck_id")
     private Truck orderTruck;
 
-    @NonNull
-    @OneToMany(mappedBy = "order")
-    List<Cargo> cargoes;
+//    @NonNull
+//    @OneToMany(mappedBy = "order")
+//    List<Cargo> cargoes;
 
     @OneToMany(mappedBy = "currentOrder")
     private List<Driver> drivers;
+
+    @OneToMany(mappedBy = "order")
+    List<Waypoint> waypoints;
 
     @Override
     public String toString() {
@@ -39,4 +41,8 @@ public class Order extends AbstractEntity {
                 ", isCompleted=" + isCompleted +
                 '}';
     }
+    public Long getId() {
+        return id;
+    }
+
 }

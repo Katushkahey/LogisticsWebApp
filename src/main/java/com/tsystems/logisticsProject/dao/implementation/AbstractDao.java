@@ -2,27 +2,27 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.abstraction.GenericDao;
 import com.tsystems.logisticsProject.entity.AbstractEntity;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class AbstractDao<T extends AbstractEntity> implements GenericDao<T> {
 
     @Autowired
-    Session session;
+    SessionFactory sessionFactory;
 
     @Override
     public void add(T entity) {
-        session.save(entity);
+        sessionFactory.openSession().save(entity);
     }
 
     @Override
     public void update(T entity) {
-        session.update(entity);
+        sessionFactory.openSession().update(entity);
     }
 
     @Override
     public void delete(T entity) {
-        session.delete(entity);
+        sessionFactory.openSession().delete(entity);
     }
 
 }

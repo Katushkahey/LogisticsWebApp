@@ -12,24 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderDaoImpl {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    SessionFactory sessionFactory;
 
-    public Order findById(int id) {
-        return sessionFactory.openSession().get(Order.class, id);
+    public Order findById(Long id) {
+        return  sessionFactory.openSession().get(Order.class, id);
     }
 
     public void save(Order order) {
-        Session session = sessionFactory.openSession();
-        session.save(order);
+        sessionFactory.openSession().save(order);
     }
 
     public void update(Order order) {
-        Session session = sessionFactory.openSession();
-        session.update(order);
+        sessionFactory.openSession().update(order);
     }
 
     public void delete(Order order) {
-        Session session = sessionFactory.openSession();
-        session.delete(order);
+        sessionFactory.openSession().delete(order);
     }
 }
