@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.controller;
 
 import com.tsystems.logisticsProject.service.implementation.DriverServiceImpl;
+import com.tsystems.logisticsProject.service.implementation.OrderServiceImpl;
 import com.tsystems.logisticsProject.service.implementation.TruckServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,9 @@ public class AdminController {
 
     @Autowired
     DriverServiceImpl driverServiceImpl;
+
+    @Autowired
+    OrderServiceImpl orderServiceImpl;
 
     @GetMapping("")
     public String adminPage() {
@@ -36,7 +40,8 @@ public class AdminController {
     }
 
     @GetMapping("/orders-info")
-    public String OrdersInfo() {
+    public String OrdersInfo(Model model) {
+        model.addAttribute("listOfOrders", orderServiceImpl.findUnassignedOrders());
         return "orders_page";
     }
 

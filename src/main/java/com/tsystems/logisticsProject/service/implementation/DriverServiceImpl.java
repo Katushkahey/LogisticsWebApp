@@ -51,10 +51,10 @@ public class DriverServiceImpl {
     public List<Driver> getListOfPartnersOfPrincipal(String name) {
         Driver currentDriver = getDriverByPrincipalName(name);
         List<Driver> partners = getCurrentOrderFromPrincipal(name).getDrivers();
-        for(Driver driver: partners) {
-           if (driver.equals(currentDriver)) {
-               partners.remove(driver);
-           }
+        for (Driver driver : partners) {
+            if (driver.equals(currentDriver)) {
+                partners.remove(driver);
+            }
         }
         return partners;
     }

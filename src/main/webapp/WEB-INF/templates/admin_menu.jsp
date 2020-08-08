@@ -2,13 +2,16 @@
 <%@ taglib prefix="security" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <style>
-    .image {
-        display: block;
-        margin: auto;
+    html {
+        height: 100%; /* Высота страницы */
     }
 
-    .image-container {
-        background: #f6fbff;
+    body {
+        background: #e7ecf0 url("../images/manager.jpg"); /* путь к файлу */
+        background-position: bottom;
+        background-repeat: no-repeat;
+        background-size: auto;
+        color: #000;
     }
 </style>
 <head>
@@ -24,7 +27,7 @@
     <nav class="navbar navbar-expand-lg navbar-light" style="background: #d1d9dc">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link active" href="/admin/"><strong> Главная </strong><span
+                <a class="nav-link active" href="/admin/"><strong><u>Главная </u></strong><span
                         class="sr-only">(current)</span></a>
                 <a class="nav-link" href="/admin/trucks-info"><strong> Фуры </strong></a>
                 <a class="nav-link" href="/admin/drivers-info"><strong> Водители </strong></a>
@@ -33,9 +36,6 @@
             </div>
         </div>
     </nav>
-</div>
-<div class="image-container">
-    <img src="../images/manager.jpg" height="637" class="image">
 </div>
 </body>
 </html>

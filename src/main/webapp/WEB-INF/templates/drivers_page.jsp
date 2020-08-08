@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 
 <head>
-    <title>Trucks</title>
+    <title>Drivers</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -23,9 +23,14 @@
 
         .mainDiv {
             width: 57%;
-            height: 40%;
+            height: 400px;
             overflow-y: auto;
             overflow-x: auto;
+            margin-left: 1rem;
+        }
+
+        .btn-success {
+            margin-left: 1rem;
         }
 
     </style>
@@ -37,7 +42,8 @@
             <div class="navbar-nav">
                 <a class="nav-link" href="/admin/"><strong>Главная </strong></a>
                 <a class="nav-link" href="/admin/trucks-info"><strong>Фуры </strong></a>
-                <a class="nav-link active" href="/admin/drivers-info"><strong>Водители </strong><span class="sr-only">(current)</span></a>
+                <a class="nav-link active" href="/admin/drivers-info"><strong><u>Водители </u></strong><span
+                        class="sr-only">(current)</span></a>
                 <a class="nav-link" href="/admin/orders-info"><strong>Заказы </strong></a>
                 <a class="nav-link" href="/admin/cargoes-info"><strong>Грузы </strong></a>
             </div>

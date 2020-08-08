@@ -23,8 +23,13 @@
 
         .tableTab {
             width: 54%;
-            height: 350px;
+            height: 400px;
             overflow-x: auto;
+            margin-left: 1rem;
+        }
+
+        .btn-success {
+            margin-left: 1rem;
         }
 
     </style>
@@ -35,7 +40,7 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-link" href="/admin/"><strong>Главная </strong></a>
-                <a class="nav-link active" href="/admin/trucks-info"><strong>Фуры </strong><span class="sr-only">(current)</span></a>
+                <a class="nav-link active" href="/admin/trucks-info"><strong><u>Фуры </u></strong><span class="sr-only">(current)</span></a>
                 <a class="nav-link" href="/admin/drivers-info"><strong>Водители </strong></a>
                 <a class="nav-link" href="/admin/orders-info"><strong>Заказы </strong></a>
                 <a class="nav-link" href="/admin/cargoes-info"><strong>Грузы </strong></a>
@@ -48,7 +53,7 @@
     <a class="btn btn-success" href="/truck/create_truck">Create Truck</a>
     </br></br>
     <div class="mainDiv">
-        <div class="tableTab" style="background: rgba(21,30,220,0.23)">
+        <div class="tableTab">
             <table class="table">
                 <h5 class="text-black h4" style="background: rgba(15,20,109,0.36)" align="center"> List of trucks </h5>
                 <span class="text-black">
