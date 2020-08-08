@@ -1,6 +1,5 @@
 package com.tsystems.logisticsProject.entity;
 
-import com.tsystems.logisticsProject.entity.enums.CargoState;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,15 +25,6 @@ public class Cargo extends AbstractEntity {
     @Column(name = "weight")
     private Double weight;
 
-    @Column(name = "state")
-    @Enumerated(EnumType.STRING)
-    private CargoState state;
-
-    @NonNull
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
     @OneToMany(mappedBy = "cargo")
     List<Waypoint> waypoints;
 
@@ -45,5 +35,9 @@ public class Cargo extends AbstractEntity {
                 ", name='" + name + '\'' +
                 ", weight=" + weight +
                 '}';
+    }
+
+    public Long getOrderId() {
+        return waypoints.get(0).getOrder().getId();
     }
 }

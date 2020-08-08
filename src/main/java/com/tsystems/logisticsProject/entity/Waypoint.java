@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.entity;
 
 import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,11 @@ public class Waypoint extends AbstractEntity {
     @Column(name = "action")
     @Enumerated(EnumType.STRING)
     private Action action;
+
+    @NonNull
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private WaypointStatus status;
 
     @Override
     public String toString() {

@@ -24,16 +24,12 @@ public class DriverController {
     public String driverPage(Principal principal, Model model) {
         String username = principal.getName();
         model.addAttribute("waypoints", driverService.getListOfWaypointsFromPrincipal(username));
-
         model.addAttribute("name", driverService.getDriverNameFromPrincipal(username));
-
         model.addAttribute("telephoneNumber", driverService.getTelephoneNumberFromPrincipal(username));
-
         model.addAttribute("surname", driverService.getDriverSurnameFromPrincipal(username));
-
         model.addAttribute("order", driverService.getOrderIdFromPrincipal(username));
-
-        model.addAttribute("partners", driverService.getListOfPartnersOfPrincipal(username));
+        model.addAttribute("partner", driverService.getPartnerFromPrincipal(username));
+        model.addAttribute("truck", driverService.getCurrentTruckNumberFromPrincipal(username));
 
         return "driver_menu";
     }

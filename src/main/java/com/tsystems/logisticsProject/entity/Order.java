@@ -3,7 +3,10 @@ package com.tsystems.logisticsProject.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -41,6 +44,8 @@ public class Order extends AbstractEntity {
                 ", isCompleted=" + isCompleted +
                 '}';
     }
+
+    //зачем я это сделала??
     public Long getId() {
         return id;
     }

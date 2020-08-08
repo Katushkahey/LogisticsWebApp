@@ -45,10 +45,6 @@ public class Driver extends AbstractEntity {
     private City currentCity;
 
     @ManyToOne
-    @JoinColumn(name = "current_truck_id")
-    private Truck currentTruck;
-
-    @ManyToOne
     @JoinColumn(name = "current_order_id")
     private Order currentOrder;
 

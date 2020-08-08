@@ -43,9 +43,6 @@ public class Truck extends AbstractEntity {
     @OneToOne(mappedBy = "orderTruck")
     private Order order;
 
-    @OneToMany(mappedBy = "currentTruck")
-    List<Driver> drivers;
-
     @Override
     public String toString() {
         return "Truck{" +

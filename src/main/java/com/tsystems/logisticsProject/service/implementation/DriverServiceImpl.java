@@ -48,7 +48,7 @@ public class DriverServiceImpl {
         return getDriverByPrincipalName(name).getTelephoneNumber();
     }
 
-    public List<Driver> getListOfPartnersOfPrincipal(String name) {
+    public Driver getPartnerFromPrincipal(String name) {
         Driver currentDriver = getDriverByPrincipalName(name);
         List<Driver> partners = getCurrentOrderFromPrincipal(name).getDrivers();
         for (Driver driver : partners) {
@@ -56,11 +56,14 @@ public class DriverServiceImpl {
                 partners.remove(driver);
             }
         }
-        return partners;
+        return partners.get(0);
     }
 
     public List<Driver> getListOfDrivers() {
         return driverDaoImpl.findAll();
     }
 
+    public String getCurrentTruckNumberFromPrincipal(String name) {
+        return getDriverByPrincipalName(name).getCurrentOrder().getOrderTruck().getNumber();
+    }
 }

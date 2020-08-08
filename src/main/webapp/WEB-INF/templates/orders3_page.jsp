@@ -32,7 +32,7 @@
 </head>
 <body>
 <div>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(227,54,160,0.57)">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(62,194,52,0.57)">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-link" href="/admin/"><strong> Главная </strong></a>
@@ -46,7 +46,7 @@
     </nav>
 </div>
 <div>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(227,54,160,0.65)">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(62,194,52,0.65)">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup2">
             <div class="navbar-nav">
                 <a class="nav-link" href="/admin/orders-info"><strong> Неназначенные </strong><span class="sr-only">(current)</span></a>
@@ -64,9 +64,9 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(62,194,52,0.57)" align="center"> List of orders </h5>
+                <h5 class="text-black h4" style="background: rgba(227,54,160,0.57)" align="center"> List of orders </h5>
                 <span class="text-black">
-                    <thead style="background:  rgba(62,194,52,0.57)" align="center">
+                    <thead style="background: rgba(227,54,160,0.57)" align="center">
                             <tr>
                                 <th scope="col"> № </th>
                             </tr>
