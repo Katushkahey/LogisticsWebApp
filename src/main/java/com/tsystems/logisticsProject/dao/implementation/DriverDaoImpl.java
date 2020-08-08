@@ -16,32 +16,32 @@ import java.util.List;
 public class DriverDaoImpl {
 
     @Autowired
-    SessionFactory sessionFactory;
+    Session session;
 
     public Driver findById(int id) {
-        return  sessionFactory.openSession().get(Driver.class, id);
+        return  session.get(Driver.class, id);
     }
 
     public void save(Driver driver) {
-        sessionFactory.openSession().save(driver);
+        session.save(driver);
     }
 
     public void update(Driver driver) {
-        sessionFactory.openSession().update(driver);
+        session.update(driver);
     }
 
     public void delete(Driver driver) {
-        sessionFactory.openSession().delete(driver);
+        session.delete(driver);
     }
 
     public Driver findByUser(User user) {
-        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.user=:user", Driver.class)
+        return session.createQuery("SELECT d FROM Driver d WHERE d.user=:user", Driver.class)
                 .setParameter("user", user)
                 .getSingleResult();
     }
 
     public List<Driver> findAll() {
-        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d", Driver.class)
+        return session.createQuery("SELECT d FROM Driver d", Driver.class)
                 .getResultList();
     }
 

@@ -13,20 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class WaypointImpl implements WaypointDao {
 
     @Autowired
-    SessionFactory sessionFactory;
+    Session session;
 
     @Override
     public void add(Waypoint waypoint) {
-        sessionFactory.openSession().save(waypoint);
+        session.save(waypoint);
     }
 
     @Override
     public void update(Waypoint waypoint) {
-        sessionFactory.openSession().update(waypoint);
+        session.update(waypoint);
     }
 
     @Override
     public void delete(Waypoint waypoint) {
-        sessionFactory.openSession().delete(waypoint);
+        session.delete(waypoint);
     }
 }

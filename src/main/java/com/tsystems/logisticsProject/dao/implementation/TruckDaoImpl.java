@@ -14,26 +14,26 @@ import java.util.List;
 public class TruckDaoImpl {
 
     @Autowired
-    SessionFactory sessionFactory;
+    Session session;
 
     public Truck findById(Long id) {
-        return sessionFactory.openSession().get(Truck.class, id);
+        return session.get(Truck.class, id);
     }
 
     public void save(Truck truck) {
-        sessionFactory.openSession().save(truck);
+        session.save(truck);
     }
 
     public void update(Truck truck) {
-        sessionFactory.openSession().update(truck);
+        session.update(truck);
     }
 
     public void delete(Truck truck) {
-        sessionFactory.openSession().delete(truck);
+        session.delete(truck);
     }
 
     public List<Truck> findAll() {
-        return sessionFactory.openSession().createQuery("SELECT t FROM Truck t", Truck.class)
+        return session.createQuery("SELECT t FROM Truck t", Truck.class)
                 .getResultList();
     }
 }

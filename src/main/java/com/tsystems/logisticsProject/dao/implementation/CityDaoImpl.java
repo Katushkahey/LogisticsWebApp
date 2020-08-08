@@ -12,22 +12,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class CityDaoImpl {
 
     @Autowired
-    SessionFactory sessionFactory;
+    Session session;
 
     public City findById(int id) {
-        return  sessionFactory.openSession().get(City.class, id);
+        return  session.get(City.class, id);
     }
 
     public void save(City city) {
-        sessionFactory.openSession().save(city);
+        session.save(city);
     }
 
     public void update(City city) {
-        sessionFactory.openSession().update(city);
+        session.update(city);
     }
 
     public void delete(City city) {
-        sessionFactory.openSession().delete(city);
+        session.delete(city);
     }
 }
 

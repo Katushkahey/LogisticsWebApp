@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.entity.Cargo;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -11,21 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class CargoDaoImpl {
 
     @Autowired
-    SessionFactory sessionFactory;
+    Session session;
 
     public Cargo findById(int id) {
-        return  sessionFactory.openSession().get(Cargo.class, id);
+        return  session.get(Cargo.class, id);
     }
 
     public void save(Cargo cargo) {
-        sessionFactory.openSession().save(cargo);
+        session.save(cargo);
     }
 
     public void update(Cargo cargo) {
-        sessionFactory.openSession().update(cargo);
+        session.update(cargo);
     }
 
     public void delete(Cargo cargo) {
-        sessionFactory.openSession().delete(cargo);
+        session.delete(cargo);
     }
 }

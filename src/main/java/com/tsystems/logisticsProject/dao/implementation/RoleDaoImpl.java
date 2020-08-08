@@ -13,14 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class RoleDaoImpl extends AbstractDao<Role> implements RoleDao {
 
     @Autowired
-    SessionFactory sessionFactory;
+    Session session;
 
     @Override
     public Role findByAuthority(String authority) {
         if (authority == null) {
             return null;
         }
-        return  sessionFactory.openSession().createQuery("SELECT r FROM Role r WHERE r.authority=:authority", Role.class)
+        return  session.createQuery("SELECT r FROM Role r WHERE r.authority=:authority", Role.class)
                 .setParameter("authority", authority)
                 .getSingleResult();
     }
