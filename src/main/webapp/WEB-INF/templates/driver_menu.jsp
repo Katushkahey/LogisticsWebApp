@@ -61,7 +61,7 @@
                 <a class="navbar-link">
                     <img src="../images/man_icon.png" width="50" height="50" class="d-inline-block align-top" alt=""
                          loading="lazy">
-                    <span class="text-white">${name} ${surname}, ${telephoneNumber}</span>
+                    <span class="text-white">${driver.name} ${driver.surname}, ${driver.telephoneNumber}</span>
                 </a>
                 <a class="nav-item">
                     <form action="/logout" method="post">
@@ -99,17 +99,18 @@
 <div class="info"><h5><strong>Partner:</strong> ${partner.name} ${partner.surname}, ${partner.telephoneNumber}</h5>
 </div>
 </br>
-<div class="info"><h5><strong>Truck:</strong> ${truck}</h5></div>
+<div class="info"><h5><strong>Truck:</strong> ${driver.currentOrder.orderTruck.number}</h5></div>
 </br>
 <div class="collapse" id="navbarToggleExternalContent">
     <div class="p-4" style="background: rgba(67,41,28,0.99)">
-        <h5 class="text-white h4" align="center">Waypoints of order №${order}</h5>
+        <h5 class="text-white h4" align="center">Waypoints of order №${driver.currentOrder.id}</h5>
         <span class="text-white">
             <table class="table">
                 <thead class="thead-light" align="center">
                         <tr>
                             <th scope="col"> City </th>
                             <th scope="col"> Cargo </th>
+                            <th scope="col"> Weight </th>
                             <th scope="col"> Action </th>
                             <th scope="col">Status</th>
                         </tr>
@@ -119,6 +120,7 @@
                         <tr>
                             <td scope="row"> ${waypoint.city.name} </td>
                             <td scope="row"> ${waypoint.cargo.name} </td>
+                            <th scope="row"> ${waypoint.cargo.weight}</th>
                             <td scope="row"> ${waypoint.action.name()} </td>
                             <td>
                                 <div class="input-group-prepend">
@@ -138,7 +140,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
             aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-        <span class="text-white">Waypoints of order №${order}</span>
+        <span class="text-white">Waypoints of order №${driver.currentOrder.id}</span>
     </button>
 </nav>
 </body>

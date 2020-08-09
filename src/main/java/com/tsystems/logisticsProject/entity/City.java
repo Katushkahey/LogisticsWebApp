@@ -33,19 +33,19 @@ public class City extends AbstractEntity {
     @NotNull
     private String name;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "currentCity")
     List<Driver> drivers;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "city")
     List<Waypoint> waypoints;
 
-    @Override
-    public String toString() {
-        return "City{" +
-                "id=" + id +
-                ", lat=" + lat +
-                ", lng=" + lng +
-                ", name='" + name + '\'' +
-                '}';
-    }
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "currentCity")
+    List<Truck> trucksInThisCity;
+
 }

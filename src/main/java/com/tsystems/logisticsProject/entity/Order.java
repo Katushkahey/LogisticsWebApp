@@ -23,6 +23,8 @@ public class Order extends AbstractEntity {
     @Column(name = "is_completed")
     private boolean isCompleted;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne
     @JoinColumn(name = "truck_id")
     private Truck orderTruck;
@@ -31,19 +33,15 @@ public class Order extends AbstractEntity {
 //    @OneToMany(mappedBy = "order")
 //    List<Cargo> cargoes;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "currentOrder")
     private List<Driver> drivers;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "order")
     List<Waypoint> waypoints;
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", isCompleted=" + isCompleted +
-                '}';
-    }
 
     //зачем я это сделала??
     public Long getId() {

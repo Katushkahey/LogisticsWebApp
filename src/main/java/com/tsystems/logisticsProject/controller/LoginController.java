@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-public class MainController {
+public class LoginController {
 
     @GetMapping("/login")
     public String login(@RequestParam(name = "error", required = false) Boolean error, Model model) {

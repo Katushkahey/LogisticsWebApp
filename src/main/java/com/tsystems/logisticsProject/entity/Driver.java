@@ -39,15 +39,21 @@ public class Driver extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private DriverState driverState;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne
     @JoinColumn(name = "current_city_id")
     private City currentCity;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
     @JoinColumn(name = "current_order_id")
     private Order currentOrder;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @NonNull
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -55,12 +61,6 @@ public class Driver extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Driver{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", telephoneNumber='" + telephoneNumber + '\'' +
-                ", hoursThisMonth=" + hoursThisMonth +
-                '}';
+        return name + " " + surname;
     }
 }

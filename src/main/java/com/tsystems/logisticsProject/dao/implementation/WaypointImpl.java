@@ -1,14 +1,11 @@
 package com.tsystems.logisticsProject.dao.implementation;
 
-import com.tsystems.logisticsProject.dao.abstraction.WaypointDao;
+import com.tsystems.logisticsProject.dao.WaypointDao;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @Repository
 public class WaypointImpl implements WaypointDao {
 

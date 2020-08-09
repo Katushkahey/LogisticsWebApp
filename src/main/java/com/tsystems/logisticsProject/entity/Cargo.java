@@ -25,17 +25,10 @@ public class Cargo extends AbstractEntity {
     @Column(name = "weight")
     private Double weight;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "cargo")
     List<Waypoint> waypoints;
-
-    @Override
-    public String toString() {
-        return "Cargo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", weight=" + weight +
-                '}';
-    }
 
     public Long getOrderId() {
         return waypoints.get(0).getOrder().getId();

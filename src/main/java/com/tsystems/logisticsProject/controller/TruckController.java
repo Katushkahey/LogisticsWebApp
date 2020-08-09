@@ -1,6 +1,6 @@
 package com.tsystems.logisticsProject.controller;
 
-import com.tsystems.logisticsProject.service.implementation.TruckServiceImpl;
+import com.tsystems.logisticsProject.service.abstraction.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TruckController {
 
     @Autowired
-    TruckServiceImpl truckServiceImpl;
+    TruckService truckService;
+
+    @GetMapping("/info")
+    public String trucksInfo(Model model) {
+        model.addAttribute("listOfTrucks", truckService.getListOfTrucks());
+        return "trucks_page";
+    }
 
     @GetMapping("/create_truck")
     public String createTruck(Model model) {
@@ -29,8 +35,7 @@ public class TruckController {
 
     @GetMapping("/delete_truck/{id}")
     public String deleteTruck(@PathVariable("id") Long id, Model model) {
-        truckServiceImpl.deleteById(id);
-        model.addAttribute("listOfTrucks", truckServiceImpl.getListOfTrucks());
-        return "redirect:/admin/trucks-info";
+        truckService.deleteById(id);
+        return "redirect:/truck/info";
     }
 }

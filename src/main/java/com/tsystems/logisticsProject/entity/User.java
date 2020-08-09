@@ -32,12 +32,15 @@ public class User extends AbstractEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "authority_id")
     private Role authority;
 
-    @Transient
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "user")
     private Driver driver;
 
@@ -45,14 +48,6 @@ public class User extends AbstractEntity implements UserDetails {
         this.username = username;
         this.password = password;
         this.authority = authority;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username +
-                "' " + '}';
     }
 
     @Override

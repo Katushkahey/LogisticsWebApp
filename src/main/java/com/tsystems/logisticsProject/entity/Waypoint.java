@@ -2,10 +2,7 @@ package com.tsystems.logisticsProject.entity;
 
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -21,16 +18,22 @@ public class Waypoint extends AbstractEntity {
     @Column(name = "id")
     private Long id;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne
     @JoinColumn(name="order_id")
     private Order order;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne
     @JoinColumn(name="cargo_id")
     private Cargo cargo;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne
     @JoinColumn(name="city_id")
@@ -46,11 +49,4 @@ public class Waypoint extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private WaypointStatus status;
 
-    @Override
-    public String toString() {
-        return "Waypoint{" +
-                "id=" + id +
-                ", action=" + action +
-                '}';
-    }
 }

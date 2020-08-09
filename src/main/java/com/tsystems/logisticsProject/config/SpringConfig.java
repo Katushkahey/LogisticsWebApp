@@ -10,16 +10,11 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
 @ComponentScan("com.tsystems.logisticsProject")
 public class SpringConfig implements WebMvcConfigurer {
-
-    public SpringConfig() {
-        super();
-    }
 
     @Bean
     public InternalResourceViewResolver setupViewResolver() {

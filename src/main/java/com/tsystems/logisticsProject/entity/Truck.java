@@ -5,10 +5,10 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @Table(name = "trucks")
 public class Truck extends AbstractEntity {
@@ -35,21 +35,15 @@ public class Truck extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private TruckState truckState;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne
     @JoinColumn(name = "current_city_id")
     private City currentCity;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToOne(mappedBy = "orderTruck")
     private Order order;
-
-    @Override
-    public String toString() {
-        return "Truck{" +
-                "id=" + id +
-                ", number='" + number + '\'' +
-                ", crewSize=" + crewSize +
-                ", capacity=" + capacity +
-                '}';
-    }
 }

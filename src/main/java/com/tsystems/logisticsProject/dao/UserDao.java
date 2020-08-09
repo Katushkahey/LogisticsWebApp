@@ -1,4 +1,4 @@
-package com.tsystems.logisticsProject.dao.abstraction;
+package com.tsystems.logisticsProject.dao;
 
 import com.tsystems.logisticsProject.entity.User;
 

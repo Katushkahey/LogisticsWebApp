@@ -3,7 +3,6 @@ package com.tsystems.logisticsProject.config;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -16,8 +15,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource("classpath:datasource.properties")
-public class HibernateConf {
+public class HibernateConfig {
 
     @Bean
     public LocalSessionFactoryBean sessionFactory() {
@@ -46,7 +44,6 @@ public class HibernateConf {
         final HibernateTransactionManager transactionManager
                 = new HibernateTransactionManager();
         transactionManager.setSessionFactory(sessionFactory().getObject());
-
         return transactionManager;
     }
 
@@ -56,12 +53,13 @@ public class HibernateConf {
                 "hibernate.hbm2ddl.auto", "update");
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQL94Dialect");
+        hibernateProperties.setProperty("hibernate.show_sql", "false");
         return hibernateProperties;
     }
 
     @Bean
     public Session session(SessionFactory sessionFactory) {
-        return sessionFactory.openSession();
+            return sessionFactory.openSession();
     }
 
 }

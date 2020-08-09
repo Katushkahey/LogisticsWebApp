@@ -22,11 +22,11 @@
         }
 
         .mainDiv {
-            width: 45%;
+            width: 30%;
             height: 400px;
             overflow-y: auto;
             overflow-x: auto;
-            margin-left: 1rem;
+            margin-left: 8rem;
         }
 
         .nav-item {
@@ -41,11 +41,10 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-link" href="/admin/"><strong> Главная </strong></a>
-                <a class="nav-link" href="/admin/trucks-info"><strong> Фуры </strong></a>
-                <a class="nav-link" href="/admin/drivers-info"><strong> Водители </strong></a>
-                <a class="nav-link active" href="/admin/orders-info"><strong><u> Заказы </u></strong><span
+                <a class="nav-link" href="/truck/info"><strong> Фуры </strong></a>
+                <a class="nav-link" href="/drivers/info"><strong> Водители </strong></a>
+                <a class="nav-link active" href="/order/info"><strong><u> Заказы </u></strong><span
                         class="sr-only">(current)</span></a>
-                <a class="nav-link" href="/admin/cargoes-info"><strong> Грузы </strong></a>
                 <a class="nav-item">
                     <form action="/logout" method="post">
                         <input type="submit" class="btn btn-danger" value="Logout"/>
@@ -59,7 +58,7 @@
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(62,194,52,0.65)">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup2">
             <div class="navbar-nav">
-                <a class="nav-link" href="/admin/orders-info"><strong> Неназначенные </strong><span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/order/info"><strong> Неназначенные </strong><span class="sr-only">(current)</span></a>
                 <a class="nav-link" href="/order/info-2"><strong> Назначенные </strong></a>
                 <a class="nav-link active" href="/order/info-3"><strong><u> Выполненные за месяц </u></strong><span
                         class="sr-only">(current)</span></a>
@@ -69,22 +68,24 @@
 </div>
 </br></br>
 </br></br>
-</br></br>
 <div>
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(227,54,160,0.57)" align="center"> List of orders </h5>
+                <h5 class="text-black h4" style="background: rgba(227,54,160,0.57)" align="center"> List of completed orders this month </h5>
                 <span class="text-black">
                     <thead style="background: rgba(227,54,160,0.57)" align="center">
                             <tr>
                                 <th scope="col"> № </th>
+                                <th scope="col"> Details </th>
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="order" items="${listOfOrders}">
+                        <c:forEach var="order" items="${mapOfOrders.keySet()}">
                             <tr>
                                 <td scope="row" align="center">${order.id}</td>
+                                <td scope="row" align="center"><a class="btn btn-secondary"
+                                                                  href="/order/show_info/${order.id}"> Details </a></td>
                             </tr>
                         </c:forEach>
                     </tbody>

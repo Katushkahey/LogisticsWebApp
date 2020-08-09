@@ -46,11 +46,10 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-link" href="/admin/"><strong>Главная </strong></a>
-                <a class="nav-link" href="/admin/trucks-info"><strong>Фуры </strong></a>
-                <a class="nav-link active" href="/admin/drivers-info"><strong><u>Водители </u></strong><span
+                <a class="nav-link" href="/truck/info"><strong>Фуры </strong></a>
+                <a class="nav-link active" href="/drivers/info"><strong><u>Водители </u></strong><span
                         class="sr-only">(current)</span></a>
-                <a class="nav-link" href="/admin/orders-info"><strong>Заказы </strong></a>
-                <a class="nav-link" href="/admin/cargoes-info"><strong>Грузы </strong></a>
+                <a class="nav-link" href="/order/info"><strong>Заказы </strong></a>
                 <a class="nav-item">
                     <form action="/logout" method="post">
                         <input type="submit" class="btn btn-danger" value="Logout"/>

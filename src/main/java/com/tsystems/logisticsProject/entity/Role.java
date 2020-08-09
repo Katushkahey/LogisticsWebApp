@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -23,7 +24,8 @@ public class Role extends AbstractEntity implements GrantedAuthority {
     @Column(name = "authority")
     private String authority;
 
-    @Transient
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "authority")
     private List<User> users;
 
@@ -34,14 +36,6 @@ public class Role extends AbstractEntity implements GrantedAuthority {
 
     public Role(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", authority='" + authority + '\'' +
-                '}';
     }
 
     @Override

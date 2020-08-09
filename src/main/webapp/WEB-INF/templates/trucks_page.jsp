@@ -33,8 +33,8 @@
         }
 
         .nav-item {
-           position: relative;
-           left: 55em ;
+            position: relative;
+            left: 55em;
         }
     </style>
 </head>
@@ -44,10 +44,9 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-link" href="/admin/"><strong>Главная </strong></a>
-                <a class="nav-link active" href="/admin/trucks-info"><strong><u>Фуры </u></strong><span class="sr-only">(current)</span></a>
-                <a class="nav-link" href="/admin/drivers-info"><strong>Водители </strong></a>
-                <a class="nav-link" href="/admin/orders-info"><strong>Заказы </strong></a>
-                <a class="nav-link" href="/admin/cargoes-info"><strong>Грузы </strong></a>
+                <a class="nav-link active" href="/truck/info"><strong><u>Фуры </u></strong><span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/drivers/info"><strong>Водители </strong></a>
+                <a class="nav-link" href="/order/info"><strong>Заказы </strong></a>
                 <a class="nav-item">
                     <form action="/logout" method="post">
                         <input type="submit" class="btn btn-danger" value="Logout"/>
@@ -80,15 +79,16 @@
                     </thead>
                     <tbody>
                         <c:forEach var="truck" items="${listOfTrucks}">
-                            <tr>
+                            <tr id="truck-${truck.id}">
                                 <td scope="row" align="center">${truck.id}</td>
                                 <td scope="row" align="center">${truck.number}</td>
                                 <td scope="row" align="center">${truck.capacity}</td>
                                 <td scope="row" align="center">${truck.crewSize}</td>
                                 <td scope="row" align="center">${truck.truckState}</td>
                                 <td scope="row" align="center">${truck.order.id}</td>
-                                <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                  href="/truck/edit_truck/${truck.id}"> Edit </a></td>
+                                <td scope="row" align="center"><button type="button" class="btn btn-secondary"
+                                                                       data-toggle="modal" data-target="#edit_truck"
+                                                                       data-truck-id="${truck.id}"> Edit </button>
                                 <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/truck/delete_truck/${truck.id}"> Delete </a></td>
                             </tr>
@@ -99,5 +99,74 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="edit_truck" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLabel"> Edit Truck </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="numberInput">Number</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="numberInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="capacityInput">Capacity</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="capacityInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="crewInput">Crew</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="crewInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="stateInput">State</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="stateInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    $("#edit_truck").on('show.bs.modal', function (e) {
+        var truckId = $(e.relatedTarget).data('truck-id');
+
+        var cols = $('#truck-' + truckId + ' td');
+        var number = $(cols[1]).text();
+        var capacity = $(cols[2]).text();
+        var crew = $(cols[3]).text();
+        var state = $(cols[4]).text();
+
+        $('#numberInput').val(number);
+        $('#capacityInput').val(capacity);
+        $('#crewInput').val(crew);
+        $('#stateInput').val(state);
+    });
+
+    $("#edit_truck").on('hidden.bs.modal', function () {
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+</script>
 </html>
