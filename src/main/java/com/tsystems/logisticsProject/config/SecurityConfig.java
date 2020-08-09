@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 antMatchers("/login").anonymous().
                 antMatchers("/", "/driver/**", "/admin/**").authenticated().
                 antMatchers("/driver/**").hasRole("DRIVER").
-                antMatchers("/admin/**").hasRole("ADMIN").
+                antMatchers("/admin/**", "/order/**", "/truck/*").hasRole("ADMIN").
 
                 and().
                 formLogin().
@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 failureUrl("/login?error=true").
                 successHandler(myAuthenticationSuccessHandler()).
                 and().exceptionHandling().accessDeniedPage("/").
+                and().logout().
 
                 and().
                 csrf().disable();

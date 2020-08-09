@@ -22,6 +22,11 @@
                 <a class="nav-link active" href="/admin/cargoes-info"><strong><u>Грузы </u></strong><span
                         class="sr-only">(current)</span>
                 </a>
+                <a class="nav-item">
+                    <form action="/logout" method="post">
+                        <input type="submit" class="btn btn-danger" value="Logout"/>
+                    </form>
+                </a>
             </div>
         </div>
     </nav>

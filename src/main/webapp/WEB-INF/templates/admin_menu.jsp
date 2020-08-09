@@ -13,6 +13,11 @@
         background-size: auto;
         color: #000;
     }
+
+    .nav-item {
+        position: relative;
+        left: 55em ;
+    }
 </style>
 <head>
     <meta charset="utf-8">
@@ -33,6 +38,11 @@
                 <a class="nav-link" href="/admin/drivers-info"><strong> Водители </strong></a>
                 <a class="nav-link" href="/admin/orders-info"><strong> Заказы </strong></a>
                 <a class="nav-link" href="/admin/cargoes-info"><strong> Грузы </strong></a>
+                <a class="nav-item">
+                    <form action="/logout" method="post">
+                        <input type="submit" class="btn btn-danger" value="Logout"/>
+                    </form>
+                </a>
             </div>
         </div>
     </nav>

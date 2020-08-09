@@ -28,8 +28,9 @@ public class TruckController {
     }
 
     @GetMapping("/delete_truck/{id}")
-    public String deleteTruck(@PathVariable("id") Long id) {
+    public String deleteTruck(@PathVariable("id") Long id, Model model) {
         truckServiceImpl.deleteById(id);
+        model.addAttribute("listOfTrucks", truckServiceImpl.getListOfTrucks());
         return "redirect:/admin/trucks-info";
     }
 }

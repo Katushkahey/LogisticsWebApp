@@ -47,15 +47,31 @@
             width: 50%;
         }
 
+        .nav-item {
+            position: relative;
+            left: 55em;
+        }
     </style>
 </head>
 <body>
-<nav class="navbar2 navbar-light" style="background: rgba(67,41,28,0.99)">
-    <a class="navbar-brand">
-        <img src="../images/man_icon.png" width="50" height="50" class="d-inline-block align-top" alt="" loading="lazy">
-        <span class="text-white">${name} ${surname}, ${telephoneNumber}</span>
-    </a>
-</nav>
+<div>
+    <nav class="navbar2 navbar-expand-lg navbar-light" style="background: rgba(67,41,28,0.99)">
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="navbar-link">
+                    <img src="../images/man_icon.png" width="50" height="50" class="d-inline-block align-top" alt=""
+                         loading="lazy">
+                    <span class="text-white">${name} ${surname}, ${telephoneNumber}</span>
+                </a>
+                <a class="nav-item">
+                    <form action="/logout" method="post">
+                        <input type="submit" class="btn btn-danger" value="Logout"/>
+                    </form>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>
 </br>
 <div class="form-group form-check">
     <input type="checkbox" class="form-check-input" id="exampleCheck1">
