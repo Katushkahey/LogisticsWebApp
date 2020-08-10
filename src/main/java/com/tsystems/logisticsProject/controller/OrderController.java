@@ -39,4 +39,11 @@ public class OrderController {
         model.addAttribute("mapOfOrders", orderService.findUnassignedOrders());
         return "orders_page";
     }
+
+    @GetMapping("/delete_order/{id}")
+    public String deleteOrder(@PathVariable("id") Long id, Model model) {
+        orderService.deleteById(id);
+        model.addAttribute("mapOfOrders", orderService.findUnassignedOrders());
+        return "redirect:/order/info";
+    }
 }

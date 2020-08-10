@@ -88,7 +88,6 @@
                                 <th scope="col"> Add Driver </th>
                                 <th scope="col"> Add Truck </th>
                                 <th scope="col"> Details </th>
-                                <th scope="col"> Edit </th>
                                 <th scope="col"> Delete </th>
                             </tr>
                     </thead>
@@ -102,9 +101,7 @@
                                 <td scope="row" align="center"> Add Driver </td>
                                 <td scope="row" align="center"> Add Truck </td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                   href="/order/show_info/${order.id}"> Details </a></td>
-                                <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                  href="/order/edit_order/${order.id}"> Edit </a></td>
+                                                                  href="/order/show_info/${order.id}"> Details </a></td>
                                 <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/order/delete_order/${order.id}"> Delete </a></td>
                             </tr>

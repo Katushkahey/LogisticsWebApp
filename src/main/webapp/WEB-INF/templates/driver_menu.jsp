@@ -12,7 +12,6 @@
         html {
             height: 100%; /* Высота страницы */
         }
-
         body {
             background: rgb(247, 205, 145) url("../images/driver_page.jpg"); /* путь к файлу */
             background-position: right;
@@ -20,33 +19,27 @@
             background-size: contain;
             color: #000; /* Цвет текста */
         }
-
         .navbar {
             width: 50%;
             margin-left: 1rem;
         }
-
         .p-4 {
             height: 250px;
             width: 50%;
             overflow-x: auto;
             margin-left: 1rem;
         }
-
         .info {
             margin-left: 1rem;
         }
-
         .form-group {
             margin-left: 1rem;
             width: 50%;
         }
-
         .form-row {
             margin-left: 1rem;
             width: 50%;
         }
-
         .nav-item {
             position: relative;
             left: 55em;

@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.dao.implementation;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.User;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ public class DriverDaoImpl {
     @Autowired
     Session session;
 
-    public Driver findById(int id) {
+    public Driver findById(Long id) {
         return  session.get(Driver.class, id);
     }
 
@@ -28,6 +29,7 @@ public class DriverDaoImpl {
 
     public void delete(Driver driver) {
         session.delete(driver);
+        session.flush();
     }
 
     public Driver findByUser(User user) {

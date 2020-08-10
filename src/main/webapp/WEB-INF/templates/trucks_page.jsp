@@ -109,40 +109,38 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
+                <form action="/truck/edit_truck" object="${truck}" method="post" class="formWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="numberInput">Number</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="numberInput"/>
+                            <input type="text" class="number field"  id="numberInput"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="capacityInput">Capacity</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" id="capacityInput"/>
+                            <input type="number" class="capacity field" id="capacityInput"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="crewInput">Crew</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" id="crewInput"/>
+                            <input type="number" maxlength="1" class="crew field" id="crewInput"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="stateInput">State</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="stateInput"/>
+                        <div>
+                            <select class="col-sm-6" id="stateInput">
+                                <option value="OK">OK</option>
+                                <option value="BROKEN">BROKEN</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-10">
-                            <button type="submit" class="btn btn-default">Save</button>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="saveBtn btn-success"  value="validate" >Save</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -151,22 +149,72 @@
 <script>
     $("#edit_truck").on('show.bs.modal', function (e) {
         var truckId = $(e.relatedTarget).data('truck-id');
-
         var cols = $('#truck-' + truckId + ' td');
         var number = $(cols[1]).text();
         var capacity = $(cols[2]).text();
         var crew = $(cols[3]).text();
         var state = $(cols[4]).text();
-
         $('#numberInput').val(number);
         $('#capacityInput').val(capacity);
         $('#crewInput').val(crew);
         $('#stateInput').val(state);
     });
-
     $("#edit_truck").on('hidden.bs.modal', function () {
+        // alert("Изменения будут отменены");
         var form = $(this).find('form');
         form[0].reset();
     });
+
+    var form = document.querySelector('.formWithValidation')
+    var saveBtn = form.querySelector('.saveBtn')
+    var number = form.querySelector('.number')
+    var capacity = form.querySelector('.capacity')
+    var crew = form.querySelector('.crew')
+    var fields = form.querySelectorAll('.field')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        var errors = form.querySelectorAll('.error')
+
+        for (var i = 0; i < errors.length; i++) {
+            errors[i].remove()
+        }
+
+        for (var i = 0; i < fields.length; i++) {
+            if (!fields[i].value) {
+                var error = document.createElement('div')
+                error.className = 'error'
+                error.style.color = 'red'
+                error.innerHTML = 'Can`t be empty'
+                form[i].parentElement.insertBefore(error, fields[i])
+            }
+        }
+
+        if (!number.value.match("[A-Z]{2}[0-9]{5}")) {
+            var error2 = document.createElement('div')
+            error2.className = 'error'
+            error2.style.color = 'red'
+            error2.innerHTML = '2 English letters in UpperCase and 5 numbers'
+            number.parentElement.insertBefore(error2, number)
+        }
+
+        if (capacity.value < 15 || capacity.value > 30) {
+            var error3 = document.createElement('div')
+            error3.className = 'error'
+            error3.style.color = 'red'
+            error3.innerHTML = 'should be between 15 and 30'
+            capacity.parentElement.insertBefore(error3, capacity)
+        }
+
+        if (crew.value < 2 || crew.value > 3) {
+            var error4 = document.createElement('div')
+            error4.className = 'error'
+            error4.style.color = 'red'
+            error4.innerHTML = 'Can be 2 or 3'
+            crew.parentElement.insertBefore(error4, crew)
+        }
+
+    })
 </script>
 </html>

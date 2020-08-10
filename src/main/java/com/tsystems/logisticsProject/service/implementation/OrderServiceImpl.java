@@ -78,4 +78,8 @@ public class OrderServiceImpl implements OrderService {
         return maxWeight;
     }
 
+    public void deleteById(Long id) {
+        orderDaoImpl.delete(orderDaoImpl.findById(id));
+    }
+
 }

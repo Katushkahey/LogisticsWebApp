@@ -17,4 +17,5 @@ public interface DriverService {
 
     public List<Driver> getListOfDrivers();
 
+    public void deleteById(Long id);
 }

@@ -15,5 +15,5 @@ public interface OrderDao extends GenericDao<Truck> {
 
     void update(Order order);
 
-    void remove(Order order);
+    void delete(Order order);
 }

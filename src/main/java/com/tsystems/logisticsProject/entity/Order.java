@@ -40,7 +40,7 @@ public class Order extends AbstractEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     List<Waypoint> waypoints;
 
     //зачем я это сделала??

@@ -85,7 +85,7 @@
                             <tr>
                                 <td scope="row" align="center">${order.id}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                  href="/order/show_info/${order.id}"> Details </a></td>
+                                                                  href="/order/show_info/${order.id}" > Details </a></td>
                             </tr>
                         </c:forEach>
                     </tbody>

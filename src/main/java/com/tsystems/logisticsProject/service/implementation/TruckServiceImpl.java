@@ -32,4 +32,8 @@ public class TruckServiceImpl implements TruckService {
         truckDaoImpl.delete(truckDaoImpl.findById(id));
         applicationEventPublisher.publishEvent(new EntityUpdateEvent());
     }
+
+    public void update(Truck truck) {
+        truckDaoImpl.update(truck);
+    }
 }

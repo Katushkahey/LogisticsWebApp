@@ -19,4 +19,6 @@ public interface OrderService {
     public HashMap<Order, Double> findAssignedOrders();
 
     public Set<Cargo> getListOfCargoesForCurrentOrderById(Long id);
+
+    public void deleteById(Long id);
 }

@@ -10,4 +10,6 @@ public interface TruckService {
     public List<Truck> getListOfTrucks();
 
     public void deleteById(Long id);
+
+    public void update(Truck truck);
 }

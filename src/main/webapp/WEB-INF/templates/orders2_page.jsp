@@ -91,7 +91,7 @@
                                 <td scope="row" align="center">${order.orderTruck.number}</td>
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                  href="/order/show_info/${order.id}"> Details </a></td>
+                                                                  href="/order/show_info/${order.id}" > Details </a></td>
                             </tr>
                         </c:forEach>
                     </tbody>

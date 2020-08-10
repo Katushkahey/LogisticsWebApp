@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.entity;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import lombok.*;
+import org.hibernate.engine.internal.Cascade;
 
 import javax.persistence.*;
 
@@ -28,7 +29,7 @@ public class Waypoint extends AbstractEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NonNull
-    @ManyToOne
+    @ManyToOne(cascade =  CascadeType.ALL)
     @JoinColumn(name="cargo_id")
     private Cargo cargo;
 

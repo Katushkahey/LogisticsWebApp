@@ -83,7 +83,7 @@
                     </thead>
                     <tbody>
                         <c:forEach var="driver" items="${listOfDrivers}">
-                            <tr>
+                            <tr id="driver-${driver.id}">
                                 <td scope="row" align="center">${driver.id}</td>
                                 <td scope="row" align="center">${driver.name}</td>
                                 <td scope="row" align="center">${driver.surname}</td>
@@ -91,10 +91,11 @@
                                 <td scope="row" align="center">${driver.hoursThisMonth}</td>
                                 <td scope="row" align="center">${driver.currentCity.name}</td>
                                 <td scope="row" align="center">${driver.currentOrder.id}</td>
-                                <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                  href="/truck/edit_truck/${driver.id}"> Edit </a></td>
+                                <td scope="row" align="center"><button type="button" class="btn btn-secondary"
+                                                                       data-toggle="modal" data-target="#edit_driver"
+                                                                       data-driver-id="${driver.id}"> Edit </button>
                                 <td scope="row" align="center"><a class="btn btn-danger"
-                                                                  href="/truck/delete_truck/${driver.id}"> Delete </a></td>
+                                                                  href="/drivers/delete_driver/${driver.id}"> Delete </a></td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -103,5 +104,71 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="edit_driver" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLabel"> Edit Driver </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="nameInput">Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="nameInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="surnameInput">Surname</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="surnameInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="telephoneInput">Telephone</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="telephoneInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="cityInput">City</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="cityInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button type="submit" class="btn btn-default">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    $("#edit_driver").on('show.bs.modal', function (e) {
+        var driverId = $(e.relatedTarget).data('driver-id');
+        var cols = $('#driver-' + driverId + ' td');
+        var name = $(cols[1]).text();
+        var surname = $(cols[2]).text();
+        var telephone = $(cols[3]).text();
+        var city = $(cols[5]).text();
+        $('#nameInput').val(name);
+        $('#surnameInput').val(surname);
+        $('#telephoneInput').val(telephone);
+        $('#cityInput').val(city);
+    });
+    $("#edit_driver").on('hidden.bs.modal', function () {
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+</script>
 </html>

@@ -2,8 +2,10 @@ package com.tsystems.logisticsProject.service.implementation;
 
 import com.tsystems.logisticsProject.dao.implementation.DriverDaoImpl;
 import com.tsystems.logisticsProject.entity.*;
+import com.tsystems.logisticsProject.event.EntityUpdateEvent;
 import com.tsystems.logisticsProject.service.abstraction.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,16 +16,18 @@ import java.util.List;
 public class DriverServiceImpl implements DriverService {
 
     private DriverDaoImpl driverDaoImpl;
-    private UserServiceImpl userService;
+    private UserServiceImpl userServiceImpl;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public void setDriverDao(DriverDaoImpl driverDao, UserServiceImpl userService) {
+    public DriverServiceImpl(ApplicationEventPublisher applicationEventPublisher, DriverDaoImpl driverDao, UserServiceImpl userService) {
+        this.applicationEventPublisher = applicationEventPublisher;
         this.driverDaoImpl = driverDao;
-        this.userService = userService;
+        this.userServiceImpl = userService;
     }
 
     public Driver getDriverByPrincipalName(String name) {
-        User userPrincipal = userService.findByUsername(name);
+        User userPrincipal = userServiceImpl.findByUsername(name);
         return driverDaoImpl.findByUser(userPrincipal);
     }
 
@@ -48,6 +52,11 @@ public class DriverServiceImpl implements DriverService {
 
     public List<Driver> getListOfDrivers() {
         return driverDaoImpl.findAll();
+    }
+
+    public void deleteById(Long id) {
+        driverDaoImpl.delete(driverDaoImpl.findById(id));
+        applicationEventPublisher.publishEvent(new EntityUpdateEvent());
     }
 
 }

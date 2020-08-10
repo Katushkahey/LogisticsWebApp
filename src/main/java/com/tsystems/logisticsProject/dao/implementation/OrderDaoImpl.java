@@ -2,6 +2,7 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.entity.Order;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,10 +24,6 @@ public class OrderDaoImpl {
 
     public void update(Order order) {
         session.update(order);
-    }
-
-    public void delete(Order order) {
-        session.delete(order);
     }
 
     public List<Order> findCompetedOrders() {
@@ -55,5 +52,10 @@ public class OrderDaoImpl {
         return session.createQuery("SELECT o FROM Order o WHERE o.isCompleted = false " +
                 "AND o.orderTruck IS NOT NULL AND o.id IN (SELECT d.currentOrder FROM Driver d)", Order.class)
                 .getResultList();
+    }
+
+    public void delete(Order order) {
+        session.delete(order);
+        session.flush();
     }
 }
