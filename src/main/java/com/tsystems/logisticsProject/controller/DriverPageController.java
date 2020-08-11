@@ -1,7 +1,7 @@
 package com.tsystems.logisticsProject.controller;
 
-import com.tsystems.logisticsProject.service.abstraction.DriverService;
-import com.tsystems.logisticsProject.service.abstraction.OrderService;
+import com.tsystems.logisticsProject.service.DriverService;
+import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +15,10 @@ import java.security.Principal;
 public class DriverPageController {
 
     @Autowired
-    DriverService driverService;
+    private DriverService driverService;
 
     @Autowired
-    OrderService orderService;
+    private OrderService orderService;
 
     @GetMapping("")
     public String driverPage(Principal principal, Model model) {

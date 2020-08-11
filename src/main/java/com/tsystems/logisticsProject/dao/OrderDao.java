@@ -13,4 +13,10 @@ public interface OrderDao extends GenericDao<Order> {
     void update(Order order);
 
     void delete(Order order);
+
+    List<Order> findCompetedOrders();
+
+    List<Order> findUnassignedOrders();
+
+    List<Order> findAssignedOrders();
 }

@@ -1,7 +1,7 @@
 package com.tsystems.logisticsProject.config;
 
 import com.tsystems.logisticsProject.entity.User;
-import com.tsystems.logisticsProject.service.implementation.UserServiceImpl;
+import com.tsystems.logisticsProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +20,7 @@ import java.util.List;
 public class AuthProviderImpl implements AuthenticationProvider {
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -28,7 +28,7 @@ public class AuthProviderImpl implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
-        User user = userServiceImpl.findByUsername(username);
+        User user = userService.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }

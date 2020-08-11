@@ -1,7 +1,7 @@
 package com.tsystems.logisticsProject.config;
 
-import com.tsystems.logisticsProject.service.MySimpleUrlAuthenticationSuccessHandler;
-import com.tsystems.logisticsProject.service.implementation.UserServiceImpl;
+import com.tsystems.logisticsProject.service.implementation.MySimpleUrlAuthenticationSuccessHandler;
+import com.tsystems.logisticsProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,7 +24,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    private UserService userService;
+
     @Autowired
     private AuthProviderImpl authProvider;
 
@@ -73,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userServiceImpl).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
 
 }

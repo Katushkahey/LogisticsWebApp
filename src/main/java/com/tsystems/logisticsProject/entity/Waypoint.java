@@ -22,7 +22,7 @@ public class Waypoint extends AbstractEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NonNull
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="order_id")
     private Order order;
 

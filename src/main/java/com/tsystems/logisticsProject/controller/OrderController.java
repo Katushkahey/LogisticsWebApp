@@ -1,6 +1,6 @@
 package com.tsystems.logisticsProject.controller;
 
-import com.tsystems.logisticsProject.service.abstraction.OrderService;
+import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +18,14 @@ public class OrderController {
     @GetMapping("/info-2")
     public String assignedOrders(Model model) {
         model.addAttribute("mapOfOrders", orderService.findAssignedOrders());
+        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForAssignedOrders());
         return "orders2_page";
     }
 
     @GetMapping("/info-3")
     public String completedOrders(Model model) {
         model.addAttribute("mapOfOrders", orderService.findCompletedOrders());
+        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForCompletedOrders());
         return "orders3_page";
     }
 
@@ -37,6 +39,7 @@ public class OrderController {
     @GetMapping("/info")
     public String OrdersInfo(Model model) {
         model.addAttribute("mapOfOrders", orderService.findUnassignedOrders());
+        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
         return "orders_page";
     }
 
@@ -44,6 +47,7 @@ public class OrderController {
     public String deleteOrder(@PathVariable("id") Long id, Model model) {
         orderService.deleteById(id);
         model.addAttribute("mapOfOrders", orderService.findUnassignedOrders());
+        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
         return "redirect:/order/info";
     }
 }

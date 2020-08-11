@@ -2,28 +2,28 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.WaypointDao;
 import com.tsystems.logisticsProject.entity.Waypoint;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WaypointImpl implements WaypointDao {
+public class WaypointImpl extends AbstractDao<Waypoint> implements WaypointDao {
 
     @Autowired
-    Session session;
+    private SessionFactory sessionFactory;
 
     @Override
     public void add(Waypoint waypoint) {
-        session.save(waypoint);
+        sessionFactory.getCurrentSession().save(waypoint);
     }
 
     @Override
     public void update(Waypoint waypoint) {
-        session.update(waypoint);
+        sessionFactory.getCurrentSession().update(waypoint);
     }
 
     @Override
     public void delete(Waypoint waypoint) {
-        session.delete(waypoint);
+        sessionFactory.getCurrentSession().delete(waypoint);
     }
 }

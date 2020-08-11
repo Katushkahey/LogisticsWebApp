@@ -87,7 +87,7 @@
                         <c:forEach var="order" items="${mapOfOrders.keySet()}">
                             <tr>
                                 <td scope="row" align="center">${order.id}</td>
-                                <td scope="row" align="center">${order.drivers}</td>
+                                <td scope="row" align="center">${mapOfDriversForOrders.get(order)}</td>
                                 <td scope="row" align="center">${order.orderTruck.number}</td>
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"

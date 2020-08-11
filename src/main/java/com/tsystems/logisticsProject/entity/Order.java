@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.entity;
 
 import lombok.*;
+import org.hibernate.collection.internal.PersistentList;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -33,19 +34,13 @@ public class Order extends AbstractEntity {
 //    @OneToMany(mappedBy = "order")
 //    List<Cargo> cargoes;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "currentOrder")
-    private List<Driver> drivers;
+//    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    @OneToMany(mappedBy = "currentOrder")
+//    private List<Driver> drivers;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
     List<Waypoint> waypoints;
-
-    //зачем я это сделала??
-    public Long getId() {
-        return id;
-    }
-
 }

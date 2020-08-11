@@ -1,6 +1,6 @@
 package com.tsystems.logisticsProject.controller;
 
-import com.tsystems.logisticsProject.service.abstraction.DriverService;
+import com.tsystems.logisticsProject.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

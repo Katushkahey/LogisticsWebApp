@@ -2,20 +2,18 @@ package com.tsystems.logisticsProject.controller;
 
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.TruckState;
-import com.tsystems.logisticsProject.service.abstraction.TruckService;
+import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/truck")
 public class TruckController {
 
     @Autowired
-    TruckService truckService;
+    private TruckService truckService;
 
     @GetMapping("/info")
     public String trucksInfo(Model model) {

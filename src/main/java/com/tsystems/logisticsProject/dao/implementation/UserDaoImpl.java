@@ -2,7 +2,7 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.UserDao;
 import com.tsystems.logisticsProject.entity.User;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,25 +10,25 @@ import org.springframework.stereotype.Repository;
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
     @Autowired
-    Session session;
+    private SessionFactory sessionFactory;
 
     public void add(User user) {
-        session.save(user);
+        sessionFactory.getCurrentSession().save(user);
     }
 
     public void update(User user) {
-        session.update(user);
+        sessionFactory.getCurrentSession().update(user);
     }
 
     public void delete(User user) {
-        session.delete(user);
+        sessionFactory.getCurrentSession().delete(user);
     }
 
     public User findByUsername(String username) {
         if (username == null) {
             return null;
         }
-        return  session.createQuery("SELECT u FROM User u WHERE u.username=:username", User.class)
+        return  sessionFactory.getCurrentSession().createQuery("SELECT u FROM User u WHERE u.username=:username", User.class)
                 .setParameter("username", username)
                 .getSingleResult();
     }

@@ -2,29 +2,29 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.CargoDao;
 import com.tsystems.logisticsProject.entity.Cargo;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CargoDaoImpl implements CargoDao {
+public class CargoDaoImpl extends AbstractDao<Cargo> implements CargoDao {
 
     @Autowired
-    Session session;
+    private SessionFactory sessionFactory;
 
     public Cargo findById(Long id) {
-        return  session.get(Cargo.class, id);
+        return  sessionFactory.getCurrentSession().get(Cargo.class, id);
     }
 
     public void add(Cargo cargo) {
-        session.save(cargo);
+        sessionFactory.getCurrentSession().save(cargo);
     }
 
     public void update(Cargo cargo) {
-        session.update(cargo);
+        sessionFactory.getCurrentSession().update(cargo);
     }
 
     public void delete(Cargo cargo) {
-        session.delete(cargo);
+        sessionFactory.getCurrentSession().delete(cargo);
     }
 }

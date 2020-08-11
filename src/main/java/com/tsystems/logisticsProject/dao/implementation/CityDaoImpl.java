@@ -2,30 +2,30 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.entity.City;
-import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CityDaoImpl implements CityDao {
+public class CityDaoImpl extends AbstractDao<City> implements CityDao {
 
     @Autowired
-    Session session;
+    private SessionFactory sessionFactory;
 
     public City findById(Long id) {
-        return session.get(City.class, id);
+        return sessionFactory.getCurrentSession().get(City.class, id);
     }
 
     public void add(City city) {
-        session.save(city);
+        sessionFactory.getCurrentSession().save(city);
     }
 
     public void update(City city) {
-        session.update(city);
+        sessionFactory.getCurrentSession().update(city);
     }
 
     public void delete(City city) {
-        session.delete(city);
+        sessionFactory.getCurrentSession().delete(city);
     }
 }
 

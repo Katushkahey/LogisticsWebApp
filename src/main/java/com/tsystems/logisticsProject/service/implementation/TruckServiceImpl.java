@@ -1,13 +1,11 @@
 package com.tsystems.logisticsProject.service.implementation;
 
 import com.tsystems.logisticsProject.dao.CityDao;
-import com.tsystems.logisticsProject.dao.implementation.CityDaoImpl;
-import com.tsystems.logisticsProject.dao.implementation.TruckDaoImpl;
-import com.tsystems.logisticsProject.entity.City;
+import com.tsystems.logisticsProject.dao.TruckDao;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.TruckState;
 import com.tsystems.logisticsProject.event.EntityUpdateEvent;
-import com.tsystems.logisticsProject.service.abstraction.TruckService;
+import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -15,43 +13,48 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 @Service
 public class TruckServiceImpl implements TruckService {
 
-    private TruckDaoImpl truckDaoImpl;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    CityDao cityDao;
+    private CityDao cityDao;
+    @Autowired
+    private TruckDao truckDao;
 
     @Autowired
-    public TruckServiceImpl(ApplicationEventPublisher applicationEventPublisher, TruckDaoImpl truckDaoImpl) {
+    public TruckServiceImpl(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
-        this.truckDaoImpl = truckDaoImpl;
     }
 
+    @Transactional
     public List<Truck> getListOfTrucks() {
-        return truckDaoImpl.findAll();
+        return truckDao.findAll();
     }
 
+    @Transactional
     public void deleteById(Long id) {
-        truckDaoImpl.delete(truckDaoImpl.findById(id));
+        truckDao.delete(truckDao.findById(id));
         applicationEventPublisher.publishEvent(new EntityUpdateEvent());
     }
 
+    @Transactional
     public void update(Truck truck) {
-        truckDaoImpl.update(truck);
+        truckDao.update(truck);
     }
 
+    @Transactional
     public Truck findById(Long id) {
-        return truckDaoImpl.findById(id);
+        return truckDao.findById(id);
     }
 
+    @Transactional
     public boolean findByNumber(String number) {
-        return truckDaoImpl.findByNumber(number);
+        return truckDao.findByNumber(number);
     }
 
+    @Transactional
     public void add(String number, int crew_cize, int capacity, TruckState state, Long cityId) {
         Truck newTruck = new Truck();
         newTruck.setNumber(number);
@@ -59,6 +62,6 @@ public class TruckServiceImpl implements TruckService {
         newTruck.setCapacity(capacity);
         newTruck.setTruckState(state);
         newTruck.setCurrentCity(cityDao.findById(cityId));
-        truckDaoImpl.add(newTruck);
+        truckDao.add(newTruck);
     }
 }
