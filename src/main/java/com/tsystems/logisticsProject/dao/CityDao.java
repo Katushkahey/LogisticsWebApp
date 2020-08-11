@@ -6,9 +6,6 @@ import java.util.List;
 
 public interface CityDao extends GenericDao<City> {
 
-    List<City> findAll();
-
     City findById(Long id);
 
-    boolean containsCityName(String name);
 }

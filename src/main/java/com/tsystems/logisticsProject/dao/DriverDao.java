@@ -10,10 +10,4 @@ public interface DriverDao extends GenericDao<Driver> {
 
     Driver findById(Long id);
 
-    Driver findByUsername(String username);
-
-    List<Driver> getAll();
-
-    List<Driver> findAllAvailable(City currentCity, LocalDateTime requiredTime);
-
 }

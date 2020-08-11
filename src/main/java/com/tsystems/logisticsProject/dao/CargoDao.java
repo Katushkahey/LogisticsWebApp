@@ -8,11 +8,9 @@ public interface CargoDao extends GenericDao<Cargo> {
 
     void add(Cargo cargo);
 
-    List<Cargo> getAllCargoes();
-
-    Cargo getById(Long id);
+    Cargo findById(Long id);
 
     void update(Cargo cargo);
 
-    void remove(Cargo cargo);
+    void delete(Cargo cargo);
 }

@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.dao.implementation;
 
+import com.tsystems.logisticsProject.dao.OrderDao;
 import com.tsystems.logisticsProject.entity.Order;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class OrderDaoImpl {
+public class OrderDaoImpl implements OrderDao {
 
     @Autowired
     Session session;
@@ -18,7 +19,7 @@ public class OrderDaoImpl {
         return session.get(Order.class, id);
     }
 
-    public void save(Order order) {
+    public void add(Order order) {
         session.save(order);
     }
 

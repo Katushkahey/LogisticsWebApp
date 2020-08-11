@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.dao.implementation;
 
+import com.tsystems.logisticsProject.dao.DriverDao;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.User;
 import org.hibernate.Session;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class DriverDaoImpl {
+public class DriverDaoImpl implements DriverDao {
 
     @Autowired
     Session session;
@@ -19,7 +20,7 @@ public class DriverDaoImpl {
         return  session.get(Driver.class, id);
     }
 
-    public void save(Driver driver) {
+    public void add(Driver driver) {
         session.save(driver);
     }
 

@@ -4,9 +4,9 @@ import com.tsystems.logisticsProject.entity.User;
 
 public interface UserDao extends GenericDao<User> {
 
-    public void add(User user);
+    void add(User user);
 
-    public void update(User user);
+    void update(User user);
 
-    public User findByUsername(String username);
+    User findByUsername(String username);
 }

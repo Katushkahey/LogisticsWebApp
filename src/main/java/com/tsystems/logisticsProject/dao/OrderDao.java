@@ -1,17 +1,14 @@
 package com.tsystems.logisticsProject.dao;
 
 import com.tsystems.logisticsProject.entity.Order;
-import com.tsystems.logisticsProject.entity.Truck;
 
 import java.util.List;
 
-public interface OrderDao extends GenericDao<Truck> {
+public interface OrderDao extends GenericDao<Order> {
 
     void add(Order order);
 
-    List<Order> getAll();
-
-    Order getById(Long id);
+    Order findById(Long id);
 
     void update(Order order);
 
