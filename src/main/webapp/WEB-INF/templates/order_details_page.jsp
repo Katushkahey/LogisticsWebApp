@@ -14,9 +14,8 @@
         }
 
         body {
-            background: rgb(255, 255, 255) url("../images/info.jpg"); /* путь к файлу */
-            background-position: right;
-            background-repeat: no-repeat;
+            /* путь к файлу */
+            background: rgb(255, 255, 255) url('${pageContext.request.contextPath}/images/info.jpg') no-repeat right;
             background-size: contain;
             color: #000;
         }
@@ -31,8 +30,7 @@
     </style>
 </head>
 <body>
-</br></br>
-</br></br>
+</br></br></br>
 <div>
     <div class="mainDiv">
         <div class="tableTab">

@@ -114,40 +114,73 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
+                <form action="/drivers/edit_driver/" method="get" class="formWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="nameInput">Name</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="nameInput"/>
+                            <input type="text" class="name2 field" name="name" id="nameInput"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="surnameInput">Surname</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="surnameInput"/>
+                            <input type="text" class="surname field" name="surname" id="surnameInput"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="telephoneInput">Telephone</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="telephoneInput"/>
+                            <input type="text" class="telephone field" name="telephoneNumber" id="telephoneInput"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="cityInput">City</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="cityInput"/>
+                        <div>
+                            <select class="col-sm-6 city field" name="city" id="cityInput">
+                                <option value="Пермь">Пермь</option>
+                                <option value="Уфа">Уфа</option>
+                                <option value="Ростов-на-Дону">Ростов-на-Дону</option>
+                                <option value="Омск">Омск</option>
+                                <option value="Казань">Казань</option>
+                                <option value="Екатеринбург">Екатеринбург</option>
+                                <option value="Санкт-Петербург">Санкт-Петербург</option>
+                                <option value="Тобольск">Тобольск</option>
+                                <option value="Бердск">Бердск</option>
+                                <option value="Калининград">Калининград</option>
+                                <option value="Ярославль">Ярославль</option>
+                                <option value="Благовещенск">Благовещенск</option>
+                                <option value="Астрахань">Астрахань</option>
+                                <option value="Воркута">Воркута</option>
+                                <option value="Краснодар">Краснодар</option>
+                                <option value="Тамбов">Тамбов</option>
+                                <option value="Тамбов">Тамбов</option>
+                                <option value="Самара">Самара</option>
+                                <option value="Саратов">Саратов</option>
+                                <option value="Тюмень">Тюмень</option>
+                                <option value="Челябинск">Челябинск</option>
+                                <option value="Якутск">Якутск</option>
+                                <option value="Березники">Березники</option>
+                                <option value="Люберцы">Люберцы</option>
+                                <option value="Салехард">Салехард</option>
+                                <option value="Владимир">Владимир</option>
+                                <option value="Сочи">Сочи</option>
+                                <option value="Магадан">Магадан</option>
+                                <option value="Архангельск">Архангельск</option>
+                                <option value="Волгоград">Волгоград</option>
+                                <option value="Волгоград">Волгоград</option>
+                                <option value="Сыктывкар">Сыктывкар</option>
+                                <option value="Вологда">Вологда</option>
+                                <option value="Москва">Москва</option>
+                                <option value="Новосибирск">Новосибирск</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-10">
-                            <button type="submit" class="btn btn-default">Save</button>
+                            <button type="submit" class="saveBtn btn-success">Save</button>
                         </div>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -170,5 +203,63 @@
         var form = $(this).find('form');
         form[0].reset();
     });
+    var form = document.querySelector('.formWithValidation')
+    var name2 = form.querySelector('.name2')
+    var surname = form.querySelector('.surname')
+    var telephone = form.querySelector('.telephone')
+    var city = form.querySelector('.city')
+    var fields = form.querySelectorAll('.field')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        var errors = form.querySelectorAll('.error')
+
+        for (var i = 0; i < errors.length; i++) {
+            errors[i].remove()
+        }
+
+        var errors_counter = 0
+        for (var i = 0; i < fields.length; i++) {
+            if (!fields[i].value) {
+                errors_counter += 1
+                var error = document.createElement('div')
+                error.className = 'error'
+                error.style.color = 'red'
+                error.innerHTML = 'Can`t be empty'
+                form[i].parentElement.insertBefore(error, fields[i])
+            }
+        }
+        if (!name2.value.match("^[A-ZА-Я'][a-zа-я-' ]+[a-zа-я']?$")) {
+            errors_counter += 1
+            var error2 = document.createElement('div')
+            error2.className = 'error'
+            error2.style.color = 'red'
+            error2.innerHTML = 'No numbers. First letter in upper case'
+            name2.parentElement.insertBefore(error2, name2)
+        }
+
+        if (!surname.value.match("^[A-ZА-Я'][a-zа-я-' ]+[a-zа-я']?$")) {
+            errors_counter += 1
+            var error3 = document.createElement('div')
+            error3.className = 'error'
+            error3.style.color = 'red'
+            error3.innerHTML = 'No numbers. First letter in upper case'
+            surname.parentElement.insertBefore(error3, surname)
+        }
+
+        if (!telephone.value.match("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) {
+            errors_counter += 1
+            var error4 = document.createElement('div')
+            error4.className = 'error'
+            error4.style.color = 'red'
+            error4.innerHTML = 'Invalid format of telephone number'
+            telephone.parentElement.insertBefore(error4, telephone)
+        }
+
+        if (errors_counter < 1) {
+            form.submit()
+        }
+    })
 </script>
 </html>

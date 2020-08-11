@@ -44,7 +44,7 @@ public class TruckController {
     @GetMapping("/create_truck")
     public String createTruck(@RequestParam(name = "number") String number, @RequestParam(name = "capacity") Integer capacity,
                               @RequestParam(name = "crew") Integer crew, @RequestParam(name = "state")TruckState state,
-                              @RequestParam(name = "city")Long cityId, Model model) {
+                              @RequestParam(name = "city")Long cityId) {
 
         if (truckService.findByNumber(number)) {
             return "error";

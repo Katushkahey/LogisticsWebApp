@@ -295,6 +295,7 @@
             }
         }
         if (!number.value.match("[A-Z]{2}[0-9]{5}")) {
+            errors_counter += 1
             var error2 = document.createElement('div')
             error2.className = 'error'
             error2.style.color = 'red'
@@ -320,7 +321,7 @@
             crew.parentElement.insertBefore(error4, crew)
         }
 
-        else if (errors_counter < 1) {
+        if (errors_counter < 1) {
             form.submit()
         }
     })
