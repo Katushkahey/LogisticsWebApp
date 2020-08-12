@@ -32,4 +32,6 @@ public interface DriverService {
     boolean findDriverByTelephoneNumber(String telephineNumber);
 
     void update(Long id, String name, String surname, String telephoneNumber, String cityName);
+
+    void update(Long id, String telephoneNumber);
 }

@@ -13,6 +13,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -57,13 +59,13 @@ public class DriverServiceImpl implements DriverService {
     public Driver getPartnerFromPrincipal(String name) {
         Driver currentDriver = getDriverByPrincipalName(name);
         Order currentOrder = getCurrentOrderFromPrincipal(name);
-        List<Driver> partners = getParnersForCurrentOrder(currentOrder.getId());
+        Collection<Driver> partners = Collections.synchronizedCollection(getParnersForCurrentOrder(currentOrder.getId()));
         for (Driver driver : partners) {
             if (driver.equals(currentDriver)) {
                 partners.remove(driver);
             }
         }
-        return partners.get(0);
+        return (Driver)partners.toArray()[0];
     }
 
     @Transactional
@@ -138,6 +140,13 @@ public class DriverServiceImpl implements DriverService {
         driverToUpdate.setSurname(surname);
         driverToUpdate.setTelephoneNumber(telephoneNumber);
         driverToUpdate.setCurrentCity(cityService.findByCityName(cityName));
+        driverDao.update(driverToUpdate);
+    }
+
+    @Transactional
+    public void update(Long id, String telephoneNumber) {
+        Driver driverToUpdate = driverDao.findById(id);
+        driverToUpdate.setTelephoneNumber(telephoneNumber);
         driverDao.update(driverToUpdate);
     }
 

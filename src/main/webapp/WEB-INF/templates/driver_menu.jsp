@@ -42,7 +42,11 @@
         }
         .nav-item {
             position: relative;
-            left: 55em;
+            left: 5em;
+        }
+        .nav-item2 {
+            position: relative;
+            left: 40em;
         }
     </style>
 </head>
@@ -57,6 +61,11 @@
                     <span class="text-white">${driver.name} ${driver.surname}, ${driver.telephoneNumber}</span>
                 </a>
                 <a class="nav-item">
+                    <form data-toggle="modal" data-target="#edit_phone" data-driver-telephone="${driver.telephoneNumber}">
+                        <input readonly class="btn btn-secondary" value="Edit phone number"/>
+                    </form>
+                </a>
+                <a class="nav-item2">
                     <form action="/logout" method="post">
                         <input type="submit" class="btn btn-danger" value="Logout"/>
                     </form>
@@ -136,5 +145,78 @@
         <span class="text-white">Waypoints of order №${driver.currentOrder.id}</span>
     </button>
 </nav>
+<div class="modal fade" id="edit_phone" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLabel"> New phone number </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/driver/edit_telephoneNumber/${driver.id}" method="get" class="formWithValidation" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="phoneInput">Phone Number</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="telephone" name="telephone" id="phoneInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button type="submit" class="saveBtn btn-success">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    $("#edit_phone").on('show.bs.modal', function (e) {
+        var telephone = $(e.relatedTarget).data('driver-telephone');
+        $('#phoneInput').val(telephone);
+    });
+    $("#edit_phone").on('hidden.bs.modal', function () {
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+    var form = document.querySelector('.formWithValidation')
+    var telephone = form.querySelector('.telephone')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        var errors = form.querySelectorAll('.error')
+
+        for (var i = 0; i < errors.length; i++) {
+            errors[i].remove()
+        }
+
+        var errors_counter = 0
+
+        if (!telephone.value) {
+            errors_counter += 1
+            var error = document.createElement('div')
+            error.className = 'error'
+            error.style.color = 'red'
+            error.innerHTML = 'Can`t be empty'
+            form[i].parentElement.insertBefore(error, telephone)
+        }
+
+        if (!telephone.value.match("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) {
+            errors_counter += 1
+            var error = document.createElement('div')
+            error.className = 'error'
+            error.style.color = 'red'
+            error.innerHTML = 'Invalid format of telephone number'
+            telephone.parentElement.insertBefore(error, telephone)
+        }
+
+        if (errors_counter < 1) {
+            form.submit()
+        }
+    })
+</script>
 </html>
