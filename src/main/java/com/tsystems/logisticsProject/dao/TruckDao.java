@@ -18,4 +18,6 @@ public interface TruckDao extends GenericDao<Truck> {
 
     Truck findById(Long id);
 
+    boolean checkEditedNumber(String number, Long id);
+
 }

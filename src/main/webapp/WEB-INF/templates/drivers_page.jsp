@@ -22,7 +22,7 @@
         }
 
         .mainDiv {
-            width: 57%;
+            width: 60%;
             height: 400px;
             overflow-y: auto;
             overflow-x: auto;
@@ -35,7 +35,7 @@
 
         .nav-item {
             position: relative;
-            left: 55em ;
+            left: 55em;
         }
 
     </style>
@@ -61,7 +61,7 @@
 </div>
 </br></br>
 <div>
-    <a class="btn btn-success" href="/driver/create_driver">Create Driver</a>
+    <a class="btn btn-success" data-toggle="modal" data-target="#create_truck">Create Driver</a>
     </br></br>
     <div class="mainDiv">
         <div class="tableTab">
@@ -116,6 +116,13 @@
             <div class="modal-body">
                 <form action="/drivers/edit_driver/" method="get" class="formWithValidation" role="form">
                     <div class="form-group">
+                        <label class="col-sm-3 control-label" for="idInput">ID</label>
+                        <div class="col-sm-9">
+                            <input type="number" readonly
+                                   class="id field" name="id" id="idInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-sm-3 control-label" for="nameInput">Name</label>
                         <div class="col-sm-9">
                             <input type="text" class="name2 field" name="name" id="nameInput"/>
@@ -137,41 +144,9 @@
                         <label class="col-sm-3 control-label" for="cityInput">City</label>
                         <div>
                             <select class="col-sm-6 city field" name="city" id="cityInput">
-                                <option value="Пермь">Пермь</option>
-                                <option value="Уфа">Уфа</option>
-                                <option value="Ростов-на-Дону">Ростов-на-Дону</option>
-                                <option value="Омск">Омск</option>
-                                <option value="Казань">Казань</option>
-                                <option value="Екатеринбург">Екатеринбург</option>
-                                <option value="Санкт-Петербург">Санкт-Петербург</option>
-                                <option value="Тобольск">Тобольск</option>
-                                <option value="Бердск">Бердск</option>
-                                <option value="Калининград">Калининград</option>
-                                <option value="Ярославль">Ярославль</option>
-                                <option value="Благовещенск">Благовещенск</option>
-                                <option value="Астрахань">Астрахань</option>
-                                <option value="Воркута">Воркута</option>
-                                <option value="Краснодар">Краснодар</option>
-                                <option value="Тамбов">Тамбов</option>
-                                <option value="Тамбов">Тамбов</option>
-                                <option value="Самара">Самара</option>
-                                <option value="Саратов">Саратов</option>
-                                <option value="Тюмень">Тюмень</option>
-                                <option value="Челябинск">Челябинск</option>
-                                <option value="Якутск">Якутск</option>
-                                <option value="Березники">Березники</option>
-                                <option value="Люберцы">Люберцы</option>
-                                <option value="Салехард">Салехард</option>
-                                <option value="Владимир">Владимир</option>
-                                <option value="Сочи">Сочи</option>
-                                <option value="Магадан">Магадан</option>
-                                <option value="Архангельск">Архангельск</option>
-                                <option value="Волгоград">Волгоград</option>
-                                <option value="Волгоград">Волгоград</option>
-                                <option value="Сыктывкар">Сыктывкар</option>
-                                <option value="Вологда">Вологда</option>
-                                <option value="Москва">Москва</option>
-                                <option value="Новосибирск">Новосибирск</option>
+                                <c:forEach var="city" items="${listOfCities}">
+                                    <option value=${city.name}>${city.name}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -185,15 +160,73 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="create_truck" tabindex="-1" aria-labelledby="createLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createabel"> Create Driver </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/drivers/create_driver/" method="get" class="formCreateWithValidation" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="input1">Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="name field" name="name" id="input1"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="input2">Surname</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="surname field" name="surname" id="input2"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="input3">Telephone number</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="telephone field" name="telephone" id="input3"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="input4">City</label>
+                        <div>
+                            <select class="col-sm-6 city field" name="city" id="input4">
+                                <option></option>
+                                <c:forEach var="city" items="${listOfCities}">
+                                    <option value=${city.name}>${city.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="input5">UserName</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="user field" name="userName" id="input5"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button type="submit" class="saveBtn2 btn-success">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script>
     $("#edit_driver").on('show.bs.modal', function (e) {
         var driverId = $(e.relatedTarget).data('driver-id');
         var cols = $('#driver-' + driverId + ' td');
+        var id = $(cols[0]).text();
         var name = $(cols[1]).text();
         var surname = $(cols[2]).text();
         var telephone = $(cols[3]).text();
         var city = $(cols[5]).text();
+        $('#idInput').val(id);
         $('#nameInput').val(name);
         $('#surnameInput').val(surname);
         $('#telephoneInput').val(telephone);
@@ -259,6 +292,88 @@
 
         if (errors_counter < 1) {
             form.submit()
+        }
+    })
+</script>
+<script>
+    $("#create_driver").on('show.bs.modal', function (e) {
+        $('#input1').val(null);
+        $('#input2').val(null);
+        $('#input3').val(null);
+        $('#input4').val(null);
+        $('#input5').val(null);
+    });
+    $("#create_driver").on('hidden.bs.modal', function () {
+        // alert("Изменения будут отменены");
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+
+    var form2 = document.querySelector('.formCreateWithValidation')
+    var name3 = form2.querySelector('.name')
+    var surname2 = form2.querySelector('.surname')
+    var telephone2 = form2.querySelector('.telephone')
+    var userName = form2.querySelector('.user')
+    var fields2 = form2.querySelectorAll('.field')
+
+    form2.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        var errors2 = form2.querySelectorAll('.error')
+
+        for (var i = 0; i < errors2.length; i++) {
+            errors2[i].remove()
+        }
+
+        var errors_counter2 = 0
+        for (var i = 0; i < fields2.length; i++) {
+            if (!fields2[i].value) {
+                errors_counter2 += 1
+                var error5 = document.createElement('div')
+                error5.className = 'error'
+                error5.style.color = 'red'
+                error5.innerHTML = 'Can`t be empty'
+                form2[i].parentElement.insertBefore(error5, fields2[i])
+            }
+        }
+        if (!name3.value.match("^[A-ZА-Я'][a-zа-я-']+[a-zа-я']?$")) {
+            errors_counter2 += 1
+            var error6 = document.createElement('div')
+            error6.className = 'error'
+            error6.style.color = 'red'
+            error6.innerHTML = 'No numbers. First letter in upper case'
+            name3.parentElement.insertBefore(error6, name3)
+        }
+
+        if (!surname2.value.match("^[A-ZА-Я'][a-zа-я-']+[a-zа-я']?$")) {
+            errors_counter2 += 1
+            var error7 = document.createElement('div')
+            error7.className = 'error'
+            error7.style.color = 'red'
+            error7.innerHTML = 'No numbers. First letter in upper case'
+            surname2.parentElement.insertBefore(error7, surname2)
+        }
+
+        if (!telephone2.value.match("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) {
+            errors_counter2 += 1
+            var error8 = document.createElement('div')
+            error8.className = 'error'
+            error8.style.color = 'red'
+            error8.innerHTML = 'Invalid format of telephone number'
+            telephone2.parentElement.insertBefore(error8, telephone2)
+        }
+
+        if (!userName.value.match("[a-z']+[a-z0-9']?$")) {
+            errors_counter2 += 1
+            var error9 = document.createElement('div')
+            error9.className = 'error'
+            error9.style.color = 'red'
+            error9.innerHTML = 'Only English letters in lower case'
+            userName.parentElement.insertBefore(error9, userName)
+        }
+
+        if (errors_counter2 < 1) {
+            form2.submit()
         }
     })
 </script>

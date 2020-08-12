@@ -9,4 +9,8 @@ public interface UserService extends UserDetailsService {
 
     void add(User user, String authority);
 
+    User returnUserToCreateDriver(String userName);
+
+    boolean checkUserNameToCreateDriver(String userName);
+
 }

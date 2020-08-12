@@ -2,7 +2,6 @@ package com.tsystems.logisticsProject.service;
 
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.TruckState;
-import com.tsystems.logisticsProject.event.EntityUpdateEvent;
 
 import java.util.List;
 
@@ -18,5 +17,10 @@ public interface TruckService {
 
     boolean findByNumber(String number);
 
-    void add(String number, int crew_cize, int capacity, TruckState state, Long cityId);
+    void add(String number, int crew_cize, int capacity, TruckState state, String cityName);
+
+    boolean checkEditedNumber(String number, Long id);
+
+    void update(Long id, String nubmer, int capacity, int crew, TruckState truckState, String cityName);
+
 }

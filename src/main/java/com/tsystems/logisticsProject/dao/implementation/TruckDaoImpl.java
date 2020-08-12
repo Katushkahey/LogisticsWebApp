@@ -15,9 +15,6 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-//    @Autowired
-//    private OrderDao orderDao;
-
     public Truck findById(Long id) {
         return sessionFactory.getCurrentSession().get(Truck.class, id);
     }
@@ -43,6 +40,18 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
         try {
             sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t WHERE t.number=:number", Truck.class)
                     .setParameter("number", number)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkEditedNumber(String number, Long id) {
+        try {
+            sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t WHERE t.number=:number AND " +
+                    "t.id<>:id", Truck.class).setParameter("number", number)
+                    .setParameter("id", id)
                     .getSingleResult();
         } catch (NoResultException e) {
             return false;

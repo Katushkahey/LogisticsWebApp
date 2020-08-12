@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
     public HashMap<Order, Double> findCompletedOrders() {
         HashMap<Order, Double> completedOrderHashMap = new HashMap<>();
         List<Order> completedOrders = orderDao.findCompetedOrders();
-        for (Order order: completedOrders) {
+        for (Order order : completedOrders) {
             completedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
             mapOfDriversForCompletedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     public HashMap<Order, Double> findUnassignedOrders() {
         HashMap<Order, Double> unassignedOrderHashMap = new HashMap<>();
         List<Order> unassignedOrders = orderDao.findUnassignedOrders();
-        for (Order order: unassignedOrders) {
+        for (Order order : unassignedOrders) {
             unassignedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
             mapOfDriversForUnassignedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
     public HashMap<Order, Double> findAssignedOrders() {
         HashMap<Order, Double> assignedOrderHashMap = new HashMap<>();
         List<Order> assignedOrders = orderDao.findAssignedOrders();
-        for (Order order: assignedOrders) {
+        for (Order order : assignedOrders) {
             assignedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
             mapOfDriversForAssignedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
@@ -70,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Set<Cargo> getListOfCargoesForCurrentOrderById(Long id) {
         List<Waypoint> waypoints = findWaypointsForCurrentOrderById(id);
-        for (Waypoint waypoint: waypoints) {
+        for (Waypoint waypoint : waypoints) {
             cargoes.add(waypoint.getCargo());
         }
         return cargoes;
@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
         double maxWeight = 0;
         double totalWeight = 0;
         List<Waypoint> waypoints = findWaypointsForCurrentOrderById(id);
-        for (Waypoint waypoint: waypoints) {
+        for (Waypoint waypoint : waypoints) {
             if (waypoint.getAction().equals(Action.LOADING)) {
                 totalWeight += waypoint.getCargo().getWeight();
                 if (maxWeight < totalWeight) {
@@ -118,6 +118,5 @@ public class OrderServiceImpl implements OrderService {
     public Order findById(Long id) {
         return orderDao.findById(id);
     }
-
 
 }

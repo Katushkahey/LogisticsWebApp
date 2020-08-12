@@ -55,7 +55,7 @@ public class Driver extends AbstractEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NonNull
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 

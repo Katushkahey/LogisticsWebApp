@@ -18,4 +18,8 @@ public interface DriverDao extends GenericDao<Driver> {
 
     List<Driver> findAllDriversForCurrentOrder(Order order);
 
+    boolean checkEditedTelephoneNumber(String telephoneNumber, Long id);
+
+    boolean findByTelephoneNubmer(String telephoneNumber);
+
 }

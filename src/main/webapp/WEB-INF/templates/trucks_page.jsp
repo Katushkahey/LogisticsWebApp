@@ -75,6 +75,7 @@
                                 <th scope="col"> Crew </th>
                                 <th scope="col"> State </th>
                                 <th scope="col"> Available </th>
+                                <th scope="col"> City </th>
                                 <th scope="col"> Edit </th>
                                 <th scope="col"> Delete </th>
                             </tr>
@@ -88,6 +89,7 @@
                                 <td scope="row" align="center">${truck.crewSize}</td>
                                 <td scope="row" align="center">${truck.truckState}</td>
                                 <td scope="row" align="center">${truck.order.id}</td>
+                                <td scope="row" align="center">${truck.currentCity.name}</td>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
                                                                        data-toggle="modal" data-target="#edit_truck"
                                                                        data-truck-id="${truck.id}"> Edit </button>
@@ -147,6 +149,16 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-3 control-label" for="cityInput">City</label>
+                        <div>
+                            <select class="col-sm-6 field" name="city" id="cityInput">
+                                <c:forEach var="city" items="${listOfCities}">
+                                    <option value=${city.name}>${city.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-10">
                             <button type="submit" class="saveBtn btn-success">Save</button>
                         </div>
@@ -198,41 +210,9 @@
                         <label class="col-sm-3 control-label" for="input5">City</label>
                         <div>
                             <select class="col-sm-6 field" name="city" id="input5">
-                                <option value="1">Пермь</option>
-                                <option value="2">Уфа</option>
-                                <option value="4">Ростов-на-Дону</option>
-                                <option value="5">Омск</option>
-                                <option value="6">Казань</option>
-                                <option value="7">Екатеринбург</option>
-                                <option value="8">Санкт-Петербург</option>
-                                <option value="9">Тобольск</option>
-                                <option value="10">Бердск</option>
-                                <option value="11">Калининград</option>
-                                <option value="12">Ярославль</option>
-                                <option value="13">Благовещенск</option>
-                                <option value="14">Астрахань</option>
-                                <option value="15">Воркута</option>
-                                <option value="16">Краснодар</option>
-                                <option value="18">Махачкала</option>
-                                <option value="19">Тамбов</option>
-                                <option value="20">Самара</option>
-                                <option value="21">Саратов</option>
-                                <option value="22">Тюмень</option>
-                                <option value="23">Челябинск</option>
-                                <option value="24">Якутск</option>
-                                <option value="25">Березники</option>
-                                <option value="26">Люберцы</option>
-                                <option value="27">Салехард</option>
-                                <option value="28">Владимир</option>
-                                <option value="29">Сочи</option>
-                                <option value="30">Магадан</option>
-                                <option value="31">Архангельск</option>
-                                <option value="32">Кострома</option>
-                                <option value="33">Волгоград</option>
-                                <option value="34">Сыктывкар</option>
-                                <option value="35">Вологда</option>
-                                <option value="36">Москва</option>
-                                <option value="37">Новосибирск</option>
+                                <c:forEach var="city" items="${listOfCities}">
+                                    <option value=${city.name}>${city.name}</option>
+                                </c:forEach>
                             </select>
                         </div>
                     </div>
@@ -256,11 +236,13 @@
         var capacity = $(cols[2]).text();
         var crew = $(cols[3]).text();
         var state = $(cols[4]).text();
+        var city = $(cols[6]).text();
         $('#idInput').val(id);
         $('#numberInput').val(number);
         $('#capacityInput').val(capacity);
         $('#crewInput').val(crew);
         $('#stateInput').val(state);
+        $('#cityInput').val(city);
     });
     $("#edit_truck").on('hidden.bs.modal', function () {
         // alert("Изменения будут отменены");

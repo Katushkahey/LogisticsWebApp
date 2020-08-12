@@ -35,7 +35,7 @@ public class User extends AbstractEntity implements UserDetails {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NonNull
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "authority_id")
     private Role authority;
 

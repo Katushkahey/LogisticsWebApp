@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface CityDao extends GenericDao<City> {
 
-    City findById(Long id);
+    List<City> findAll();
+
+    City findByName(String name);
 
 }

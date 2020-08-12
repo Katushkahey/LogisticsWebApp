@@ -54,4 +54,26 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.add(user);
     }
+
+    @Transactional
+    public User returnUserToCreateDriver(String userName) {
+        User userToReturn = userDao.findByUsername(userName);
+        if (userToReturn == null) {
+            User newDriver = new User();
+            newDriver.setUsername(userName);
+            newDriver.setPassword("driver");
+            add(newDriver, "ROLE_DRIVER");
+            return newDriver;
+        } else {
+            return userToReturn;
+        }
+    }
+
+    @Transactional
+    public boolean checkUserNameToCreateDriver(String userName) {
+        if (userDao.findByUsername(userName) == null) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -13,7 +13,7 @@ public class CargoDaoImpl extends AbstractDao<Cargo> implements CargoDao {
     private SessionFactory sessionFactory;
 
     public Cargo findById(Long id) {
-        return  sessionFactory.getCurrentSession().get(Cargo.class, id);
+        return sessionFactory.getCurrentSession().get(Cargo.class, id);
     }
 
     public void add(Cargo cargo) {

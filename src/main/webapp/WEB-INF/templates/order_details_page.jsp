@@ -27,18 +27,24 @@
             overflow-x: auto;
             margin-left: 1rem;
         }
+
+        .btnBack {
+            margin-left: 1rem;
+        }
     </style>
 </head>
 <body>
-</br></br></br>
+</br>
+<input type=button class="btnBack btn-secondary" value=" Back " onCLick="history.back()">
+</br></br>
 <div>
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(255,162,69,0.57)" align="center"> Details of
+                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center"> Details of
                     orders № ${order}  </h5>
                 <span class="text-black">
-                    <thead style="background: rgba(255,162,69,0.57)" align="center">
+                    <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>
                                 <th scope="col"> № </th>
                                 <th scope="col"> Cargo </th>

@@ -6,6 +6,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
+
 @Repository
 public class UserDaoImpl extends AbstractDao<User> implements UserDao {
 
@@ -28,8 +30,15 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
         if (username == null) {
             return null;
         }
-        return  sessionFactory.getCurrentSession().createQuery("SELECT u FROM User u WHERE u.username=:username", User.class)
-                .setParameter("username", username)
-                .getSingleResult();
+        User user;
+        try {
+            user = sessionFactory.getCurrentSession().createQuery("SELECT u FROM User u WHERE u.username=:username", User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+        return user;
     }
+
 }

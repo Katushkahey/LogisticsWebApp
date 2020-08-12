@@ -9,6 +9,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Repository
@@ -18,7 +19,7 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
     private SessionFactory sessionFactory;
 
     public Driver findById(Long id) {
-        return  sessionFactory.getCurrentSession().get(Driver.class, id);
+        return sessionFactory.getCurrentSession().get(Driver.class, id);
     }
 
     public void add(Driver driver) {
@@ -31,13 +32,16 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
 
     public void delete(Driver driver) {
         sessionFactory.getCurrentSession().delete(driver);
-//        session.flush();
     }
 
     public Driver findByUser(User user) {
-        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.user=:user", Driver.class)
-                .setParameter("user", user)
-                .getSingleResult();
+        try {
+            return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.user=:user", Driver.class)
+                    .setParameter("user", user)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public List<Driver> findAll() {
@@ -46,9 +50,34 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
     }
 
     public List<Driver> findAllDriversForCurrentOrder(Order order) {
-        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.currentOrder=:order", Driver.class)
-                .setParameter("order", order)
+        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.currentOrder=:order",
+                Driver.class).setParameter("order", order)
                 .getResultList();
+    }
+
+    public boolean checkEditedTelephoneNumber(String telephoneNumber, Long id) {
+        try {
+            sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE " +
+                    "d.telephoneNumber=:telephoneNumber AND d.id<>:id", Driver.class).
+                    setParameter("telephoneNumber", telephoneNumber)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean findByTelephoneNubmer(String telephoneNumber) {
+        try {
+            sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE " +
+                    "d.telephoneNumber=:telephoneNumber", Driver.class).
+                    setParameter("telephoneNumber", telephoneNumber)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return false;
+        }
+        return true;
     }
 
 }

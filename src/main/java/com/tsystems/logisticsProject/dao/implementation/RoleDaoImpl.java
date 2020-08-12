@@ -17,7 +17,7 @@ public class RoleDaoImpl extends AbstractDao<Role> implements RoleDao {
         if (authority == null) {
             return null;
         }
-        return  sessionFactory.getCurrentSession().createQuery("SELECT r FROM Role r WHERE r.authority=:authority", Role.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT r FROM Role r WHERE r.authority=:authority", Role.class)
                 .setParameter("authority", authority)
                 .getSingleResult();
     }

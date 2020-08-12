@@ -5,6 +5,7 @@ import com.tsystems.logisticsProject.dao.TruckDao;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.TruckState;
 import com.tsystems.logisticsProject.event.EntityUpdateEvent;
+import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,7 +20,8 @@ public class TruckServiceImpl implements TruckService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    private CityDao cityDao;
+    private CityService cityService;
+
     @Autowired
     private TruckDao truckDao;
 
@@ -55,13 +57,30 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public void add(String number, int crew_cize, int capacity, TruckState state, Long cityId) {
+    public void add(String number, int crew_cize, int capacity, TruckState state, String cityName) {
         Truck newTruck = new Truck();
         newTruck.setNumber(number);
         newTruck.setCrewSize(crew_cize);
         newTruck.setCapacity(capacity);
         newTruck.setTruckState(state);
-        newTruck.setCurrentCity(cityDao.findById(cityId));
+        newTruck.setCurrentCity(cityService.findByCityName(cityName));
         truckDao.add(newTruck);
     }
+
+    @Transactional
+    public boolean checkEditedNumber(String number, Long id) {
+        return truckDao.checkEditedNumber(number, id);
+    }
+
+    @Transactional
+    public void update(Long id, String number, int capacity, int crew, TruckState truckState, String cityName) {
+        Truck truckToUpdate = truckDao.findById(id);
+        truckToUpdate.setNumber(number);
+        truckToUpdate.setCapacity(capacity);
+        truckToUpdate.setCrewSize(crew);
+        truckToUpdate.setTruckState(truckState);
+        truckToUpdate.setCurrentCity(cityService.findByCityName(cityName));
+        truckDao.update(truckToUpdate);
+    }
+
 }
