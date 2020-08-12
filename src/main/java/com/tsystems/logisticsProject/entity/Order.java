@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.entity;
 
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import lombok.*;
 import org.hibernate.collection.internal.PersistentList;
 
@@ -42,5 +43,12 @@ public class Order extends AbstractEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(fetch=FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
-    List<Waypoint> waypoints;
+    private List<Waypoint> waypoints;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+
+    @Column(name = "completion_date")
+    private Long completionDate;
 }

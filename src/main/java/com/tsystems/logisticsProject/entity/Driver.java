@@ -32,7 +32,7 @@ public class Driver extends AbstractEntity {
     private String telephoneNumber;
 
     @Column(name = "hours_this_month")
-    private Integer hoursThisMonth;
+    private Long hoursThisMonth;
 
     @NonNull
     @Column(name = "state")
@@ -58,6 +58,9 @@ public class Driver extends AbstractEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Column(name = "start_working_time")
+    private Long startWorkingTime;
 
     @Override
     public String toString() {

@@ -62,7 +62,7 @@ public class DriverController {
 
     @GetMapping("/edit_driver")
     public String editDriver(@RequestParam("id") Long id, @RequestParam("name") String name, @RequestParam("surname") String surname,
-                             @RequestParam("telephone") String telephoneNumber, @RequestParam("city") String cityName) {
+                             @RequestParam("telephoneNumber") String telephoneNumber, @RequestParam("city") String cityName) {
         if (driverService.checkEditedTelephoneNumber(telephoneNumber, id)) {
             return "error"; //водитель с таким номером телефона уже существует
         }

@@ -30,9 +30,11 @@
         }
 
         .nav-item {
-            position: relative;
-            left: 55em ;
+            position: absolute;
+            top: 0.3rem;
+            right: 0.5rem;
         }
+
     </style>
 </head>
 <body>

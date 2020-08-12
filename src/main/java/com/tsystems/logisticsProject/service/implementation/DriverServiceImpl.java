@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,9 +39,18 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
+    public Driver findById(Long id) {
+        return driverDao.findById(id);
+    }
+
+    @Transactional
+    public Driver findByUser(User user) {
+        return driverDao.findByUser(user);
+    }
+    @Transactional
     public Driver getDriverByPrincipalName(String name) {
         User userPrincipal = userService.findByUsername(name);
-        return driverDao.findByUser(userPrincipal);
+        return findByUser(userPrincipal);
     }
 
     @Transactional
@@ -50,18 +60,29 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     public List<Waypoint> getListOfWaypointsFromPrincipal(String name) {
-        return getCurrentOrderFromPrincipal(name).getWaypoints();
+        Order order = getCurrentOrderFromPrincipal(name);
+        if (order == null) {
+            return null;
+        }
+        return order.getWaypoints();
     }
 
     @Transactional
     public Driver getPartnerFromPrincipal(String name) {
         Driver currentDriver = getDriverByPrincipalName(name);
         Order currentOrder = getCurrentOrderFromPrincipal(name);
+        if (currentOrder == null) {
+            return null;
+        }
         List<Driver> partners = getParnersForCurrentOrder(currentOrder.getId());
         for (Driver driver : partners) {
             if (driver.equals(currentDriver)) {
                 partners.remove(driver);
+                break;
             }
+        }
+        if (partners.size() == 0) {
+            return null;
         }
         return partners.get(0);
     }
@@ -101,7 +122,7 @@ public class DriverServiceImpl implements DriverService {
     public User returnUserToCreateDriver(String userName) {
         User userToReturn = userService.returnUserToCreateDriver(userName);
         if (checkUserNameToCreateDriver(userName)) {
-            if (driverDao.findByUser(userToReturn) == null) {
+            if (findByUser(userToReturn) == null) {
                 return userToReturn;
             }
             return null;
@@ -119,8 +140,6 @@ public class DriverServiceImpl implements DriverService {
         driver.setName(name);
         driver.setSurname(surname);
         driver.setTelephoneNumber(telephoneNumber);
-        driver.setHoursThisMonth(0);
-        driver.setDriverState(DriverState.REST);
         driver.setCurrentCity(cityService.findByCityName(cityName));
         driver.setUser(user);
         driverDao.add(driver);
@@ -133,12 +152,43 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     public void update(Long id, String name, String surname, String telephoneNumber, String cityName) {
-        Driver driverToUpdate = driverDao.findById(id);
+        Driver driverToUpdate = findById(id);
         driverToUpdate.setName(name);
         driverToUpdate.setSurname(surname);
         driverToUpdate.setTelephoneNumber(telephoneNumber);
         driverToUpdate.setCurrentCity(cityService.findByCityName(cityName));
         driverDao.update(driverToUpdate);
+    }
+
+    @Transactional
+    public void update(Long id, String telephoneNumber) {
+        Driver driverToUpdate = findById(id);
+        driverToUpdate.setTelephoneNumber(telephoneNumber);
+        driverDao.update(driverToUpdate);
+    }
+
+    @Transactional
+    public void editState(Long id, DriverState state) {
+        Driver driverToUpdate = findById(id);
+        DriverState lastState = driverToUpdate.getDriverState();
+        if (state == DriverState.REST || state == DriverState.SECOND_DRIVER) {
+            if (lastState == DriverState.DRIVING || lastState == DriverState.LOADING_UNLOADING) {
+                Date endWorkingTime = new Date();
+                Date startWorkingTime = new Date(driverToUpdate.getStartWorkingTime());
+                Long totalWorkingTimePerInterval = startWorkingTime.getTime() - endWorkingTime.getTime();
+                driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingTimePerInterval);
+                driverToUpdate.setDriverState(state);
+                driverDao.update(driverToUpdate);
+            }
+        } else {
+            if (lastState == DriverState.REST || lastState == DriverState.SECOND_DRIVER) {
+                Date startWorkingTime = new Date();
+                driverToUpdate.setStartWorkingTime(startWorkingTime.getTime());
+                driverToUpdate.setDriverState(state);
+                driverDao.update(driverToUpdate);
+            }
+        }
+
     }
 
 }
