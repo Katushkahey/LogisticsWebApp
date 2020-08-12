@@ -4,10 +4,13 @@ package com.tsystems.logisticsProject.service;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.User;
 import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.enums.DriverState;
 
 import java.util.List;
 
 public interface DriverService {
+
+    Driver findById(Long id);
 
     Driver getDriverByPrincipalName(String name);
 
@@ -34,4 +37,6 @@ public interface DriverService {
     void update(Long id, String name, String surname, String telephoneNumber, String cityName);
 
     void update(Long id, String telephoneNumber);
+
+    void editState(Long id, DriverState state);
 }

@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.controller;
 
+import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class DriverPageController {
         model.addAttribute("waypoints", driverService.getListOfWaypointsFromPrincipal(username));
         model.addAttribute("driver", driverService.getDriverByPrincipalName(username));
         model.addAttribute("partner", driverService.getPartnerFromPrincipal(username));
+        model.addAttribute("drierState", DriverState.values());
 
         return "driver_menu";
     }
@@ -42,5 +44,10 @@ public class DriverPageController {
         return "redirect:/driver";
     }
 
+    @GetMapping("/edit_state/{id}")
+    public String editState(@PathVariable("id") Long id, @RequestParam("state") DriverState state) {
+        driverService.editState(id, state);
+        return "redirect:/driver";
+    }
 
 }

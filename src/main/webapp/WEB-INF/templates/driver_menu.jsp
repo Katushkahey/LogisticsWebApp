@@ -36,18 +36,25 @@
             margin-left: 1rem;
             width: 50%;
         }
-        .form-row {
-            margin-left: 1rem;
-            width: 50%;
-        }
+
         .nav-item {
             position: relative;
             left: 5em;
+            margin-top: 0.3rem;
         }
         .nav-item2 {
-            position: relative;
-            left: 40em;
+            position: absolute;
+            top: 0.3rem;
+            right: 0.5re
+        ;
         }
+
+        .nav-item3 {
+            position: relative;
+            left: 7em;
+            margin-top: 0.3rem;
+        }
+
     </style>
 </head>
 <body>
@@ -62,7 +69,12 @@
                 </a>
                 <a class="nav-item">
                     <form data-toggle="modal" data-target="#edit_phone" data-driver-telephone="${driver.telephoneNumber}">
-                        <input readonly class="btn btn-secondary" value="Edit phone number"/>
+                        <button type="button"class="btn btn-" style="background: #e7ecf0"> Edit phone </button>
+                    </form>
+                </a>
+                <a class="nav-item3">
+                    <form data-toggle="modal" data-target="#edit_password">
+                        <button type="button"class="btn btn-" style="background: #ffffff"> Edit password </button>
                     </form>
                 </a>
                 <a class="nav-item2">
@@ -75,104 +87,151 @@
     </nav>
 </div>
 </br>
-<div class="form-group form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck1">
-    <label class="form-check-label" for="exampleCheck1"><strong> Начал работу </strong></label>
-</div>
-<form>
-    <div class="form-row align-items-center">
-        <div class="col-auto my-1">
-            <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect"></label>
-            <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
-                <option selected>Status...</option>
-                <option value="1">За рулем</option>
-                <option value="2">Второй водитель</option>
-                <option value="3">Погрузочно-разгрузочные работыe</option>
-                <option value="4">Отдых</option>
-            </select>
+<c:choose>
+    <c:when test="${driver.currentOrder.id==null}">
+        <br />
+        <h6><strong> You are not assigned to any order. </strong></h6>
+        <br />
+    </c:when>
+    <c:otherwise>
+    <div id="loginbox" style="..." class="mainbox col-md-2 col-md-offset-1 col-sm-3 col-sm-offset-1">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="panel-title"><h5><u> The working process </u></h5></div>
+            </div>
+            <div style="..." class="panel-body">
+                <div class="info"><h5><strong>State:</strong> ${driver.driverState}</h5></div>
+                <div>
+                    <button type="button" class="btn btn-secondary"
+                            data-toggle="modal" data-target="#edit_state"
+                            data-driver-state="${driver.driverState}"> Edit state </button>
+                    <button type="submit" formaction="/driver/complete_order/${driver.id}/${driver.currentOrder.id}"
+                            class="btn btn-success"> Finish </button>
+                </div>
+            </div>
         </div>
     </div>
-</form>
-<div class="form-group form-check">
-    <input type="checkbox" class="form-check-input" id="exampleCheck2">
-    <label class="form-check-label" for="exampleCheck2"><strong>Закончил работу</strong></label>
-</div>
-</br>
-<div class="info"><h5><strong>Partner:</strong> ${partner.name} ${partner.surname}, ${partner.telephoneNumber}</h5>
-</div>
-</br>
-<div class="info"><h5><strong>Truck:</strong> ${driver.currentOrder.orderTruck.number}</h5></div>
-</br>
-<div class="collapse" id="navbarToggleExternalContent">
-    <div class="p-4" style="background: rgba(67,41,28,0.99)">
-        <h5 class="text-white h4" align="center">Waypoints of order №${driver.currentOrder.id}</h5>
-        <span class="text-white">
-            <table class="table">
-                <thead class="thead-light" align="center">
-                        <tr>
-                            <th scope="col"> City </th>
-                            <th scope="col"> Cargo </th>
-                            <th scope="col"> Weight </th>
-                            <th scope="col"> Action </th>
-                            <th scope="col">Status</th>
-                        </tr>
-                </thead>
-                <tbody align="center">
-                    <c:forEach var="waypoint" items="${waypoints}">
-                        <tr>
-                            <td scope="row"> ${waypoint.city.name} </td>
-                            <td scope="row"> ${waypoint.cargo.name} </td>
-                            <th scope="row"> ${waypoint.cargo.weight}</th>
-                            <td scope="row"> ${waypoint.action.name()} </td>
-                            <td>
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <input type="checkbox" aria-label="Checkbox for following text input">
+    <c:choose>
+        <c:when test="${partner==null}">
+        </c:when>
+        <c:otherwise>
+            </br>
+            <div class="info"><h5><strong>Partner:</strong> ${partner.name} ${partner.surname}, ${partner.telephoneNumber}</h5>
+            </div>
+        </c:otherwise>
+    </c:choose>
+    <c:choose>
+        <c:when test="${driver.currentOrder.orderTruck==null}">
+        </c:when>
+        <c:otherwise>
+            </br>
+            <div class="info"><h5><strong>Truck:</strong> ${driver.currentOrder.orderTruck.number}</h5></div>
+            </div>
+        </c:otherwise>
+    </c:choose>
+    </br>
+    <div class="collapse" id="navbarToggleExternalContent">
+        <div class="p-4" style="background: rgba(67,41,28,0.99)">
+            <h5 class="text-white h4" align="center">Waypoints of order №${driver.currentOrder.id}</h5>
+            <span class="text-white">
+                <table class="table">
+                    <thead class="thead-light" align="center">
+                            <tr>
+                                <th scope="col"> City </th>
+                                <th scope="col"> Cargo </th>
+                                <th scope="col"> Weight </th>
+                                <th scope="col"> Action </th>
+                                <th scope="col">Status</th>
+                            </tr>
+                    </thead>
+                    <tbody align="center">
+                        <c:forEach var="waypoint" items="${waypoints}">
+                            <tr>
+                                <td scope="row"> ${waypoint.city.name} </td>
+                                <td scope="row"> ${waypoint.cargo.name} </td>
+                                <th scope="row"> ${waypoint.cargo.weight}</th>
+                                <td scope="row"> ${waypoint.action.name()} </td>
+                                <td>
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <input type="checkbox" aria-label="Checkbox for following text input">
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </span>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </span>
+        </div>
     </div>
-</div>
-<nav class="navbar navbar-light" style="background: rgba(67,41,28,0.99)">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
-            aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        <span class="text-white">Waypoints of order №${driver.currentOrder.id}</span>
-    </button>
-</nav>
-<div class="modal fade" id="edit_phone" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editLabel"> New phone number </h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="/driver/edit_telephoneNumber/${driver.id}" method="get" class="formWithValidation" role="form">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label" for="phoneInput">Phone Number</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="telephone" name="telephone" id="phoneInput"/>
+    <nav class="navbar navbar-light" style="background: rgba(67,41,28,0.99)">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
+                aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            <span class="text-white">Waypoints of order №${driver.currentOrder.id}</span>
+        </button>
+    </nav>
+    <div class="modal fade" id="edit_phone" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLabel"> New phone number </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/driver/edit_telephoneNumber/${driver.id}" method="get" class="formWithValidation" role="form">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="phoneInput">Phone Number</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="telephone" name="telephone" id="phoneInput"/>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-10">
-                            <button type="submit" class="saveBtn btn-success">Save</button>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-10">
+                                <button type="submit" class="saveBtn btn-success">Save</button>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-</body>
+    </body><div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editLabel2"> What are you going to do? </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/driver/edit_state/${driver.id}" method="get" class="formWithValidation2" role="form">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="stateInput">State</label>
+                            <div class="col-sm-9">
+                                <select class="col-sm-20 state field" name="state" id="stateInput">
+                                    <c:forEach var="state" items="${drierState}">
+                                        <option value=${state.toString()}>${state.toString()}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-3 col-sm-10">
+                                <button type="submit" class="saveBtn btn-success">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </c:otherwise>
+</c:choose>
 <script>
     $("#edit_phone").on('show.bs.modal', function (e) {
         var telephone = $(e.relatedTarget).data('driver-telephone');
@@ -218,5 +277,15 @@
             form.submit()
         }
     })
+</script>
+<script>
+    $("#edit_state").on('show.bs.modal', function (e) {
+        var state = $(e.relatedTarget).data('driver-state');
+        $('#phoneInput').val(state);
+    });
+    $("#edit_state").on('hidden.bs.modal', function () {
+        var form = $(this).find('form');
+        form[0].reset();
+    });
 </script>
 </html>
