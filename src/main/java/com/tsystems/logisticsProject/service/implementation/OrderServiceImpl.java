@@ -6,6 +6,7 @@ import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ public class OrderServiceImpl implements OrderService {
     private Set<Cargo> cargoes = new HashSet<>();
     private Map<Order, List<Driver>> mapOfDriversForCompletedOders = new HashMap<>();
     private Map<Order, List<Driver>> mapOfDriversForUnassignedOders = new HashMap<>();
-    private Map<Order, List<Driver>> mapOfDriversForAssignedOders = new HashMap<>();
+    private Map<Order, List<Driver>> mapOfDriversForWaitingOrders = new HashMap<>();
+    private Map<Order, List<Driver>> mapOfDriversForOrdersInProgress = new HashMap<>();
 
     @Autowired
     private OrderDao orderDao;
@@ -56,15 +58,26 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public HashMap<Order, Double> findAssignedOrders() {
-        HashMap<Order, Double> assignedOrderHashMap = new HashMap<>();
-        List<Order> assignedOrders = orderDao.findAssignedOrders();
-        for (Order order : assignedOrders) {
-            assignedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForAssignedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+    public HashMap<Order, Double> findWaitingOrders() {
+        HashMap<Order, Double> waytingOrderHashMap = new HashMap<>();
+        List<Order> waytingOrders = orderDao.findWaitingOrders();
+        for (Order order : waytingOrders) {
+            waytingOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
+            mapOfDriversForWaitingOrders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
-        return assignedOrderHashMap;
+        return waytingOrderHashMap;
 
+    }
+
+    @Transactional
+    public HashMap<Order, Double> findOrdersInProgress() {
+        HashMap<Order, Double> ordersInProgressHashMap = new HashMap<>();
+        List<Order> ordersInProgress = orderDao.findWaitingOrders();
+        for (Order order : ordersInProgress) {
+            ordersInProgressHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
+            mapOfDriversForOrdersInProgress.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
+        return ordersInProgressHashMap;
     }
 
     @Transactional
@@ -100,8 +113,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public Map<Order, List<Driver>> getMapOfDriversForAssignedOrders() {
-        return mapOfDriversForAssignedOders;
+    public Map<Order, List<Driver>> getMapOfDriversForWaitingOrders() {
+        return mapOfDriversForWaitingOrders;
     }
 
     @Transactional
@@ -115,8 +128,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
+    public Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress() {
+        return mapOfDriversForOrdersInProgress;
+    }
+
+    @Transactional
     public Order findById(Long id) {
         return orderDao.findById(id);
+    }
+
+    @Transactional
+    public void update(Order order) {
+        orderDao.update(order);
+    }
+
+    @Transactional
+    public void startOrder(Long id) {
+        Order order = findById(id);
+        order.setStatus(OrderStatus.IN_PROGRESS);
+        orderDao.update(order);
     }
 
 }

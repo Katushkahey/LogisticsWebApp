@@ -44,8 +44,8 @@
         }
         .nav-item2 {
             position: absolute;
-            top: 0.3rem;
-            right: 0.5re
+            margin-top: 0.3rem;
+            right: 0.5rem;
         ;
         }
 
@@ -88,29 +88,41 @@
 </div>
 </br>
 <c:choose>
-    <c:when test="${driver.currentOrder.id==null}">
+    <c:when test="${(driver.currentOrder.id==null) or (driver.currentOrder.status=='NOT_ASSIGNED')}">
         <br />
         <h6><strong> You are not assigned to any order. </strong></h6>
         <br />
     </c:when>
     <c:otherwise>
-    <div id="loginbox" style="..." class="mainbox col-md-2 col-md-offset-1 col-sm-3 col-sm-offset-1">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <div class="panel-title"><h5><u> The working process </u></h5></div>
-            </div>
-            <div style="..." class="panel-body">
-                <div class="info"><h5><strong>State:</strong> ${driver.driverState}</h5></div>
-                <div>
-                    <button type="button" class="btn btn-secondary"
-                            data-toggle="modal" data-target="#edit_state"
-                            data-driver-state="${driver.driverState}"> Edit state </button>
-                    <button type="submit" formaction="/driver/complete_order/${driver.id}/${driver.currentOrder.id}"
-                            class="btn btn-success"> Finish </button>
+    <c:choose>
+        <c:when test="${driver.currentOrder.status=='WAITING'}">
+            <a class="nav-item3">
+                <form action="/driver/start_order/${driver.currentOrder.id}" method="get">
+                    <input type="submit" class="btn btn-success" value="Start"/>
+                </form>
+            </a>
+        </c:when>
+        <c:otherwise>
+        <div id="loginbox" style="..." class="mainbox col-md-3 col-md-offset-2 col-sm-4 col-sm-offset-2">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title"><h5><u> The working process </u></h5></div>
+                </div>
+                <div style="..." class="panel-body">
+                    <div class="info"><h5><strong>State:</strong> ${driver.driverState}</h5></div>
+                    <div>
+                        <button type="button" class="btn btn-secondary"
+                                data-toggle="modal" data-target="#edit_state"
+                                data-driver-state="${driver.driverState}"> Edit state </button>
+                        <button type="button" class="btn btn-success"
+                                data-toggle="modal" data-target="#finish_order"
+                                data-driver-order="${driver.currentOrder.id}"> Finish </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        </c:otherwise>
+    </c:choose>
     <c:choose>
         <c:when test="${partner==null}">
         </c:when>
@@ -151,13 +163,16 @@
                                 <td scope="row"> ${waypoint.cargo.name} </td>
                                 <th scope="row"> ${waypoint.cargo.weight}</th>
                                 <td scope="row"> ${waypoint.action.name()} </td>
-                                <td>
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            <input type="checkbox" aria-label="Checkbox for following text input">
-                                        </div>
-                                    </div>
-                                </td>
+                                <c:choose>
+                                    <c:when test="${waypoint.status.name()=='TODO'}">
+                                        <td scope="row"> <a class="btn btn-secondary"
+                                                                 href="/driver/complete_waypoint/${waypoint.id}"> Done </a>
+                                        </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td scope="row"> ${waypoint.status.name()} </td>
+                                    </c:otherwise>
+                                </c:choose>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -230,6 +245,27 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="finish_order" tabindex="-1" role="dialog" aria-labelledby="allertModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="allertModalLabel">Finish working</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="/driver/finish_order/${driver.currentOrder.id}" method="get" class="formWithValidation3" role="form">
+                        Are you sure, that order №${driver.currentOrder.id} is completed?
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"> No </button>
+                            <button type="submit" class="btn btn-success"> Yes </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     </c:otherwise>
 </c:choose>
 <script>
@@ -284,6 +320,16 @@
         $('#phoneInput').val(state);
     });
     $("#edit_state").on('hidden.bs.modal', function () {
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+</script>
+<script>
+    // $("#finish_order").on('show.bs.modal', function (e) {
+    //     var state = $(e.relatedTarget).data('driver-state');
+    //     $('#phoneInput').val(state);
+    // });
+    $("#finish_order").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
         form[0].reset();
     });

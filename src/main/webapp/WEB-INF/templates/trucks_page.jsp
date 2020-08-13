@@ -36,8 +36,8 @@
 
         .nav-item {
             position: absolute;
-            top: 0.3rem;
-            right: 0.5rem;
+            margin-top: 0.3rem;
+            right: 0;
         }
     </style>
 </head>
@@ -318,9 +318,10 @@
         $('#input5').val(null);
     });
     $("#create_truck").on('hidden.bs.modal', function () {
-        // alert("Изменения будут отменены");
+        var form2 = document.querySelector('.formCreateWithValidation')
+        form2.alert("Изменения будут отменены");
         var form = $(this).find('form');
-        form[0].reset();
+        form2[0].reset();
     });
 
     var form2 = document.querySelector('.formCreateWithValidation')

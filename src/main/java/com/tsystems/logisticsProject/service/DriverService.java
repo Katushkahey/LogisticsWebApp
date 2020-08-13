@@ -2,6 +2,7 @@ package com.tsystems.logisticsProject.service;
 
 
 import com.tsystems.logisticsProject.entity.Driver;
+import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.User;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
@@ -39,4 +40,6 @@ public interface DriverService {
     void update(Long id, String telephoneNumber);
 
     void editState(Long id, DriverState state);
+
+    void finishOrder(Long id);
 }

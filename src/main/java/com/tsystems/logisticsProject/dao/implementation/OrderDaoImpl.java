@@ -2,6 +2,7 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.OrderDao;
 import com.tsystems.logisticsProject.entity.Order;
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,30 +28,26 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     }
 
     public List<Order> findCompetedOrders() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.isCompleted = true", Order.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+                .setParameter("status", OrderStatus.COMPLETED)
                 .getResultList();
     }
 
-    /**
-     * select*from orders where is_completed is false
-     * and truck_id is null
-     * union
-     * select*from orders where is_completed is false
-     * and id not in (select current_order_id from drivers);
-     */
     public List<Order> findUnassignedOrders() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.isCompleted = false " +
-                "AND o.orderTruck IS NULL OR (o.isCompleted = false AND o.id NOT IN (SELECT d.currentOrder FROM Driver d))", Order.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+                .setParameter("status", OrderStatus.NOT_ASSIGNED)
                 .getResultList();
     }
 
-    /**
-     * select*from orders where is_completed is false and truck_id is not null
-     * and id in (select current_order_id from drivers);
-     */
-    public List<Order> findAssignedOrders() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.isCompleted = false " +
-                "AND o.orderTruck IS NOT NULL AND o.id IN (SELECT d.currentOrder FROM Driver d)", Order.class)
+    public List<Order> findWaitingOrders() {
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+                .setParameter("status", OrderStatus.WAITING)
+                .getResultList();
+    }
+
+    public List<Order> findOrdersInProgress() {
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+                .setParameter("status", OrderStatus.IN_PROGRESS)
                 .getResultList();
     }
 

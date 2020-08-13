@@ -22,9 +22,6 @@ public class Order extends AbstractEntity {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "is_completed")
-    private boolean isCompleted;
-
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToOne

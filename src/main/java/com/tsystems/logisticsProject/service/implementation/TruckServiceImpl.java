@@ -1,6 +1,5 @@
 package com.tsystems.logisticsProject.service.implementation;
 
-import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.dao.TruckDao;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.TruckState;

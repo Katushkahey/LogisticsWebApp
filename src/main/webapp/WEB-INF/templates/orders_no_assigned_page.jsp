@@ -35,8 +35,8 @@
 
         .nav-item {
             position: absolute;
-            top: 0.3rem;
-            right: 0.5rem;
+            margin-top: 0.3rem;
+            right: 0;
         }
     </style>
 </head>
@@ -63,10 +63,11 @@
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(217,97,101,0.74)">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup2">
             <div class="navbar-nav">
-                <a class="nav-link active" href="/order/info"><strong><u> Неназначенные </u></strong><span
+                <a class="nav-link active" href="/order/info"><strong><u> No assigned </u></strong><span
                         class="sr-only">(current)</span></a>
-                <a class="nav-link" href="/order/info-2"><strong> Назначенные </strong></a>
-                <a class="nav-link" href="/order/info-3"><strong> Выполненные за месяц </strong></a>
+                <a class="nav-link" href="/order/info-2"><strong> Wayting </strong></a>
+                <a class="nav-link" href="/order/info-4"><strong> In Progress </strong></a>
+                <a class="nav-link" href="/order/info-3"><strong> Completed </strong></a>
             </div>
         </div>
     </nav>

@@ -18,5 +18,7 @@ public interface OrderDao extends GenericDao<Order> {
 
     List<Order> findUnassignedOrders();
 
-    List<Order> findAssignedOrders();
+    List<Order> findWaitingOrders();
+
+    List<Order> findOrdersInProgress();
 }

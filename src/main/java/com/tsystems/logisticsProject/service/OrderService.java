@@ -18,7 +18,9 @@ public interface OrderService {
 
     HashMap<Order, Double> findUnassignedOrders();
 
-    HashMap<Order, Double> findAssignedOrders();
+    HashMap<Order, Double> findWaitingOrders();
+
+    HashMap<Order, Double> findOrdersInProgress();
 
     Order findById(Long id);
 
@@ -26,10 +28,16 @@ public interface OrderService {
 
     void deleteById(Long id);
 
-    Map<Order, List<Driver>> getMapOfDriversForAssignedOrders();
+    Map<Order, List<Driver>> getMapOfDriversForWaitingOrders();
 
     Map<Order, List<Driver>> getMapOfDriversForUnassignedOrders();
 
     Map<Order, List<Driver>> getMapOfDriversForCompletedOrders();
+
+    Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress();
+
+    void update(Order order);
+
+    void startOrder(Long id);
 
 }
