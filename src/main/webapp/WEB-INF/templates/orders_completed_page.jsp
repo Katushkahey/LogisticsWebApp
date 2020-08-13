@@ -31,8 +31,8 @@
 
         .nav-item {
             position: absolute;
-            top: 0.3rem;
-            right: 0.5rem;
+            margin-top: 0.3rem;
+            right: 0;
         }
 
     </style>
@@ -45,8 +45,7 @@
                 <a class="nav-link" href="/admin/"><strong> Главная </strong></a>
                 <a class="nav-link" href="/truck/info"><strong> Фуры </strong></a>
                 <a class="nav-link" href="/drivers/info"><strong> Водители </strong></a>
-                <a class="nav-link active" href="/order/info"><strong><u> Заказы </u></strong><span
-                        class="sr-only">(current)</span></a>
+                <a class="nav-link active" href="/order/info"><strong><u> Заказы </u></strong><span class="sr-only">(current)</span></a>
                 <a class="nav-item">
                     <form action="/logout" method="post">
                         <input type="submit" class="btn btn-danger" value="Logout"/>
@@ -60,10 +59,10 @@
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(62,194,52,0.65)">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup2">
             <div class="navbar-nav">
-                <a class="nav-link" href="/order/info"><strong> Неназначенные </strong><span class="sr-only">(current)</span></a>
-                <a class="nav-link" href="/order/info-2"><strong> Назначенные </strong></a>
-                <a class="nav-link active" href="/order/info-3"><strong><u> Выполненные за месяц </u></strong><span
-                        class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/order/info"><strong> No assigned </strong></a>
+                <a class="nav-link" href="/order/info-2"><strong> Waiting </strong></a>
+                <a class="nav-link" href="/order/info-4"><strong> In Progress </strong></a>
+                <a class="nav-link active" href="/order/info-3"><strong><u> Completed </u></strong><span class="sr-only">(current)</span></a>
             </div>
         </div>
     </nav>

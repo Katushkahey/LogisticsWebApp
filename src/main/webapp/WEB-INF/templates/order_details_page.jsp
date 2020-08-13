@@ -66,6 +66,9 @@
                                 <td scope="row" align="center">${waypoint.status}</td>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
                                                                        data-toggle="modal" data-target="#edit_waypoint"
+                                        <c:if test="${(order_status=='IN_PROGRESS')or
+                                                                        (order_status=='COMPLETED')or(order_status=='WAITING')}">
+                                            <c:out value="disabled='disabled'"/></c:if>
                                                                        data-waypoint-id="${waypoint.id}"> Edit </button>
                             </tr>
                         </c:forEach>

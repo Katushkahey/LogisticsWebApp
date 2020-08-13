@@ -47,6 +47,13 @@ public class DriverPageController {
     @GetMapping("/edit_state/{id}")
     public String editState(@PathVariable("id") Long id, @RequestParam("state") DriverState state) {
         driverService.editState(id, state);
+
+        return "redirect:/driver";
+    }
+
+    @GetMapping("/finish_order/{id}")
+    public String finishOrder(@PathVariable("id") Long id) {
+        driverService.finishOrder(id);
         return "redirect:/driver";
     }
 

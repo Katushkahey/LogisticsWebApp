@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WaypointImpl extends AbstractDao<Waypoint> implements WaypointDao {
+public class WaypointDaoImpl extends AbstractDao<Waypoint> implements WaypointDao {
 
     @Autowired
     private SessionFactory sessionFactory;

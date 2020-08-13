@@ -3,11 +3,10 @@ package com.tsystems.logisticsProject.service.implementation;
 import com.tsystems.logisticsProject.dao.DriverDao;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
+import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.EntityUpdateEvent;
-import com.tsystems.logisticsProject.service.CityService;
-import com.tsystems.logisticsProject.service.DriverService;
-import com.tsystems.logisticsProject.service.OrderService;
-import com.tsystems.logisticsProject.service.UserService;
+import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,9 @@ public class DriverServiceImpl implements DriverService {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private WaypointService waypointService;
 
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -175,7 +177,7 @@ public class DriverServiceImpl implements DriverService {
             if (lastState == DriverState.DRIVING || lastState == DriverState.LOADING_UNLOADING) {
                 Date endWorkingTime = new Date();
                 Date startWorkingTime = new Date(driverToUpdate.getStartWorkingTime());
-                Long totalWorkingTimePerInterval = startWorkingTime.getTime() - endWorkingTime.getTime();
+                Long totalWorkingTimePerInterval = endWorkingTime.getTime() - startWorkingTime.getTime();
                 driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingTimePerInterval);
                 driverToUpdate.setDriverState(state);
                 driverDao.update(driverToUpdate);
@@ -189,6 +191,34 @@ public class DriverServiceImpl implements DriverService {
             }
         }
 
+    }
+
+    @Transactional
+    public void finishOrder(Long id) {
+        Order completedOrder = orderService.findById(id);
+        if (completedOrder == null) {
+            return;
+        }
+        List<Waypoint> listOfWaypointsForCompletedOrder = completedOrder.getWaypoints();
+        if (listOfWaypointsForCompletedOrder == null) {
+            return;
+        }
+        for (Waypoint waypoint: listOfWaypointsForCompletedOrder) {
+            waypoint.setStatus(WaypointStatus.DONE);
+            waypointService.update(waypoint);
+        }
+        List<Driver> listOfDriversForCompletedOrder = getParnersForCurrentOrder(completedOrder.getId());
+        if (listOfDriversForCompletedOrder == null) {
+            return;
+        }
+        for (Driver driver: listOfDriversForCompletedOrder) {
+            driver.setCurrentOrder(null);
+            driverDao.update(driver);
+            editState(driver.getId(), DriverState.REST);
+        }
+        completedOrder.setStatus(OrderStatus.COMPLETED);
+        completedOrder.setCompletionDate(new Date().getTime());
+        orderService.update(completedOrder);
     }
 
 }

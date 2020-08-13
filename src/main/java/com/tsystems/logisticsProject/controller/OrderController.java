@@ -16,23 +16,31 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping("/info-2")
-    public String assignedOrders(Model model) {
-        model.addAttribute("mapOfOrders", orderService.findAssignedOrders());
-        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForAssignedOrders());
-        return "orders2_page";
+    public String waytingOrders(Model model) {
+        model.addAttribute("mapOfOrders", orderService.findWaitingOrders());
+        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForWaitingOrders());
+        return "orders_wayting_page";
     }
 
     @GetMapping("/info-3")
     public String completedOrders(Model model) {
         model.addAttribute("mapOfOrders", orderService.findCompletedOrders());
         model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForCompletedOrders());
-        return "orders3_page";
+        return "orders_completed_page";
+    }
+
+    @GetMapping("/info-4")
+    public String ordersInProgress(Model model) {
+        model.addAttribute("mapOfOrders", orderService.findOrdersInProgress());
+        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForOrdersInProgress());
+        return "orders_in_progress_page";
     }
 
     @GetMapping("/show_info/{id}")
     public String showDetails(@PathVariable("id") Long id, Model model) {
         model.addAttribute("order", id);
         model.addAttribute("waypoints", orderService.findWaypointsForCurrentOrderById(id));
+        model.addAttribute("order_status", orderService.findById(id).getStatus());
         return "order_details_page";
     }
 
@@ -40,7 +48,7 @@ public class OrderController {
     public String OrdersInfo(Model model) {
         model.addAttribute("mapOfOrders", orderService.findUnassignedOrders());
         model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
-        return "orders_page";
+        return "orders_no_assigned_page";
     }
 
     @GetMapping("/delete_order/{id}")

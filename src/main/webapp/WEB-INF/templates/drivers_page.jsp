@@ -35,8 +35,8 @@
 
         .nav-item {
             position: absolute;
-            top: 0.3rem;
-            right: 0.5rem;
+            margin-top: 0.3rem;
+            right: 0;
         }
 
     </style>
