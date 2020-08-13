@@ -6,6 +6,7 @@ import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,6 +139,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public void update(Order order) {
+        orderDao.update(order);
+    }
+
+    @Transactional
+    public void startOrder(Long id) {
+        Order order = findById(id);
+        order.setStatus(OrderStatus.IN_PROGRESS);
         orderDao.update(order);
     }
 

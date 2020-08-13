@@ -6,4 +6,8 @@ public interface WaypointService {
 
     void update(Waypoint waypoint);
 
+    void makeCompletedById(Long id);
+
+    Waypoint findById(Long id);
+
 }

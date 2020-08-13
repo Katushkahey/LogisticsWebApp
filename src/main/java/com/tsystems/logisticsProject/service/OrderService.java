@@ -38,4 +38,6 @@ public interface OrderService {
 
     void update(Order order);
 
+    void startOrder(Long id);
+
 }

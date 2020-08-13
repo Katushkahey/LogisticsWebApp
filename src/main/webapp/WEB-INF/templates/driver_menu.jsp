@@ -88,30 +88,41 @@
 </div>
 </br>
 <c:choose>
-    <c:when test="${driver.currentOrder.id==null}">
+    <c:when test="${(driver.currentOrder.id==null) or (driver.currentOrder.status=='NOT_ASSIGNED')}">
         <br />
         <h6><strong> You are not assigned to any order. </strong></h6>
         <br />
     </c:when>
     <c:otherwise>
-    <div id="loginbox" style="..." class="mainbox col-md-3 col-md-offset-2 col-sm-4 col-sm-offset-2">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <div class="panel-title"><h5><u> The working process </u></h5></div>
-            </div>
-            <div style="..." class="panel-body">
-                <div class="info"><h5><strong>State:</strong> ${driver.driverState}</h5></div>
-                <div>
-                    <button type="button" class="btn btn-secondary"
-                            data-toggle="modal" data-target="#edit_state"
-                            data-driver-state="${driver.driverState}"> Edit state </button>
-                    <button type="button" class="btn btn-success"
-                            data-toggle="modal" data-target="#finish_order"
-                            data-driver-order="${driver.currentOrder.id}"> Finish </button>
+    <c:choose>
+        <c:when test="${driver.currentOrder.status=='WAITING'}">
+            <a class="nav-item3">
+                <form action="/driver/start_order/${driver.currentOrder.id}" method="get">
+                    <input type="submit" class="btn btn-success" value="Start"/>
+                </form>
+            </a>
+        </c:when>
+        <c:otherwise>
+        <div id="loginbox" style="..." class="mainbox col-md-3 col-md-offset-2 col-sm-4 col-sm-offset-2">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title"><h5><u> The working process </u></h5></div>
+                </div>
+                <div style="..." class="panel-body">
+                    <div class="info"><h5><strong>State:</strong> ${driver.driverState}</h5></div>
+                    <div>
+                        <button type="button" class="btn btn-secondary"
+                                data-toggle="modal" data-target="#edit_state"
+                                data-driver-state="${driver.driverState}"> Edit state </button>
+                        <button type="button" class="btn btn-success"
+                                data-toggle="modal" data-target="#finish_order"
+                                data-driver-order="${driver.currentOrder.id}"> Finish </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        </c:otherwise>
+    </c:choose>
     <c:choose>
         <c:when test="${partner==null}">
         </c:when>
@@ -152,13 +163,16 @@
                                 <td scope="row"> ${waypoint.cargo.name} </td>
                                 <th scope="row"> ${waypoint.cargo.weight}</th>
                                 <td scope="row"> ${waypoint.action.name()} </td>
-                                <td>
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            <input type="checkbox" aria-label="Checkbox for following text input">
-                                        </div>
-                                    </div>
-                                </td>
+                                <c:choose>
+                                    <c:when test="${waypoint.status.name()=='TODO'}">
+                                        <td scope="row"> <a class="btn btn-secondary"
+                                                                 href="/driver/complete_waypoint/${waypoint.id}"> Done </a>
+                                        </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td scope="row"> ${waypoint.status.name()} </td>
+                                    </c:otherwise>
+                                </c:choose>
                             </tr>
                         </c:forEach>
                     </tbody>

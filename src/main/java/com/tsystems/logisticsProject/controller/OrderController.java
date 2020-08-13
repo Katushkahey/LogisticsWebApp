@@ -58,4 +58,5 @@ public class OrderController {
         model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
         return "redirect:/order/info";
     }
+
 }

@@ -12,18 +12,20 @@ public class WaypointDaoImpl extends AbstractDao<Waypoint> implements WaypointDa
     @Autowired
     private SessionFactory sessionFactory;
 
-    @Override
     public void add(Waypoint waypoint) {
         sessionFactory.getCurrentSession().save(waypoint);
     }
 
-    @Override
     public void update(Waypoint waypoint) {
         sessionFactory.getCurrentSession().update(waypoint);
     }
 
-    @Override
     public void delete(Waypoint waypoint) {
         sessionFactory.getCurrentSession().delete(waypoint);
     }
+
+    public Waypoint findById(Long id) {
+        return sessionFactory.getCurrentSession().get(Waypoint.class, id);
+    }
 }
+
