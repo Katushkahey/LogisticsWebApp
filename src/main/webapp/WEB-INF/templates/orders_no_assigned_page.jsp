@@ -98,11 +98,19 @@
                             <tr>
                                 <td scope="row" align="center">${order.id}</td>
                                 <td scope="row" align="center">${mapOfDriversForOrders.get(order)}</td>
-                                <td scope="row" align="center">${order.orderTruck.number}</td>
+                                <c:choose>
+                                    <c:when test="${order.orderTruck==null}">
+                                        <td scope="row"> <a class="btn btn-secondary"
+                                                            href="/order/add_truck/${order.id}"> Add truck </a>
+                                        </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td scope="row" align="center">${order.orderTruck.number}</td>
+                                    </c:otherwise>
+                                </c:choose>
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>
                                 <td scope="row" align="center"> Add Driver </td>
-                                <td scope="row" align="center"> Add Truck </td>
-                                <td scope="row" align="center"><a class="btn btn-secondary"
+                                <td scope="row" align="center"><a class="btn btn-success"
                                                                   href="/order/show_info/${order.id}"> Details </a></td>
                                 <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/order/delete_order/${order.id}"> Delete </a></td>
