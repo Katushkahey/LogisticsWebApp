@@ -36,6 +36,8 @@ public interface OrderService {
 
     Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress();
 
+    void add(Order order);
+
     void update(Order order);
 
     void startOrder(Long id);

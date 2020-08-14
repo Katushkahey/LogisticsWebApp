@@ -16,14 +16,14 @@
 
         body {
             /* путь к файлу */
-            background: rgb(255, 255, 255);
+            background: rgb(255, 255, 255) url("../images/create_order.jpg") no-repeat right;
             background-size: contain;
             color: #000;
         }
 
         .mainDiv {
             width: 50%;
-            height: 450px;
+            height: 400px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -31,7 +31,7 @@
 
         .mainDiv2 {
             width: 50%;
-            height: 450px;
+            height: 400px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -284,9 +284,40 @@
                                                                                        class="btn btn-secondary"
                                                                                        data-toggle="modal"
                                                                                        data-target="#edit_waypoint"
-                                                                                       data-waypoint-id="${waypoint.id}"> Edit </button>
-                                                <td scope="row" align="center"><a class="btn btn-danger"
-                                                                                  href="/create_order/delete_waypoint/${waypoint.id}"> Delete </a></td>
+                                                                                       data-waypoint-id="${waypoint.id}"> Edit </button></td>
+                                                <td scope="row" align="center">
+                                                <c:choose>
+                                                <c:when test="${waypoint.action == 'UNLOADING'}">
+                                                    <a class="btn btn-danger" href="/create_order/delete_waypoint/${waypoint.id}"> Delete </a></td>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <button type="button" class="btn btn-danger"
+                                                            data-toggle="modal" data-target="#delete_loading_waypoint"> Delete
+                                                    </button></td>
+                                                    <div class="modal fade" id="delete_loading_waypoint" tabindex="-1" role="dialog" aria-labelledby="allertModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="allertModalLabel10">Delete ${waypoint.cargo.name}</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <form action="/create_order/delete_waypoint/${waypoint.id}" method="get" class="formWithValidation10" role="form">
+                                                                        Are you sure, that you want to delete this waypoint? If this cargo has waypoint for UNLOADING
+                                                                        if also will be deleted. If you need to change city, you can use batton 'Edit'.
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
+                                                                            <button type="submit" class="btn btn-success"> Yes, delete </button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </c:otherwise>
+                                                </c:choose>
                                             </tr>
                                         </c:forEach>
                                     </tbody>

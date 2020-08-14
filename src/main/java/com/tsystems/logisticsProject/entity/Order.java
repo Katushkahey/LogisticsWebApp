@@ -24,18 +24,9 @@ public class Order extends AbstractEntity {
     @JoinColumn(name = "truck_id")
     private Truck orderTruck;
 
-//    @NonNull
-//    @OneToMany(mappedBy = "order")
-//    List<Cargo> cargoes;
-
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-//    @OneToMany(mappedBy = "currentOrder")
-//    private List<Driver> drivers;
-
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(fetch=FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Waypoint> waypoints;
 
     @Column(name = "status")

@@ -1,9 +1,11 @@
 package com.tsystems.logisticsProject.util;
 
 import com.tsystems.logisticsProject.entity.Cargo;
+import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.service.CityService;
+import com.tsystems.logisticsProject.service.OrderService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -28,6 +30,8 @@ public class RawOrder {
     @Autowired
     private CityService cityService;
 
+    @Autowired
+    private OrderService orderService;
 
     @PostConstruct
     public void init() {
@@ -104,40 +108,55 @@ public class RawOrder {
         }
     }
 
-
     public void deleteWaypointById(Long id) {
         for (Waypoint waypoint : listOfWaypoints) {
             if (waypoint.getId() == id) {
                 Cargo cargoFromRemovedWaypoint = waypoint.getCargo();
-                for (Waypoint waypoint1 : listOfWaypoints) {
-                    if (waypoint1.getCargo().getId() == cargoFromRemovedWaypoint.getId() && waypoint1.getId() != id) {
-                        listOfWaypoints.remove(waypoint1);
-                        break;
+                if (waypoint.getAction().equals(Action.LOADING)) {
+                    for (Waypoint waypoint1 : listOfWaypoints) {
+                        if (waypoint1.getCargo().getId() == cargoFromRemovedWaypoint.getId() && waypoint1.getId() != id) {
+                            listOfWaypoints.remove(waypoint1);
+                            break;
+                        }
                     }
+                    listOfWaypoints.remove(waypoint);
+                    mapOfCargoes.put(cargoFromRemovedWaypoint, 2);
+                    break;
+                } else {
+                    listOfWaypoints.remove(waypoint);
+                    mapOfCargoes.put(cargoFromRemovedWaypoint, 1);
+                    break;
                 }
-                listOfWaypoints.remove(waypoint);
-                mapOfCargoes.put(cargoFromRemovedWaypoint, 2);
-                break;
             }
         }
 
     }
 
-    private void printHashMap() {
-        Iterator it = mapOfCargoes.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry cargoInfo = (Map.Entry) it.next();
-            System.out.println("" + cargoInfo.getKey() + " " + cargoInfo.getValue());
-        }
-    }
-
     public void saveOrder() {
-        // to do
+        for (Waypoint waypoint: listOfWaypoints) {
+            waypoint.setId(null);
+            waypoint.getCargo().setId(null);
+        }
+        Order order = new Order();
+        order.setWaypoints(listOfWaypoints);
+        orderService.add(order);
+        clearAll();
     }
 
     public void clearAll() {
         mapOfCargoes.clear();
         listOfWaypoints.clear();
         listOfCargoes.clear();
+    }
+
+    /**
+     * this method can be used for debuging
+     */
+    private void printHashMap() {
+        Iterator it = mapOfCargoes.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry cargoInfo = (Map.Entry) it.next();
+            System.out.println("" + cargoInfo.getKey() + " " + cargoInfo.getValue());
+        }
     }
 }

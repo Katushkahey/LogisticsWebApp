@@ -70,4 +70,9 @@ public class Driver extends AbstractEntity {
     @Column(name = "start_working_time")
     private Long startWorkingTime;
 
+    @Override
+    public String toString() {
+        return "" + name + " " + surname;
+    }
+
 }

@@ -149,4 +149,9 @@ public class OrderServiceImpl implements OrderService {
         orderDao.update(order);
     }
 
+    @Transactional
+    public void add(Order order) {
+        orderDao.add(order);
+    }
+
 }
