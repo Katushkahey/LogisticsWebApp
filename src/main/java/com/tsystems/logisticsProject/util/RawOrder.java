@@ -104,12 +104,13 @@ public class RawOrder {
         }
     }
 
+
     public void deleteWaypointById(Long id) {
         for (Waypoint waypoint : listOfWaypoints) {
             if (waypoint.getId() == id) {
                 Cargo cargoFromRemovedWaypoint = waypoint.getCargo();
                 for (Waypoint waypoint1 : listOfWaypoints) {
-                    if (waypoint.getCargo().getId() == cargoFromRemovedWaypoint.getId() && waypoint.getId() != id) {
+                    if (waypoint1.getCargo().getId() == cargoFromRemovedWaypoint.getId() && waypoint1.getId() != id) {
                         listOfWaypoints.remove(waypoint1);
                         break;
                     }
@@ -120,6 +121,14 @@ public class RawOrder {
             }
         }
 
+    }
+
+    private void printHashMap() {
+        Iterator it = mapOfCargoes.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry cargoInfo = (Map.Entry) it.next();
+            System.out.println("" + cargoInfo.getKey() + " " + cargoInfo.getValue());
+        }
     }
 
     public void saveOrder() {

@@ -23,7 +23,7 @@
 
         .mainDiv {
             width: 50%;
-            height: 300px;
+            height: 450px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -31,7 +31,7 @@
 
         .mainDiv2 {
             width: 50%;
-            height: 250px;
+            height: 450px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -41,7 +41,7 @@
             margin-left: 1rem;
         }
 
-        .h6 {
+        .info {
             margin-left: 1rem;
         }
 
@@ -74,7 +74,7 @@
     <c:when test="${mapOfCargoes.size() == 0 && listOfWaypoints.size() == 0}">
         <a class="btn btn-success" data-toggle="modal" data-target="#create_raw_cargo"> Add Cargo </a>
         </br>
-        <h6><strong> Here will be your order. </strong></h6>
+        <h6 class="info"><strong> Here will be your order. First of all add all cargoes.</strong></h6>
         <div class="modal fade" id="create_raw_cargo" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -242,6 +242,9 @@
                     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#create_waypoint">
                         Create waypoint
                     </button>
+                </div>
+                <div>
+                    <h6 class="info"><strong> For each cargo you`ll have 2 waypoints : first for LOADING and second for UNLOADING. </strong></h6>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -423,7 +426,7 @@
                     </div>
                     <div class="modal-body">
                         <form action="/create_order/clear_all" method="get" class="formWithValidation5" role="form">
-                            Are you sure, that you want to delete all changes and become to page with saved orders?
+                            Are you sure, that you want to delete all changes and redirect to page with saved orders?
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
                                 <button type="submit" class="btn btn-success"> Yes</button>
