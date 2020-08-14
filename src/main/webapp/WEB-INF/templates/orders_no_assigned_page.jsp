@@ -74,7 +74,7 @@
 </div>
 </br></br>
 <div>
-    <a class="btn btn-success" href="/order/create_order">Create Order</a>
+    <a class="btn btn-success" href="/create_order">Create Order</a>
     </br></br>
     <div class="mainDiv">
         <div class="tableTab">

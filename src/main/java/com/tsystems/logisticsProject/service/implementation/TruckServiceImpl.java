@@ -56,7 +56,7 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public void add(String number, int crew_cize, int capacity, TruckState state, String cityName) {
+    public void add(String number, int crew_cize, double capacity, TruckState state, String cityName) {
         Truck newTruck = new Truck();
         newTruck.setNumber(number);
         newTruck.setCrewSize(crew_cize);
@@ -72,7 +72,7 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public void update(Long id, String number, int capacity, int crew, TruckState truckState, String cityName) {
+    public void update(Long id, String number, double capacity, int crew, TruckState truckState, String cityName) {
         Truck truckToUpdate = truckDao.findById(id);
         truckToUpdate.setNumber(number);
         truckToUpdate.setCapacity(capacity);
@@ -80,6 +80,24 @@ public class TruckServiceImpl implements TruckService {
         truckToUpdate.setTruckState(truckState);
         truckToUpdate.setCurrentCity(cityService.findByCityName(cityName));
         truckDao.update(truckToUpdate);
+    }
+
+    @Transactional
+    public List<Truck> findAll() {
+        return truckDao.findAll();
+    }
+
+    @Transactional
+    public double getMaxCapacity() {
+        List<Truck> listOfTruck = findAll();
+        double maxCapacity = 0;
+        for (Truck truck : listOfTruck) {
+            double capacity = truck.getCapacity();
+            if (capacity > maxCapacity) {
+                maxCapacity = capacity;
+            }
+        }
+        return maxCapacity;
     }
 
 }

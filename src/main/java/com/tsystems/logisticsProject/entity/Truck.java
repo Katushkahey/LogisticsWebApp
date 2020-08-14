@@ -4,8 +4,6 @@ import com.tsystems.logisticsProject.entity.enums.TruckState;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Objects;
 
 @Data
 @Entity
@@ -28,7 +26,7 @@ public class Truck extends AbstractEntity {
 
     @NonNull
     @Column(name = "capacity")
-    private Integer capacity;
+    private Double capacity;
 
     @NonNull
     @Column(name = "state")

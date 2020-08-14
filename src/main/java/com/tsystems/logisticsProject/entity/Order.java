@@ -2,13 +2,9 @@ package com.tsystems.logisticsProject.entity;
 
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import lombok.*;
-import org.hibernate.collection.internal.PersistentList;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Iterator;
+import javax.persistence.*;;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity

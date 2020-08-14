@@ -318,10 +318,8 @@
         $('#input5').val(null);
     });
     $("#create_truck").on('hidden.bs.modal', function () {
-        var form2 = document.querySelector('.formCreateWithValidation')
-        form2.alert("Изменения будут отменены");
         var form = $(this).find('form');
-        form2[0].reset();
+        form[0].reset();
     });
 
     var form2 = document.querySelector('.formCreateWithValidation')

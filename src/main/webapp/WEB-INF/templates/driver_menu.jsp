@@ -46,7 +46,6 @@
             position: absolute;
             margin-top: 0.3rem;
             right: 0.5rem;
-        ;
         }
 
         .nav-item3 {

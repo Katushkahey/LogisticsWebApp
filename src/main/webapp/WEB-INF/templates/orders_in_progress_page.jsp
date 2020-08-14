@@ -38,7 +38,7 @@
 </head>
 <body>
 <div>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(255,162,69,0.57)">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(250,255,24,0.73)">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-link" href="/admin/"><strong> Главная </strong></a>
@@ -56,7 +56,7 @@
     </nav>
 </div>
 <div>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(214,128,45,0.65)">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: rgba(250,255,24,0.65)">
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup2">
             <div class="navbar-nav">
                 <a class="nav-link" href="/order/info"><strong> No assigned </strong></a>

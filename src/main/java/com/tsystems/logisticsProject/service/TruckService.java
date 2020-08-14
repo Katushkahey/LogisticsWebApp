@@ -17,10 +17,14 @@ public interface TruckService {
 
     boolean findByNumber(String number);
 
-    void add(String number, int crew_cize, int capacity, TruckState state, String cityName);
+    void add(String number, int crew_cize, double capacity, TruckState state, String cityName);
 
     boolean checkEditedNumber(String number, Long id);
 
-    void update(Long id, String nubmer, int capacity, int crew, TruckState truckState, String cityName);
+    void update(Long id, String nubmer, double capacity, int crew, TruckState truckState, String cityName);
+
+    List<Truck> findAll();
+
+    double getMaxCapacity();
 
 }
