@@ -1,9 +1,11 @@
 package com.tsystems.logisticsProject.util;
 
 import com.tsystems.logisticsProject.entity.Cargo;
+import com.tsystems.logisticsProject.entity.City;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.service.CargoService;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.OrderService;
 import lombok.Data;
@@ -31,6 +33,9 @@ public class RawOrder {
     private CityService cityService;
 
     @Autowired
+    private CargoService cargoService;
+
+    @Autowired
     private OrderService orderService;
 
     @PostConstruct
@@ -38,7 +43,6 @@ public class RawOrder {
         mapOfCargoes = new HashMap<>();
         listOfCargoes = new ArrayList<>();
         listOfWaypoints = new ArrayList<>();
-
     }
 
     public void addNewCargo(String name, Double weight) {
@@ -76,7 +80,7 @@ public class RawOrder {
         for (Cargo cargo : listOfCargoes) {
             mapOfCargoes.put(cargo, 2);
         }
-        listOfCargoes.clear();
+//        listOfCargoes.clear();
     }
 
     public void addWaypoint(Long cargoId, String cityName) {
@@ -87,6 +91,12 @@ public class RawOrder {
             newWaypoint.setId(1L);
         } else {
             newWaypoint.setId(listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
+        }
+
+        for (Cargo cargo : listOfCargoes) {
+            if (cargo.getId() == cargoId) {
+                cargoService.addWaypoint(cargo, newWaypoint);
+            }
         }
 
         Iterator it = mapOfCargoes.entrySet().iterator();
@@ -104,6 +114,32 @@ public class RawOrder {
                 }
                 listOfWaypoints.add(newWaypoint);
                 break;
+            }
+        }
+    }
+
+    public void editWaypoint(Long id, String cityName) {
+        City newCityForWaypoint = cityService.findByCityName(cityName);
+
+        editWaypointInListOfWaypoints(id, newCityForWaypoint);
+        editWaypointInListOfCargoes(id, newCityForWaypoint);
+    }
+
+    private void editWaypointInListOfWaypoints(Long id, City city) {
+        for (Waypoint waypoint : listOfWaypoints) {
+            if (waypoint.getId() == id) {
+                waypoint.setCity(city);
+            }
+        }
+    }
+
+    private void editWaypointInListOfCargoes(Long id, City city) {
+        for (Cargo cargo : listOfCargoes) {
+            List<Waypoint> waypoints = cargo.getWaypoints();
+            for (Waypoint waypoint : waypoints) {
+                if (waypoint.getId() == id) {
+                    waypoint.setCity(city);
+                }
             }
         }
     }
@@ -129,16 +165,33 @@ public class RawOrder {
                 }
             }
         }
+        deleteWaypointFromItsCargoById(id);
+    }
 
+    private void deleteWaypointFromItsCargoById(Long id) {
+        for (Cargo cargo : listOfCargoes) {
+            if (cargo.getWaypoints() != null) {
+                List<Waypoint> listOfWaypoint = cargo.getWaypoints();
+                for (Waypoint waypoint : listOfWaypoint) {
+                    if (waypoint.getId() == id) {
+                        listOfWaypoint.remove(waypoint);
+                    }
+                }
+            }
+        }
     }
 
     public void saveOrder() {
-        for (Waypoint waypoint: listOfWaypoints) {
+        for (Waypoint waypoint : listOfWaypoints) {
             waypoint.setId(null);
             waypoint.getCargo().setId(null);
+
         }
         Order order = new Order();
-        order.setWaypoints(listOfWaypoints);
+        order.setCargoes(listOfCargoes);
+        for (Cargo cargo : listOfCargoes) {
+            cargo.setOrder(order);
+        }
         orderService.add(order);
         clearAll();
     }
@@ -150,7 +203,7 @@ public class RawOrder {
     }
 
     /**
-     * this method can be used for debuging
+     * this method can be used for debugging
      */
     private void printHashMap() {
         Iterator it = mapOfCargoes.entrySet().iterator();

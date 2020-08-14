@@ -22,14 +22,7 @@ public class Waypoint extends AbstractEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NonNull
-    @ManyToOne(fetch=FetchType.EAGER, cascade = CascadeType.MERGE)
-    @JoinColumn(name="order_id")
-    private Order order;
-
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @NonNull
-    @ManyToOne(cascade =  CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="cargo_id")
     private Cargo cargo;
 

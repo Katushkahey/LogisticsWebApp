@@ -66,6 +66,12 @@ public class CreateOrderController {
         return "redirect:/create_order";
     }
 
+    @GetMapping("/edit_waypoint")
+    public String editWaypoint(@RequestParam("id") Long id, @RequestParam("cityName") String cityName) {
+        rawOrder.editWaypoint(id, cityName);
+        return "redirect:/create_order";
+    }
+
     @GetMapping("delete_waypoint/{id}")
     public String deleteWaypoint(@PathVariable("id") Long id) {
         rawOrder.deleteWaypointById(id);

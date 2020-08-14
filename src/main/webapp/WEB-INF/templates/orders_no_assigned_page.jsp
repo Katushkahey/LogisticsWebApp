@@ -88,7 +88,6 @@
                                 <th scope="col"> Truck </th>
                                 <th scope="col"> Max weight </th>
                                 <th scope="col"> Add Driver </th>
-                                <th scope="col"> Add Truck </th>
                                 <th scope="col"> Details </th>
                                 <th scope="col"> Delete </th>
                             </tr>

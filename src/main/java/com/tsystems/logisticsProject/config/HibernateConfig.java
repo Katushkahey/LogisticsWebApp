@@ -54,7 +54,6 @@ public class HibernateConfig {
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQL94Dialect");
         hibernateProperties.setProperty("hibernate.show_sql", "false");
-//        hibernateProperties.setProperty("hibernate.allow_update_outside_transaction", "true");
         return hibernateProperties;
     }
 

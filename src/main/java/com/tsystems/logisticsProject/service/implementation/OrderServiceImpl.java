@@ -32,7 +32,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public List<Waypoint> findWaypointsForCurrentOrderById(Long id) {
-        return orderDao.findById(id).getWaypoints();
+        List<Waypoint> listOfWaypoints = new ArrayList<>();
+        List<Cargo> listOfCargoes = orderDao.findById(id).getCargoes();
+        for(Cargo cargo: listOfCargoes) {
+            listOfWaypoints.add(cargo.getWaypoints().get(0));
+            listOfWaypoints.add(cargo.getWaypoints().get(1));
+        }
+        return listOfWaypoints;
     }
 
     @Transactional

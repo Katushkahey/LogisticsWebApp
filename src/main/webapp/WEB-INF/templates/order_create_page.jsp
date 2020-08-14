@@ -110,10 +110,7 @@
             </div>
         </div>
         <c:choose>
-            <c:when test="${listOfCargoes.size() == 0}">
-                </br>
-            </c:when>
-            <c:otherwise>
+            <c:when test="${mapOfCargoes.size() == 0 && listOfCargoes.size() !=0}">
                 <div>
                     <div class="mainDiv2">
                         <div class="tableTab">
@@ -196,43 +193,35 @@
                         </div>
                     </div>
                 </div>
-            </c:otherwise>
-        </c:choose>
-    </c:when>
-    <c:otherwise>
-        <c:choose>
-            <c:when test="${listOfCargoes.size() == 0}">
-            </c:when>
-            <c:otherwise>
-                <div>
-                    <div class="mainDiv2">
-                        <div class="tableTab">
-                            <table class="table">
-                                <h5 class="text-black h4" style="background: rgba(136,144,229,0.74)" align="center">
-                                    List of cargoes </h5>
-                                <span class="text-black">
-                                    <thead style="background: rgba(136,144,229,0.74)" align="center">
-                                        <tr>
-                                            <th scope="col"> № </th>
-                                            <th scope="col"> Cargo </th>
-                                            <th scope="col"> Weight </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="cargo" items="${mapOfCargoes.keySet()}">
-                                            <tr id="cargo-${cargo.id}">
-                                                <td scope="row" align="center">${cargo.id}</td>
-                                                <td scope="row" align="center">${cargo.name}</td>
-                                                <td scope="row" align="center">${cargo.weight}</td>
-                                        </c:forEach>
-                                    </tbody>
-                                </span>
-                            </table>
+                <button type="button" class="btn btn-danger"
+                        data-toggle="modal" data-target="#clear_all"> Clear all
+                </button>
+                <div class="modal fade" id="clear_all" tabindex="-1" role="dialog" aria-labelledby="allertModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="allertModalLabel15">Clear all</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/create_order/clear_all" method="get" class="formWithValidation15" role="form">
+                                    Are you sure, that you want to delete all changes and redirect to page with saved orders?
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
+                                        <button type="submit" class="btn btn-success"> Yes</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </c:otherwise>
+            </c:when>
         </c:choose>
+    </c:when>
+    <c:otherwise>
         <c:choose>
             <c:when test="${listOfWaypoints.size() != 0 && mapOfCargoes.size() == 0}">
 
@@ -306,7 +295,7 @@
                                                                 <div class="modal-body">
                                                                     <form action="/create_order/delete_waypoint/${waypoint.id}" method="get" class="formWithValidation10" role="form">
                                                                         Are you sure, that you want to delete this waypoint? If this cargo has waypoint for UNLOADING
-                                                                        if also will be deleted. If you need to change city, you can use batton 'Edit'.
+                                                                        if also will be deleted. If you need to change city, you can use button 'Edit'.
                                                                         <div class="modal-footer">
                                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
                                                                             <button type="submit" class="btn btn-success"> Yes, delete </button>
@@ -633,8 +622,8 @@
 </script>
 <script>
     $("#edit_waypoint").on('show.bs.modal', function (e) {
-        var cargoId = $(e.relatedTarget).data('cargo-id');
-        var cols = $('#cargo-' + cargoId + ' td');
+        var waypointId = $(e.relatedTarget).data('waypoint-id');
+        var cols = $('#waypoint-' + waypointId + ' td');
         var id = $(cols[0]).text();
         var city = $(cols[3]).text();
         $('#idEditInput').val(id);
@@ -669,7 +658,7 @@
             }
         }
 
-        if (errors_counter3 < 1) {
+        if (errors_counter4 < 1) {
             form4.submit()
         }
     })

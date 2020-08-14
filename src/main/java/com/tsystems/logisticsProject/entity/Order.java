@@ -27,7 +27,12 @@ public class Order extends AbstractEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "order", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Waypoint> waypoints;
+    private List<Cargo> cargoes;
+
+//    @ToString.Exclude
+//    @EqualsAndHashCode.Exclude
+//    @OneToMany(mappedBy = "order", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+//    private List<Waypoint> waypoints;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
