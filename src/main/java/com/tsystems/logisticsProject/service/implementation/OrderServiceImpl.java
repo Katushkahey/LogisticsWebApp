@@ -32,7 +32,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public List<Waypoint> findWaypointsForCurrentOrderById(Long id) {
-        return orderDao.findById(id).getWaypoints();
+        List<Waypoint> listOfWaypoints = new ArrayList<>();
+        List<Cargo> listOfCargoes = orderDao.findById(id).getCargoes();
+        for(Cargo cargo: listOfCargoes) {
+            listOfWaypoints.add(cargo.getWaypoints().get(0));
+            listOfWaypoints.add(cargo.getWaypoints().get(1));
+        }
+        return listOfWaypoints;
     }
 
     @Transactional
@@ -72,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public HashMap<Order, Double> findOrdersInProgress() {
         HashMap<Order, Double> ordersInProgressHashMap = new HashMap<>();
-        List<Order> ordersInProgress = orderDao.findWaitingOrders();
+        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
         for (Order order : ordersInProgress) {
             ordersInProgressHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
             mapOfDriversForOrdersInProgress.put(order, driverService.getParnersForCurrentOrder(order.getId()));
@@ -81,12 +87,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public Set<Cargo> getListOfCargoesForCurrentOrderById(Long id) {
-        List<Waypoint> waypoints = findWaypointsForCurrentOrderById(id);
-        for (Waypoint waypoint : waypoints) {
-            cargoes.add(waypoint.getCargo());
-        }
-        return cargoes;
+    public List<Cargo> getListOfCargoesForCurrentOrderById(Long id) {
+        return findById(id).getCargoes();
     }
 
     @Transactional
@@ -147,6 +149,11 @@ public class OrderServiceImpl implements OrderService {
         Order order = findById(id);
         order.setStatus(OrderStatus.IN_PROGRESS);
         orderDao.update(order);
+    }
+
+    @Transactional
+    public void add(Order order) {
+        orderDao.add(order);
     }
 
 }

@@ -46,7 +46,6 @@
             position: absolute;
             margin-top: 0.3rem;
             right: 0.5rem;
-        ;
         }
 
         .nav-item3 {
@@ -87,6 +86,33 @@
     </nav>
 </div>
 </br>
+<div class="modal fade" id="edit_phone" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editLabel"> New phone number </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/driver/edit_telephoneNumber/${driver.id}" method="get" class="formWithValidation" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="phoneInput">Phone Number</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="telephone" name="telephone" id="phoneInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-10">
+                            <button type="submit" class="saveBtn btn-success">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <c:choose>
     <c:when test="${(driver.currentOrder.id==null) or (driver.currentOrder.status=='NOT_ASSIGNED')}">
         <br />
@@ -187,34 +213,7 @@
             <span class="text-white">Waypoints of order №${driver.currentOrder.id}</span>
         </button>
     </nav>
-    <div class="modal fade" id="edit_phone" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editLabel"> New phone number </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="/driver/edit_telephoneNumber/${driver.id}" method="get" class="formWithValidation" role="form">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="phoneInput">Phone Number</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="telephone" name="telephone" id="phoneInput"/>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-3 col-sm-10">
-                                <button type="submit" class="saveBtn btn-success">Save</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    </body><div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -224,12 +223,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="/driver/edit_state/${driver.id}" method="get" class="formWithValidation2" role="form">
+                    <form action="/driver/edit_state/${driver.id}" method="get" role="form">
                         <div class="form-group">
                             <label class="col-sm-3 control-label" for="stateInput">State</label>
                             <div class="col-sm-9">
                                 <select class="col-sm-20 state field" name="state" id="stateInput">
-                                    <c:forEach var="state" items="${drierState}">
+                                    <c:forEach var="state" items="${driverState}">
                                         <option value=${state.toString()}>${state.toString()}</option>
                                     </c:forEach>
                                 </select>
@@ -268,6 +267,7 @@
     </div>
     </c:otherwise>
 </c:choose>
+</body>
 <script>
     $("#edit_phone").on('show.bs.modal', function (e) {
         var telephone = $(e.relatedTarget).data('driver-telephone');
@@ -300,7 +300,7 @@
             form[i].parentElement.insertBefore(error, telephone)
         }
 
-        if (!telephone.value.match("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) {
+        if (!telephone.value.match("^\\d{1}[-]\\d{3}[-]\\d{3}[-]\\d{2}[-]\\d{2}$")) {
             errors_counter += 1
             var error = document.createElement('div')
             error.className = 'error'
@@ -317,7 +317,7 @@
 <script>
     $("#edit_state").on('show.bs.modal', function (e) {
         var state = $(e.relatedTarget).data('driver-state');
-        $('#phoneInput').val(state);
+        $('#stateInput').val(state);
     });
     $("#edit_state").on('hidden.bs.modal', function () {
         var form = $(this).find('form');

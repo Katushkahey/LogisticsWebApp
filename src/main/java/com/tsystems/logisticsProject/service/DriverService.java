@@ -1,10 +1,7 @@
 package com.tsystems.logisticsProject.service;
 
 
-import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.Order;
-import com.tsystems.logisticsProject.entity.User;
-import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 
 import java.util.List;
@@ -42,4 +39,6 @@ public interface DriverService {
     void editState(Long id, DriverState state);
 
     void finishOrder(Long id);
+
+//    List<Driver> findDriversForTruck(City city, int requiredNumberOfHours);
 }

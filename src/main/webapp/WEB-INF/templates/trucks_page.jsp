@@ -93,7 +93,7 @@
                                 <td scope="row" align="center">${truck.currentCity.name}</td>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
                                                                        data-toggle="modal" data-target="#edit_truck"
-                                                                       data-truck-id="${truck.id}"> Edit </button>
+                                                                       data-truck-id="${truck.id}"> Edit </button></td>
                                 <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/truck/delete_truck/${truck.id}"> Delete </a></td>
                             </tr>
@@ -277,7 +277,7 @@
                 form[i].parentElement.insertBefore(error, fields[i])
             }
         }
-        if (!number.value.match("[A-Z]{2}[0-9]{5}")) {
+        if (!number.value.match("^[A-Z]{2}[0-9]{5}$")) {
             errors_counter += 1
             var error2 = document.createElement('div')
             error2.className = 'error'
@@ -318,10 +318,8 @@
         $('#input5').val(null);
     });
     $("#create_truck").on('hidden.bs.modal', function () {
-        var form2 = document.querySelector('.formCreateWithValidation')
-        form2.alert("Изменения будут отменены");
         var form = $(this).find('form');
-        form2[0].reset();
+        form[0].reset();
     });
 
     var form2 = document.querySelector('.formCreateWithValidation')

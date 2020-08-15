@@ -20,7 +20,7 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     }
 
     public void add(Order order) {
-        sessionFactory.getCurrentSession().save(order);
+        sessionFactory.getCurrentSession().merge(order);
     }
 
     public void update(Order order) {

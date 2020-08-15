@@ -91,7 +91,14 @@
                                 <td scope="row" align="center">${driver.telephoneNumber}</td>
                                 <td scope="row" align="center">${driver.hoursThisMonth}</td>
                                 <td scope="row" align="center">${driver.currentCity.name}</td>
-                                <td scope="row" align="center">${driver.currentOrder.id}</td>
+                                <c:choose>
+                                   <c:when test="${driver.currentOrder.id==null}">
+                                       <td scope="row" align="center"> No </td>
+                                   </c:when>
+                                   <c:otherwise>
+                                       <td scope="row" align="center"> Yes </td>
+                                   </c:otherwise>
+                                </c:choose>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
                                                                        data-toggle="modal" data-target="#edit_driver"
                                                                        data-driver-id="${driver.id}"> Edit </button>
@@ -282,7 +289,7 @@
             surname.parentElement.insertBefore(error3, surname)
         }
 
-        if (!telephone.value.match("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) {
+        if (!telephone.value.match("^\\d{1}[-]\\d{3}[-]\\d{3}[-]\\d{2}[-]\\d{2}$")) {
             errors_counter += 1
             var error4 = document.createElement('div')
             error4.className = 'error'
@@ -355,7 +362,7 @@
             surname2.parentElement.insertBefore(error7, surname2)
         }
 
-        if (!telephone2.value.match("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) {
+        if (!telephone2.value.match("^\\d{1}[-]\\d{3}[-]\\d{3}[-]\\d{2}[-]\\d{2}$")) {
             errors_counter2 += 1
             var error8 = document.createElement('div')
             error8.className = 'error'

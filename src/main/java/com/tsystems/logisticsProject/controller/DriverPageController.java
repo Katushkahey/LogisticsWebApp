@@ -33,7 +33,7 @@ public class DriverPageController {
         model.addAttribute("waypoints", driverService.getListOfWaypointsFromPrincipal(username));
         model.addAttribute("driver", driverService.getDriverByPrincipalName(username));
         model.addAttribute("partner", driverService.getPartnerFromPrincipal(username));
-        model.addAttribute("drierState", DriverState.values());
+        model.addAttribute("driverState", DriverState.values());
 
         return "driver_menu";
     }

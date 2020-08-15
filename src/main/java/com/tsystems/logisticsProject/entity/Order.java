@@ -2,13 +2,9 @@ package com.tsystems.logisticsProject.entity;
 
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import lombok.*;
-import org.hibernate.collection.internal.PersistentList;
 
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Iterator;
+import javax.persistence.*;;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
@@ -28,19 +24,15 @@ public class Order extends AbstractEntity {
     @JoinColumn(name = "truck_id")
     private Truck orderTruck;
 
-//    @NonNull
-//    @OneToMany(mappedBy = "order")
-//    List<Cargo> cargoes;
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "order", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Cargo> cargoes;
 
 //    @ToString.Exclude
 //    @EqualsAndHashCode.Exclude
-//    @OneToMany(mappedBy = "currentOrder")
-//    private List<Driver> drivers;
-
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(fetch=FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
-    private List<Waypoint> waypoints;
+//    @OneToMany(mappedBy = "order", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
+//    private List<Waypoint> waypoints;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

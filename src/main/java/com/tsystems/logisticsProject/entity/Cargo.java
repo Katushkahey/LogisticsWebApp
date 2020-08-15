@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ManyToAny;
 
 import javax.persistence.*;
 import java.util.List;
@@ -25,12 +26,14 @@ public class Cargo extends AbstractEntity {
     @Column(name = "weight")
     private Double weight;
 
+    @NonNull
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "cargo")
+    @OneToMany(mappedBy = "cargo", cascade =  CascadeType.ALL)
     List<Waypoint> waypoints;
 
-    public Long getOrderId() {
-        return waypoints.get(0).getOrder().getId();
-    }
 }

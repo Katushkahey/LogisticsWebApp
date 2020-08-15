@@ -2,6 +2,7 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.TruckDao;
 import com.tsystems.logisticsProject.entity.Truck;
+import com.tsystems.logisticsProject.entity.enums.TruckState;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -57,5 +58,17 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
             return false;
         }
         return true;
+    }
+
+    public List<Truck> findTrucksForOrder(double maxOneTimeWeight) {
+        try {
+            return sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t WHERE t.capacity>=:weight" +
+                    " AND t.truckState=:state AND t.order is null", Truck.class)
+                    .setParameter("weight", maxOneTimeWeight)
+                    .setParameter("state", TruckState.OK)
+                    .getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

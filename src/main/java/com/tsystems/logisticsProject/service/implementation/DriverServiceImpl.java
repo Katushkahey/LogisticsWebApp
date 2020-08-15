@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -62,11 +63,17 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     public List<Waypoint> getListOfWaypointsFromPrincipal(String name) {
+        List<Waypoint> listOfWaypoints = new ArrayList<>();
         Order order = getCurrentOrderFromPrincipal(name);
         if (order == null) {
             return null;
         }
-        return order.getWaypoints();
+        List<Cargo> listOfCargoes = order.getCargoes();
+        for (Cargo cargo: listOfCargoes) {
+            listOfWaypoints.add(cargo.getWaypoints().get(0));
+            listOfWaypoints.add(cargo.getWaypoints().get(1));
+        }
+        return listOfWaypoints;
     }
 
     @Transactional
@@ -182,6 +189,8 @@ public class DriverServiceImpl implements DriverService {
                 driverToUpdate.setDriverState(state);
                 driverDao.update(driverToUpdate);
             }
+            driverToUpdate.setDriverState(state);
+            driverDao.update(driverToUpdate);
         } else {
             if (lastState == DriverState.REST || lastState == DriverState.SECOND_DRIVER) {
                 Date startWorkingTime = new Date();
@@ -189,19 +198,26 @@ public class DriverServiceImpl implements DriverService {
                 driverToUpdate.setDriverState(state);
                 driverDao.update(driverToUpdate);
             }
+            driverToUpdate.setDriverState(state);
+            driverDao.update(driverToUpdate);
         }
 
     }
 
     @Transactional
     public void finishOrder(Long id) {
+        List<Waypoint> listOfWaypointsForCompletedOrder = new ArrayList<>();
         Order completedOrder = orderService.findById(id);
         if (completedOrder == null) {
             return;
         }
-        List<Waypoint> listOfWaypointsForCompletedOrder = completedOrder.getWaypoints();
-        if (listOfWaypointsForCompletedOrder == null) {
+        List<Cargo> listOfCargoesForCompletedOrder = completedOrder.getCargoes();
+        if (listOfCargoesForCompletedOrder == null) {
             return;
+        }
+        for (Cargo cargo: listOfCargoesForCompletedOrder) {
+            listOfWaypointsForCompletedOrder.add(cargo.getWaypoints().get(0));
+            listOfWaypointsForCompletedOrder.add(cargo.getWaypoints().get(1));
         }
         for (Waypoint waypoint: listOfWaypointsForCompletedOrder) {
             waypoint.setStatus(WaypointStatus.DONE);
@@ -220,5 +236,9 @@ public class DriverServiceImpl implements DriverService {
         completedOrder.setCompletionDate(new Date().getTime());
         orderService.update(completedOrder);
     }
+
+//    public List<Driver> findDriversForTruck(City city, int requiredNumberOfHours) {
+//        driverDao.
+//    }
 
 }

@@ -24,7 +24,9 @@ public interface OrderService {
 
     Order findById(Long id);
 
-    Set<Cargo> getListOfCargoesForCurrentOrderById(Long id);
+    List<Cargo> getListOfCargoesForCurrentOrderById(Long id);
+
+    double getMaxWeightDuringTheRouteOfCurrentOrderById(Long id);
 
     void deleteById(Long id);
 
@@ -35,6 +37,8 @@ public interface OrderService {
     Map<Order, List<Driver>> getMapOfDriversForCompletedOrders();
 
     Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress();
+
+    void add(Order order);
 
     void update(Order order);
 

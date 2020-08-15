@@ -33,7 +33,7 @@ public class TruckController {
 
     @GetMapping("/edit_truck")
     public String editTruck(@RequestParam(name = "id") Long id, @RequestParam(name = "number") String number,
-                            @RequestParam(name = "capacity") Integer capacity, @RequestParam(name = "crew")
+                            @RequestParam(name = "capacity") Double capacity, @RequestParam(name = "crew")
                                     Integer crew, @RequestParam(name = "state") TruckState state,
                             @RequestParam(name = "city") String cityName) {
         if (truckService.checkEditedNumber(number, id)) {
@@ -45,7 +45,7 @@ public class TruckController {
     }
 
     @GetMapping("/create_truck")
-    public String createTruck(@RequestParam(name = "number") String number, @RequestParam(name = "capacity") Integer capacity,
+    public String createTruck(@RequestParam(name = "number") String number, @RequestParam(name = "capacity")Double capacity,
                               @RequestParam(name = "crew") Integer crew, @RequestParam(name = "state") TruckState state,
                               @RequestParam(name = "city") String cityName) {
 

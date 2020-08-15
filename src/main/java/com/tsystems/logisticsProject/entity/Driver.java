@@ -14,7 +14,7 @@ import java.time.YearMonth;
 @Table(name = "drivers")
 public class Driver extends AbstractEntity {
 
-    private static final int MAX_HOURS_IN_MONTH = 176;
+    public static final int MAX_HOURS_IN_MONTH = 176;
     private static LocalDate firstDayOfCurrentMounth = YearMonth.now().atDay( 1 );
 
 
@@ -69,5 +69,10 @@ public class Driver extends AbstractEntity {
 
     @Column(name = "start_working_time")
     private Long startWorkingTime;
+
+    @Override
+    public String toString() {
+        return "" + name + " " + surname;
+    }
 
 }
