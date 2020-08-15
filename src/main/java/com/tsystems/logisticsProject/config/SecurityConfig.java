@@ -1,6 +1,6 @@
 package com.tsystems.logisticsProject.config;
 
-import com.tsystems.logisticsProject.service.implementation.MySimpleUrlAuthenticationSuccessHandler;
+import com.tsystems.logisticsProject.util.MySimpleUrlAuthenticationSuccessHandler;
 import com.tsystems.logisticsProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

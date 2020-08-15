@@ -42,7 +42,7 @@
         <div class="tableTab">
             <table class="table">
                 <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center"> Details of
-                    orders № ${order}  </h5>
+                    order № ${order}  </h5>
                 <span class="text-black">
                     <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>

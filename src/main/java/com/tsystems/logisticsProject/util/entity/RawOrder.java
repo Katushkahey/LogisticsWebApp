@@ -1,4 +1,4 @@
-package com.tsystems.logisticsProject.util;
+package com.tsystems.logisticsProject.util.entity;
 
 import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.City;
@@ -80,7 +80,6 @@ public class RawOrder {
         for (Cargo cargo : listOfCargoes) {
             mapOfCargoes.put(cargo, 2);
         }
-//        listOfCargoes.clear();
     }
 
     public void addWaypoint(Long cargoId, String cityName) {

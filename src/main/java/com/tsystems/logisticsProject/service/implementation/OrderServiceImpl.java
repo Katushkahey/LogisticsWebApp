@@ -78,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public HashMap<Order, Double> findOrdersInProgress() {
         HashMap<Order, Double> ordersInProgressHashMap = new HashMap<>();
-        List<Order> ordersInProgress = orderDao.findWaitingOrders();
+        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
         for (Order order : ordersInProgress) {
             ordersInProgressHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
             mapOfDriversForOrdersInProgress.put(order, driverService.getParnersForCurrentOrder(order.getId()));
@@ -87,12 +87,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public Set<Cargo> getListOfCargoesForCurrentOrderById(Long id) {
-        List<Waypoint> waypoints = findWaypointsForCurrentOrderById(id);
-        for (Waypoint waypoint : waypoints) {
-            cargoes.add(waypoint.getCargo());
-        }
-        return cargoes;
+    public List<Cargo> getListOfCargoesForCurrentOrderById(Long id) {
+        return findById(id).getCargoes();
     }
 
     @Transactional

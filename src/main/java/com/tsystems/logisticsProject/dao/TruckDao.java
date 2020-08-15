@@ -20,4 +20,6 @@ public interface TruckDao extends GenericDao<Truck> {
 
     boolean checkEditedNumber(String number, Long id);
 
+    List<Truck> findTrucksForOrder(double maxOneTimeWeight);
+
 }

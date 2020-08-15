@@ -24,7 +24,9 @@ public interface OrderService {
 
     Order findById(Long id);
 
-    Set<Cargo> getListOfCargoesForCurrentOrderById(Long id);
+    List<Cargo> getListOfCargoesForCurrentOrderById(Long id);
+
+    double getMaxWeightDuringTheRouteOfCurrentOrderById(Long id);
 
     void deleteById(Long id);
 

@@ -60,7 +60,7 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup2">
             <div class="navbar-nav">
                 <a class="nav-link" href="/order/info"><strong> No assigned </strong></a>
-                <a class="nav-link" href="/order/info-3"><strong> Waiting </strong></a>
+                <a class="nav-link" href="/order/info-2"><strong> Waiting </strong></a>
                 <a class="nav-link active" href="/order/info-4"><strong><u> In Progress </u></strong><span class="sr-only">(current)</span></a>
                 <a class="nav-link" href="/order/info-3"><strong> Completed </strong></a>
             </div>

@@ -2,7 +2,7 @@ package com.tsystems.logisticsProject.controller;
 
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
-import com.tsystems.logisticsProject.util.RawOrder;
+import com.tsystems.logisticsProject.util.entity.RawOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

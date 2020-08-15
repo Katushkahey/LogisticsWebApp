@@ -189,6 +189,8 @@ public class DriverServiceImpl implements DriverService {
                 driverToUpdate.setDriverState(state);
                 driverDao.update(driverToUpdate);
             }
+            driverToUpdate.setDriverState(state);
+            driverDao.update(driverToUpdate);
         } else {
             if (lastState == DriverState.REST || lastState == DriverState.SECOND_DRIVER) {
                 Date startWorkingTime = new Date();
@@ -196,6 +198,8 @@ public class DriverServiceImpl implements DriverService {
                 driverToUpdate.setDriverState(state);
                 driverDao.update(driverToUpdate);
             }
+            driverToUpdate.setDriverState(state);
+            driverDao.update(driverToUpdate);
         }
 
     }
@@ -232,5 +236,9 @@ public class DriverServiceImpl implements DriverService {
         completedOrder.setCompletionDate(new Date().getTime());
         orderService.update(completedOrder);
     }
+
+//    public List<Driver> findDriversForTruck(City city, int requiredNumberOfHours) {
+//        driverDao.
+//    }
 
 }

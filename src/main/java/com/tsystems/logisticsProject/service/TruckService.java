@@ -27,4 +27,6 @@ public interface TruckService {
 
     double getMaxCapacity();
 
+    List<Truck> findTrucksForOrder(double maxOneTimeWeight);
+
 }

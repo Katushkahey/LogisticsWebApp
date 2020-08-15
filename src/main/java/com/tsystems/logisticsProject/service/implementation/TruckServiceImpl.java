@@ -100,4 +100,9 @@ public class TruckServiceImpl implements TruckService {
         return maxCapacity;
     }
 
+    @Transactional
+    public List<Truck> findTrucksForOrder(double maxOneTimeWeight) {
+        return truckDao.findTrucksForOrder(maxOneTimeWeight);
+    }
+
 }

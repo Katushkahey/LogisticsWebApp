@@ -1,4 +1,4 @@
-package com.tsystems.logisticsProject.service.implementation;
+package com.tsystems.logisticsProject.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
