@@ -40,5 +40,5 @@ public interface DriverService {
 
     void finishOrder(Long id);
 
-//    List<Driver> findDriversForTruck(City city, int requiredNumberOfHours);
+    List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver);
 }

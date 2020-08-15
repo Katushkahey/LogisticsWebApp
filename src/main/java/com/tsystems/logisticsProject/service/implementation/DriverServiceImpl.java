@@ -237,8 +237,8 @@ public class DriverServiceImpl implements DriverService {
         orderService.update(completedOrder);
     }
 
-//    public List<Driver> findDriversForTruck(City city, int requiredNumberOfHours) {
-//        driverDao.
-//    }
+    public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
+       return driverDao.findDriversForTruck(city, maxSpentTimeForDriver);
+    }
 
 }

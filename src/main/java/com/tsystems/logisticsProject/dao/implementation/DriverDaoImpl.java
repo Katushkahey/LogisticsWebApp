@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.DriverDao;
+import com.tsystems.logisticsProject.entity.City;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.User;
@@ -78,6 +79,18 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
             return false;
         }
         return true;
+    }
+
+    public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
+        try {
+            return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.currentCity=:city" +
+                    "AND d.hoursThisMonth<=:hours and d.currentOrder is null", Driver.class)
+                    .setParameter("city", city)
+                    .setParameter("hours", maxSpentTimeForDriver)
+                    .getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
 }

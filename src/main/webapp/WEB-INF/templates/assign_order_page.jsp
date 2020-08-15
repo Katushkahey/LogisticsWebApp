@@ -45,22 +45,20 @@
                 <span class="text-black">
                     <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>
-                                <th scope="col"> № </th>
                                 <th scope="col"> Truck </th>
                                 <th scope="col"> Drivers </th>
-                                <th scope="col"> Number of days to complete the order </th>
+                                <th scope="col"> Number of hours to complete the order </th>
                                 <th scope="col"> Total billable hours </th>
                                 <th scope="col"> Choose </th>
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="truck" items="${trucks}">
-                            <tr id="truck-${truck.id}">
-                                <td scope="row" align="center">${truck.id}</td>
-                                <td scope="row" align="center">${truck.number}</td>
-                                <td scope="row" align="center">${drivers}</td>
-                                <td scope="row" align="center">5</td>
-                                <td scope="row" align="center">120</td>
+                        <c:forEach var="combination" items="${listOfCombinations}">
+                            <tr id="combination-${combination.id}">
+                                <td scope="row" align="center">${combination.truck.number}</td>
+                                <td scope="row" align="center">${combination.listOfDrivers}</td>
+                                <td scope="row" align="center">${combination.totalHours}</td>
+                                <td scope="row" align="center">${combination.totalBillableHours}</td>
                                 <td scope="row" align="center"><a class="btn btn-success"
                                                        href="choose_assignment"> Choose </a>
                             </tr>

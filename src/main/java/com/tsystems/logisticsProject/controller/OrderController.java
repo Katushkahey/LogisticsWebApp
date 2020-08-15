@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.controller;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.TruckService;
+import com.tsystems.logisticsProject.util.OrderAssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,9 @@ public class OrderController {
 
     @Autowired
     private DriverService driverService;
+
+    @Autowired
+    private OrderAssignmentService orderAssignmentService;
 
     @GetMapping("/info-2")
     public String waytingOrders(Model model) {
@@ -70,12 +74,10 @@ public class OrderController {
     @GetMapping("/assign_order/{id}")
     public String assignOrder(@PathVariable("id") Long id, Model model) {
         model.addAttribute("order", id);
-        model.addAttribute("trucks", truckService.getListOfTrucks());
-        model.addAttribute("drivers", driverService.getListOfDrivers().subList(0, 2));
-        model.addAttribute("waypoints", orderService.findWaypointsForCurrentOrderById(id));
-        model.addAttribute("order_status", orderService.findById(id).getStatus());
+        model.addAttribute("listOfCombinations", orderAssignmentService.createListOfCombinationsForOrder(id));
         return "assign_order_page";
     }
+
     @GetMapping("/assign_order/choose_assignment")
     public String saveOrder() {
         return "redirect:/order/info";
