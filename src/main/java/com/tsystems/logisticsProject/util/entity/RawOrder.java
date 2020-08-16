@@ -5,6 +5,8 @@ import com.tsystems.logisticsProject.entity.City;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
+import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.service.CargoService;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.OrderService;
@@ -174,23 +176,26 @@ public class RawOrder {
                 for (Waypoint waypoint : listOfWaypoint) {
                     if (waypoint.getId() == id) {
                         listOfWaypoint.remove(waypoint);
+                        break;
                     }
                 }
             }
         }
     }
 
-    public void saveOrder() {
-        for (Waypoint waypoint : listOfWaypoints) {
-            waypoint.setId(null);
-            waypoint.getCargo().setId(null);
-
-        }
+    public void saveOrder(String number) {
         Order order = new Order();
-        order.setCargoes(listOfCargoes);
-        for (Cargo cargo : listOfCargoes) {
-            cargo.setOrder(order);
+        order.setStatus(OrderStatus.NOT_ASSIGNED);
+        order.setNumber(number);
+        for (Waypoint waypoint : listOfWaypoints) {
+            waypoint.setSequence(waypoint.getId());
+            waypoint.setId(null);
+            waypoint.setStatus(WaypointStatus.TODO);
+            waypoint.getCargo().setId(null);
+            waypoint.getCargo().setOrder(order);
         }
+
+        order.setCargoes(listOfCargoes);
         orderService.add(order);
         clearAll();
     }

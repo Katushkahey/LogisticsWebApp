@@ -79,8 +79,8 @@ public class CreateOrderController {
     }
 
     @GetMapping("save_order")
-    public String saveOrder() {
-        rawOrder.saveOrder();
+    public String saveOrder(@RequestParam("orderNumber") String number) {
+        rawOrder.saveOrder(number);
         return "redirect:/order/info";
     }
 

@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 antMatchers("/login").anonymous().
                 antMatchers("/", "/driver/**", "/admin/**").authenticated().
                 antMatchers("/driver/**").hasRole("DRIVER").
-                antMatchers("/admin/**", "/order/**", "/truck/*").hasRole("ADMIN").
+                antMatchers("/admin/**", "/order/**", "/truck/*", "/drivers/**", "/create_order/**").hasRole("ADMIN").
 
                 and().
                 formLogin().

@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;;
 import java.util.List;
+import java.util.Random;
 
 @Data
 @Entity
@@ -29,15 +30,14 @@ public class Order extends AbstractEntity {
     @OneToMany(mappedBy = "order", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Cargo> cargoes;
 
-//    @ToString.Exclude
-//    @EqualsAndHashCode.Exclude
-//    @OneToMany(mappedBy = "order", fetch=FetchType.EAGER, cascade = CascadeType.ALL)
-//    private List<Waypoint> waypoints;
-
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @Column(name = "completion_date")
     private Long completionDate;
+
+    @Column(name = "number")
+    private String number;
+
 }

@@ -46,7 +46,7 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
     }
 
     public List<Driver> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d", Driver.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d order by d.id", Driver.class)
                 .getResultList();
     }
 

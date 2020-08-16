@@ -63,17 +63,11 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     public List<Waypoint> getListOfWaypointsFromPrincipal(String name) {
-        List<Waypoint> listOfWaypoints = new ArrayList<>();
         Order order = getCurrentOrderFromPrincipal(name);
         if (order == null) {
             return null;
         }
-        List<Cargo> listOfCargoes = order.getCargoes();
-        for (Cargo cargo: listOfCargoes) {
-            listOfWaypoints.add(cargo.getWaypoints().get(0));
-            listOfWaypoints.add(cargo.getWaypoints().get(1));
-        }
-        return listOfWaypoints;
+        return orderService.findWaypointsForCurrentOrderById(order.getId());
     }
 
     @Transactional
@@ -150,6 +144,7 @@ public class DriverServiceImpl implements DriverService {
         driver.setSurname(surname);
         driver.setTelephoneNumber(telephoneNumber);
         driver.setCurrentCity(cityService.findByCityName(cityName));
+        driver.setDriverState(DriverState.REST);
         driver.setUser(user);
         driverDao.add(driver);
     }
@@ -185,7 +180,8 @@ public class DriverServiceImpl implements DriverService {
                 Date endWorkingTime = new Date();
                 Date startWorkingTime = new Date(driverToUpdate.getStartWorkingTime());
                 Long totalWorkingTimePerInterval = endWorkingTime.getTime() - startWorkingTime.getTime();
-                driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingTimePerInterval);
+                int totalWorkingHoursPerInterval = (int)Math.ceil(totalWorkingTimePerInterval / 1000 / 60 / 60);
+                driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingHoursPerInterval);
                 driverToUpdate.setDriverState(state);
                 driverDao.update(driverToUpdate);
             }
@@ -201,7 +197,6 @@ public class DriverServiceImpl implements DriverService {
             driverToUpdate.setDriverState(state);
             driverDao.update(driverToUpdate);
         }
-
     }
 
     @Transactional

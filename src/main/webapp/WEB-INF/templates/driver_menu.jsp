@@ -210,7 +210,7 @@
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
                 aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
-            <span class="text-white">Waypoints of order №${driver.currentOrder.id}</span>
+            <span class="text-white">Waypoints of order №${driver.currentOrder.number}</span>
         </button>
     </nav>
     <div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">

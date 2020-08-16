@@ -22,8 +22,8 @@
         }
 
         .mainDiv {
-            width: 60%;
-            height: 400px;
+            width: 65%;
+            height: 450px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -83,9 +83,9 @@
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="driver" items="${listOfDrivers}">
+                        <c:forEach var="driver" items="${listOfDrivers}" varStatus="loop">
                             <tr id="driver-${driver.id}">
-                                <td scope="row" align="center">${driver.id}</td>
+                                <td scope="row" align="center">${loop.count}</td>
                                 <td scope="row" align="center">${driver.name}</td>
                                 <td scope="row" align="center">${driver.surname}</td>
                                 <td scope="row" align="center">${driver.telephoneNumber}</td>
@@ -93,10 +93,10 @@
                                 <td scope="row" align="center">${driver.currentCity.name}</td>
                                 <c:choose>
                                    <c:when test="${driver.currentOrder.id==null}">
-                                       <td scope="row" align="center"> No </td>
+                                       <td scope="row" align="center"> Yes </td>
                                    </c:when>
                                    <c:otherwise>
-                                       <td scope="row" align="center"> Yes </td>
+                                       <td scope="row" align="center"> No </td>
                                    </c:otherwise>
                                 </c:choose>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
@@ -124,9 +124,9 @@
             <div class="modal-body">
                 <form action="/drivers/edit_driver/" method="get" class="formWithValidation" role="form">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="idInput">ID</label>
+                        <label class="col-sm-3 control-label" for="idInput" visibility: hidden>ID</label>
                         <div class="col-sm-9">
-                            <input type="number" readonly
+                            <input visibility: hidden type="number" readonly
                                    class="id field" name="id" id="idInput"/>
                         </div>
                     </div>
@@ -229,7 +229,7 @@
     $("#edit_driver").on('show.bs.modal', function (e) {
         var driverId = $(e.relatedTarget).data('driver-id');
         var cols = $('#driver-' + driverId + ' td');
-        var id = $(cols[0]).text();
+        var id = driverId
         var name = $(cols[1]).text();
         var surname = $(cols[2]).text();
         var telephone = $(cols[3]).text();

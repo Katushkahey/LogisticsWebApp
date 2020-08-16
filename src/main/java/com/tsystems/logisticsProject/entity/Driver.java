@@ -39,7 +39,7 @@ public class Driver extends AbstractEntity {
 
     @ToString.Exclude
     @Column(name = "hours_this_month")
-    private Long hoursThisMonth;
+    private int hoursThisMonth;
 
     @ToString.Exclude
     @NonNull

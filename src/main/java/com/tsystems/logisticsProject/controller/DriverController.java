@@ -43,9 +43,10 @@ public class DriverController {
                                @RequestParam("userName") String userName) {
         if (driverService.findDriverByTelephoneNumber(telephoneNumber)) {
             return "error"; //водитель с таким номером телефона уже существует
-        } else if (driverService.returnUserToCreateDriver(userName) == null) {
-            return "error";  //данное имя пользователя уже занято
         }
+// else if (driverService.returnUserToCreateDriver(userName) == null) {
+//            return "error";  //данное имя пользователя уже занято
+//        }
         driverService.add(name, surname, telephoneNumber, cityName, driverService.returnUserToCreateDriver(userName));
 //        альтернативный вариант с User:
 

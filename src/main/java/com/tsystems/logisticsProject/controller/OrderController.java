@@ -19,16 +19,11 @@ public class OrderController {
     private OrderService orderService;
 
     @Autowired
-    private TruckService truckService;
-
-    @Autowired
-    private DriverService driverService;
-
-    @Autowired
     private OrderAssignmentService orderAssignmentService;
 
     @GetMapping("/info-2")
     public String waytingOrders(Model model) {
+        model.addAttribute("listOfWaypoints", orderService.findListOfWaypointsForWaytingOrders());
         model.addAttribute("mapOfOrders", orderService.findWaitingOrders());
         model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForWaitingOrders());
         return "orders_wayting_page";
@@ -36,6 +31,7 @@ public class OrderController {
 
     @GetMapping("/info-3")
     public String completedOrders(Model model) {
+        model.addAttribute("listOfWaypoints", orderService.findListOfWaypointsForCompletedOrders());
         model.addAttribute("mapOfOrders", orderService.findCompletedOrders());
         model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForCompletedOrders());
         return "orders_completed_page";
@@ -43,6 +39,7 @@ public class OrderController {
 
     @GetMapping("/info-4")
     public String ordersInProgress(Model model) {
+        model.addAttribute("listOfWaypoints", orderService.findListOfWaypointsForOrdersInProgress());
         model.addAttribute("mapOfOrders", orderService.findOrdersInProgress());
         model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForOrdersInProgress());
         return "orders_in_progress_page";
@@ -58,6 +55,7 @@ public class OrderController {
 
     @GetMapping("/info")
     public String OrdersInfo(Model model) {
+        model.addAttribute("listOfWaypoints", orderService.findListOfWaypointsForUnassignedOrders());
         model.addAttribute("mapOfOrders", orderService.findUnassignedOrders());
         model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
         return "orders_no_assigned_page";

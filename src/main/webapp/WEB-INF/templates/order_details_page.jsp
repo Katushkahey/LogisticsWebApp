@@ -41,8 +41,7 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center"> Details of
-                    order № ${order}  </h5>
+                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center"> Details of order № ${order}  </h5>
                 <span class="text-black">
                     <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>
@@ -56,9 +55,9 @@
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="waypoint" items="${waypoints}">
+                        <c:forEach var="waypoint" items="${waypoints}" varStatus="loop">
                             <tr id="waypoint-${waypoint.id}">
-                                <td scope="row" align="center">${waypoint.id}</td>
+                                <td scope="row" align="center">${loop.count}</td>
                                 <td scope="row" align="center">${waypoint.cargo.name}</td>
                                 <td scope="row" align="center">${waypoint.cargo.weight}</td>
                                 <td scope="row" align="center">${waypoint.city.name}</td>

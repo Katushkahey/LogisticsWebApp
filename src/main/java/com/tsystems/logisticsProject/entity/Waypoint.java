@@ -43,4 +43,8 @@ public class Waypoint extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private WaypointStatus status;
 
+    @NonNull
+    @Column(name = "sequence")
+    private Long sequence;
+
 }

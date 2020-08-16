@@ -9,6 +9,7 @@ import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
+import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,15 +31,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private DriverService driverService;
 
+    @Autowired
+    private WaypointService waypointService;
+
     @Transactional
     public List<Waypoint> findWaypointsForCurrentOrderById(Long id) {
-        List<Waypoint> listOfWaypoints = new ArrayList<>();
-        List<Cargo> listOfCargoes = orderDao.findById(id).getCargoes();
-        for(Cargo cargo: listOfCargoes) {
-            listOfWaypoints.add(cargo.getWaypoints().get(0));
-            listOfWaypoints.add(cargo.getWaypoints().get(1));
-        }
-        return listOfWaypoints;
+        return waypointService.getListOfWaypointsByOrderId(id);
     }
 
     @Transactional
@@ -84,6 +82,39 @@ public class OrderServiceImpl implements OrderService {
             mapOfDriversForOrdersInProgress.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return ordersInProgressHashMap;
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForCompletedOrders() {
+        List<Order> completedOrders = orderDao.findCompetedOrders();
+        return findListOfWaypointsForOrders(completedOrders);
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForWaytingOrders() {
+        List<Order> waitingOrders = orderDao.findWaitingOrders();
+        return findListOfWaypointsForOrders(waitingOrders);
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForOrdersInProgress() {
+        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
+        return findListOfWaypointsForOrders(ordersInProgress);
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForUnassignedOrders() {
+        List<Order> unassignedOrders = orderDao.findUnassignedOrders();
+        return findListOfWaypointsForOrders(unassignedOrders);
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForOrders(List<Order> listOfOrders) {
+        HashMap<Order, List<Waypoint>> mapOfWaypoints = new HashMap<>();
+        for (Order order : listOfOrders) {
+            mapOfWaypoints.put(order, findWaypointsForCurrentOrderById(order.getId()));
+        }
+        return mapOfWaypoints;
     }
 
     @Transactional

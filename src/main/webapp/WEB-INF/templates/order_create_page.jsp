@@ -94,7 +94,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label" for="createWeightInput"> Weight </label>
+                                <label class="col-sm-3 control-label" for="createWeightInput"> Weight, kg </label>
                                 <div class="col-sm-9">
                                     <input type="number" class="weight field" name="weight" id="createWeightInput"/>
                                 </div>
@@ -128,9 +128,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="cargo" items="${listOfCargoes}">
+                                        <c:forEach var="cargo" items="${listOfCargoes}" varStatus="loop">
                                             <tr id="cargo-${cargo.id}">
-                                                <td scope="row" align="center">${cargo.id}</td>
+                                                <td scope="row" align="center">${loop.count}</td>
                                                 <td scope="row" align="center">${cargo.name}</td>
                                                 <td scope="row" align="center">${cargo.weight}</td>
                                                 <td scope="row" align="center"><button type="button"
@@ -165,9 +165,9 @@
                                 <form action="/create_order/edit_cargo" method="get" class="formEditWithValidation"
                                       role="form">
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="idInput">ID</label>
+                                        <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
                                         <div class="col-sm-9">
-                                            <input type="number" readonly
+                                            <input type="number" readonly visibility: hidden
                                                    class="id field" name="id" id="idInput"/>
                                         </div>
                                     </div>
@@ -178,7 +178,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="weightInput">Weight</label>
+                                        <label class="col-sm-3 control-label" for="weightInput">Weight, kg</label>
                                         <div class="col-sm-9">
                                             <input type="number" class="weight field" name="weight" id="weightInput"/>
                                         </div>
@@ -262,9 +262,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="waypoint" items="${listOfWaypoints}">
+                                        <c:forEach var="waypoint" items="${listOfWaypoints}" varStatus="loop">
                                             <tr id="waypoint-${waypoint.id}">
-                                                <td scope="row" align="center">${waypoint.id}</td>
+                                                <td scope="row" align="center">${loop.count}</td>
                                                 <td scope="row" align="center">${waypoint.cargo.name}</td>
                                                 <td scope="row" align="center">${waypoint.cargo.weight}</td>
                                                 <td scope="row" align="center">${waypoint.city.name}</td>
@@ -374,9 +374,9 @@
                         <form action="/create_order/edit_waypoint" method="get" class="formCreateWithValidation3"
                               role="form">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label" for="idEditInput">ID</label>
+                                <label class="col-sm-3 control-label" visibility: hidden for="idEditInput">ID</label>
                                 <div class="col-sm-9">
-                                    <input type="number" readonly
+                                    <input type="number" readonly visibility: hidden
                                            class="id field" name="id" id="idEditInput"/>
                                 </div>
                             </div>
@@ -423,8 +423,14 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/create_order/save_order" method="get" class="formWithValidation4" role="form">
+                        <form action="/create_order/save_order" method="get" class="formWithValidation40" role="form">
                             Are you sure, that you want to save this order?
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="orderNumber">OrderNumber</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="orderNumber field" name="orderNumber" id="orderNumber"/>
+                                </div>
+                            </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
                                 <button type="submit" class="btn btn-success"> Yes</button>
@@ -660,6 +666,44 @@
 
         if (errors_counter4 < 1) {
             form4.submit()
+        }
+    })
+</script>
+<script>
+    $("#save_order").on('show.bs.modal', function (e) {
+
+    });
+    $("#save_order").on('hidden.bs.modal', function () {
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+
+    var form40 = document.querySelector('.formCreateWithValidation40')
+    var fields40 = form40.querySelectorAll('.field')
+
+    form40.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        var errors = form40.querySelectorAll('.error')
+
+        for (var i = 0; i < errors.length; i++) {
+            errors[i].remove()
+        }
+
+        var errors_counter40 = 0
+        for (var i = 0; i < fields40.length; i++) {
+            if (!fields40[i].value) {
+                errors_counter40 += 1
+                var error = document.createElement('div')
+                error.className = 'error'
+                error.style.color = 'red'
+                error.innerHTML = 'Can`t be empty'
+                form40[i].parentElement.insertBefore(error, fields40[i])
+            }
+        }
+
+        if (errors_counter40 < 1) {
+            form40.submit()
         }
     })
 </script>

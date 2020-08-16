@@ -33,7 +33,7 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
     }
 
     public List<Truck> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t", Truck.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t order by t.id", Truck.class)
                 .getResultList();
     }
 

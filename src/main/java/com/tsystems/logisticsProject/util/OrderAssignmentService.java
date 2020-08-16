@@ -241,14 +241,6 @@ public class OrderAssignmentService {
         return listOfDriversToReturn;
     }
 
-    private int calculateRequiredNumberOfHours(int hoursForOrderFromThisCity) {
-        if (hoursForOrderFromThisCity < hoursToEndMonth) {
-            return hoursForOrderFromThisCity;
-        } else {
-            return hoursToEndMonth;
-        }
-    }
-
     private static void calculateLeftTime() {
         int year = YearMonth.now().getYear();
         int month = YearMonth.now().getMonthValue();
@@ -288,7 +280,7 @@ public class OrderAssignmentService {
     }
 
     private List<Truck> getListOfTruckForOrder(Long orderId) {
-        double maxWeightForOrder = calculateMaxOneTimeWeightForOrder(orderId);
+        double maxWeightForOrder = calculateMaxOneTimeWeightForOrder(orderId) / 1000;
         return truckService.findTrucksForOrder(maxWeightForOrder);
     }
 
@@ -307,7 +299,6 @@ public class OrderAssignmentService {
         }
         return mapOfMaxOptionalNumberOfDrivers;
     }
-
 
     private Map<City, Integer> calculateTimeForOrderFromEveryCity(Set<City> setOfCities, Long orderId) {
         int hoursForLoadingUnloading = calculateHoursForLoadingUnloading(orderId);

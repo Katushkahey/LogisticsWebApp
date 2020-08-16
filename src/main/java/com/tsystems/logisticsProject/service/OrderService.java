@@ -44,4 +44,12 @@ public interface OrderService {
 
     void startOrder(Long id);
 
+    HashMap<Order, List<Waypoint>> findListOfWaypointsForCompletedOrders();
+
+    HashMap<Order, List<Waypoint>> findListOfWaypointsForWaytingOrders();
+
+    HashMap<Order, List<Waypoint>> findListOfWaypointsForOrdersInProgress();
+
+    HashMap<Order, List<Waypoint>> findListOfWaypointsForUnassignedOrders();
+
 }
