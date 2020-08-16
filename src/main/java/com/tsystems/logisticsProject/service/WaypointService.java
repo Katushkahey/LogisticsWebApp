@@ -14,4 +14,7 @@ public interface WaypointService {
 
     List<Waypoint> getListOfWaypointsByOrderId(Long orderId);
 
+    void editWaypoint(Long waypointId, String cargoName, double cargoWeight, String cityName);
+
+    boolean deleteWaypoint(Long orderId, Long waypointId);
 }

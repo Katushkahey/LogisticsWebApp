@@ -79,7 +79,11 @@ public class CreateOrderController {
     }
 
     @GetMapping("save_order")
-    public String saveOrder(@RequestParam("orderNumber") String number) {
+    public String saveOrder(@RequestParam("orderNumber") String number, Model model) {
+        if (!rawOrder.checkMaxWeightOfOrder()) {
+            model.addAttribute("error", true);
+            return "error";
+        }
         rawOrder.saveOrder(number);
         return "redirect:/order/info";
     }

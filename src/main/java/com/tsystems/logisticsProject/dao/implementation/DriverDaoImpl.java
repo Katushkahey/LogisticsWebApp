@@ -84,7 +84,7 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
     public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
         try {
             return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.currentCity=:city" +
-                    "AND d.hoursThisMonth<=:hours and d.currentOrder is null", Driver.class)
+                    " AND d.hoursThisMonth<=:hours and d.currentOrder is null", Driver.class)
                     .setParameter("city", city)
                     .setParameter("hours", maxSpentTimeForDriver)
                     .getResultList();

@@ -340,17 +340,34 @@ public class OrderAssignmentService {
         return getListOfWaypointsForCurrentOrderById(orderId).size() / 2;
     }
 
+//    private Double calculateDistanceBetweenWaypointsForOrderById(Long id) {
+//        Waypoint waypointFrom;
+//        Waypoint waypointTo;
+//        double distanceBetweenWaypointsOfOrder = 0;
+//        Waypoint[] arrayOfWaypoints = (Waypoint[]) getListOfWaypointsForCurrentOrderById(id).toArray();
+//
+//        for (int i = 0; i < arrayOfWaypoints.length - 1; i++) {
+//            waypointFrom = arrayOfWaypoints[i];
+//            waypointTo = arrayOfWaypoints[i + 1];
+//            double distanceBetweenCurrentWaypoints = calculateDistanceBetweenTwoCities(waypointFrom.getCity(), waypointTo.getCity());
+//            distanceBetweenWaypointsOfOrder += distanceBetweenCurrentWaypoints;
+//        }
+//        return distanceBetweenWaypointsOfOrder;
+//    }
+
     private Double calculateDistanceBetweenWaypointsForOrderById(Long id) {
         Waypoint waypointFrom;
         Waypoint waypointTo;
         double distanceBetweenWaypointsOfOrder = 0;
-        Waypoint[] arrayOfWaypoints = (Waypoint[]) getListOfWaypointsForCurrentOrderById(id).toArray();
+        List<Waypoint> listOfWaypoint = getListOfWaypointsForCurrentOrderById(id);
 
-        for (int i = 0; i < arrayOfWaypoints.length - 1; i++) {
-            waypointFrom = arrayOfWaypoints[i];
-            waypointTo = arrayOfWaypoints[i + 1];
+        int i = 0;
+        while (i < listOfWaypoint.size() - 1) {
+            waypointFrom = listOfWaypoint.get(i);
+            waypointTo = listOfWaypoint.get(i + 1);
             double distanceBetweenCurrentWaypoints = calculateDistanceBetweenTwoCities(waypointFrom.getCity(), waypointTo.getCity());
             distanceBetweenWaypointsOfOrder += distanceBetweenCurrentWaypoints;
+            i++;
         }
         return distanceBetweenWaypointsOfOrder;
     }

@@ -82,7 +82,7 @@
                                 <th scope="col"> Number </th>
                                 <th scope="col"> Drivers </th>
                                 <th scope="col"> Truck </th>
-                                <th scope="col"> Max weight </th>
+                                <th scope="col"> Max weight, kg </th>
                                 <th scope="col"> List of cargoes </th>
                                 <th scope="col"> City From </th>
                                 <th scope="col"> City To </th>

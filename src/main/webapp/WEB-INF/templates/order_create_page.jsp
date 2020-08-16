@@ -122,7 +122,7 @@
                                         <tr>
                                             <th scope="col"> № </th>
                                             <th scope="col"> Cargo </th>
-                                            <th scope="col"> Weight </th>
+                                            <th scope="col"> Weight, kg </th>
                                             <th scope="col"> Edit </th>
                                             <th scope="col"> Delete </th>
                                         </tr>
@@ -254,7 +254,7 @@
                                         <tr>
                                             <th scope="col"> № </th>
                                             <th scope="col"> Cargo </th>
-                                            <th scope="col"> Weight </th>
+                                            <th scope="col"> Weight, kg </th>
                                             <th scope="col"> City </th>
                                             <th scope="col"> Action </th>
                                             <th scope="col"> Change City </th>
@@ -422,6 +422,11 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+                    <c:choose>
+                        <c:when test="${error eq true}">
+                            <div><h2> Total One-Moment weight of this order bigger than the biggest truck`s capacity </h2></div>
+                        </c:when>
+                    </c:choose>
                     <div class="modal-body">
                         <form action="/create_order/save_order" method="get" class="formWithValidation40" role="form">
                             Are you sure, that you want to save this order?
@@ -678,7 +683,7 @@
         form[0].reset();
     });
 
-    var form40 = document.querySelector('.formCreateWithValidation40')
+    var form40 = document.querySelector('.formWithValidation40')
     var fields40 = form40.querySelectorAll('.field')
 
     form40.addEventListener("submit", function (event) {

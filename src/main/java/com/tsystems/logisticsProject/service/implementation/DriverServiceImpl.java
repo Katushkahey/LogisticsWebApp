@@ -133,6 +133,7 @@ public class DriverServiceImpl implements DriverService {
         return userToReturn;
     }
 
+    @Transactional
     public boolean checkUserNameToCreateDriver(String userName) {
         return userService.checkUserNameToCreateDriver(userName);
     }
@@ -232,6 +233,7 @@ public class DriverServiceImpl implements DriverService {
         orderService.update(completedOrder);
     }
 
+    @Transactional
     public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
        return driverDao.findDriversForTruck(city, maxSpentTimeForDriver);
     }

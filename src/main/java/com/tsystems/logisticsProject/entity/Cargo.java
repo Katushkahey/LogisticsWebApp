@@ -38,4 +38,8 @@ public class Cargo extends AbstractEntity {
     @OneToMany(mappedBy = "cargo", cascade = CascadeType.ALL)
     List<Waypoint> waypoints;
 
+    @Override
+    public String toString() {
+        return "" + name + ": " + weight + ",kg";
+    }
 }

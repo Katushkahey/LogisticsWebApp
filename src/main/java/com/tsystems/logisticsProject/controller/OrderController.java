@@ -1,8 +1,7 @@
 package com.tsystems.logisticsProject.controller;
 
-import com.tsystems.logisticsProject.service.DriverService;
-import com.tsystems.logisticsProject.service.OrderService;
-import com.tsystems.logisticsProject.service.TruckService;
+import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.service.*;
 import com.tsystems.logisticsProject.util.OrderAssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/order")
@@ -17,6 +17,15 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private CityService cityService;
+
+    @Autowired
+    private TruckService truckService;
+
+    @Autowired
+    private WaypointService waypointService;
 
     @Autowired
     private OrderAssignmentService orderAssignmentService;
@@ -47,7 +56,9 @@ public class OrderController {
 
     @GetMapping("/show_info/{id}")
     public String showDetails(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("order", id);
+        model.addAttribute("order", orderService.findById(id));
+        model.addAttribute("maxWeight", truckService.getMaxCapacity());
+        model.addAttribute("listOfCities", cityService.getListOfCities());
         model.addAttribute("waypoints", orderService.findWaypointsForCurrentOrderById(id));
         model.addAttribute("order_status", orderService.findById(id).getStatus());
         return "order_details_page";
@@ -79,6 +90,27 @@ public class OrderController {
     @GetMapping("/assign_order/choose_assignment")
     public String saveOrder() {
         return "redirect:/order/info";
+    }
+
+    @GetMapping("/edit_waypoint/{id}")
+    public String editWaypoint(@PathVariable("id") Long orderId, @RequestParam("id") Long waypointId,
+                               @RequestParam("cargoName") String cargoName, @RequestParam("weight") double weight,
+                               @RequestParam("city") String city, Model model) {
+        model.addAttribute("id", orderId);
+        waypointService.editWaypoint(waypointId, cargoName, weight, city);
+
+        return "redirect:/order/show_info/{id}";
+    }
+
+    @GetMapping("/delete_waypoint/{orderId}/{waypointId}")
+    public String deleteWaypoint(@PathVariable("orderId") Long orderId, @PathVariable("waypointId") Long waypointId,
+                                 Model model) {
+        model.addAttribute("id", orderId);
+        if(waypointService.deleteWaypoint(orderId, waypointId)) {
+            return "redirect:/order/info";
+        }
+
+        return "redirect:/order/show_info/{id}";
     }
 
 }
