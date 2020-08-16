@@ -99,10 +99,21 @@
                                 </c:choose>
                                 <td scope="row" align="center">${truck.currentCity.name}</td>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
+                                        <c:if test="${truck.order!=null}"><c:out value="disabled='disabled'"/></c:if>
                                                                        data-toggle="modal" data-target="#edit_truck"
                                                                        data-truck-id="${truck.id}"> Edit </button></td>
-                                <td scope="row" align="center"><a class="btn btn-danger"
+                                <c:choose>
+                                <c:when test="${truck.order!= null}">
+                                        <td scope="row" align="center"><button type="button" class="btn btn-secondary"
+                                                                               value="disabled='disabled'"> Delete </button></td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/truck/delete_truck/${truck.id}"> Delete </a></td>
+                                    </c:otherwise>
+                                </c:choose>
+
+
                             </tr>
                         </c:forEach>
                     </tbody>

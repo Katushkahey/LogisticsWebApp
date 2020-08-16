@@ -190,6 +190,10 @@ public class OrderServiceImpl implements OrderService {
         orderToUpdate.setOrderTruck(truck);
         orderToUpdate.setDrivers(listOfDrivers);
         orderToUpdate.setStatus(OrderStatus.WAITING);
+        for (Driver driver : listOfDrivers) {
+            driver.setCurrentOrder(orderToUpdate);
+            driverService.update(driver);
+        }
         orderDao.update(orderToUpdate);
     }
 

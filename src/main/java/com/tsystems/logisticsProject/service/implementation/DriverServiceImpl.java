@@ -71,7 +71,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
-    public Driver getPartnerFromPrincipal(String name) {
+    public List<Driver> getPartnersFromPrincipal(String name) {
         Driver currentDriver = getDriverByPrincipalName(name);
         Order currentOrder = getCurrentOrderFromPrincipal(name);
         if (currentOrder == null) {
@@ -87,7 +87,7 @@ public class DriverServiceImpl implements DriverService {
         if (partners.size() == 0) {
             return null;
         }
-        return partners.get(0);
+        return partners;
     }
 
     @Transactional
@@ -236,6 +236,11 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
        return driverDao.findDriversForTruck(city, maxSpentTimeForDriver);
+    }
+
+    @Transactional
+    public void update(Driver driver) {
+        driverDao.update(driver);
     }
 
 }

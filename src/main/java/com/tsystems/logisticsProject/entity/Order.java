@@ -32,7 +32,7 @@ public class Order extends AbstractEntity {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "currentOrder", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "currentOrder", cascade = CascadeType.MERGE)
     private List<Driver> drivers;
 
     @Column(name = "status")

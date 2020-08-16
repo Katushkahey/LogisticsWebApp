@@ -150,12 +150,22 @@
         </c:otherwise>
     </c:choose>
     <c:choose>
-        <c:when test="${partner==null}">
+        <c:when test="${partners==null}">
         </c:when>
         <c:otherwise>
-            </br>
-            <div class="info"><h5><strong>Partner:</strong> ${partner.name} ${partner.surname}, ${partner.telephoneNumber}</h5>
-            </div>
+            <c:choose>
+                <c:when test="${partners.size() == 1}">
+                    </br>
+                    <div class="info"><h5><strong>Partner:</strong> ${partners.get(0).name} ${partners.get(0).surname}, ${partners.get(0).telephoneNumber}</h5>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    </br>
+                    <div class="info"><h5><strong>Partners:</strong> ${partners.get(0).name} ${partners.get(0).surname}, ${partners.get(0).telephoneNumber}
+                    </br> ${partners.get(1).name} ${partners.get(1).surname}, ${partners.get(1).telephoneNumber}</h5>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </c:otherwise>
     </c:choose>
     <c:choose>
