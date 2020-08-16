@@ -89,6 +89,7 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
                     .setParameter("hours", maxSpentTimeForDriver)
                     .getResultList();
         } catch (NoResultException e) {
+            System.out.println( "ничего не найдено");
             return null;
         }
     }

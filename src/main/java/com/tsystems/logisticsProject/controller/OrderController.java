@@ -82,13 +82,14 @@ public class OrderController {
 
     @GetMapping("/assign_order/{id}")
     public String assignOrder(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("order", id);
+        model.addAttribute("order", orderService.findById(id));
         model.addAttribute("listOfCombinations", orderAssignmentService.createListOfCombinationsForOrder(id));
         return "assign_order_page";
     }
 
-    @GetMapping("/assign_order/choose_assignment")
-    public String saveOrder() {
+    @GetMapping("/assign_order/choose_assignment{id}")
+    public String saveOrder(@PathVariable("id") Long id) {
+
         return "redirect:/order/info";
     }
 

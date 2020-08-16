@@ -21,8 +21,8 @@
         }
 
         .mainDiv {
-            width: 50%;
-            height: 400px;
+            width: 60%;
+            height: 450px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -41,7 +41,7 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center">Order №${order} assignment: truck and drivers </h5>
+                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center">Order №${order.number} assignment: truck and drivers </h5>
                 <span class="text-black">
                     <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>
@@ -59,8 +59,8 @@
                                 <td scope="row" align="center">${combination.listOfDrivers}</td>
                                 <td scope="row" align="center">${combination.totalHours}</td>
                                 <td scope="row" align="center">${combination.totalBillableHours}</td>
-                                <td scope="row" align="center"><a class="btn btn-success"
-                                                       href="choose_assignment"> Choose </a>
+                                <td scope="row" align="center"><button class="btn btn-success"
+                                              id="${combination.listOfDrivers}" onclick="setData()"> Choose </button>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -70,4 +70,15 @@
     </div>
 </div>
 </body>
+<script>
+    function setData(){
+        var category = $('#category').val();
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            data: {categoryList : category},
+            url: '/order/assign_order/choose_assignment'
+        });
+    }
+</script>
 </html>

@@ -22,7 +22,7 @@
         }
 
         .mainDiv {
-            width: 53%;
+            width: 55%;
             height: 400px;
             overflow-y: auto;
             overflow-x: auto;
@@ -90,7 +90,7 @@
                                 <th scope="col"> City From </th>
                                 <th scope="col"> City To </th>
                                 <th scope="col"> Edit details </th>
-                                <th scope="col"> Assign truck and drivers </th>
+                                <th scope="col"> Assign </th>
                                 <th scope="col"> Delete </th>
                             </tr>
                     </thead>
@@ -105,7 +105,7 @@
                                 <td scope="row" align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
                                                                   href="/order/show_info/${order.id}"> Details </a></td>
-                                <td scope="row" align="center"><a class="btn btn-success" href="/order/assign_order/${order.id}"> Assign truck and drivers </a></td>
+                                <td scope="row" align="center"><a class="btn btn-success" href="/order/assign_order/${order.id}"> Assign </a></td>
 
                                 <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/order/delete_order/${order.id}"> Delete </a></td>
