@@ -1,15 +1,16 @@
 package com.tsystems.logisticsProject.controller;
 
+import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.service.*;
 import com.tsystems.logisticsProject.util.OrderAssignmentService;
+import com.tsystems.logisticsProject.util.entity.CombinationForOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/order")
@@ -87,9 +88,11 @@ public class OrderController {
         return "assign_order_page";
     }
 
-    @GetMapping("/assign_order/choose_assignment{id}")
-    public String saveOrder(@PathVariable("id") Long id) {
-
+    @GetMapping("/assign_order/choose_assignment/{orderId}/{combinationId}")
+    public String saveOrder(@PathVariable("orderId") Long orderId,
+                            @PathVariable("combinationId") int combinationId) {
+        CombinationForOrder cf =  orderAssignmentService.getCombinationForOrderByIndex(combinationId - 1);
+        orderService.assign(orderId, cf.getTruck(), cf.getListOfDrivers());
         return "redirect:/order/info";
     }
 

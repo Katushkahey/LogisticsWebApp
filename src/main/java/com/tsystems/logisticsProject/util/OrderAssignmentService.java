@@ -450,4 +450,8 @@ public class OrderAssignmentService {
         return R * c;
     }
 
+    public CombinationForOrder getCombinationForOrderByIndex(int index) {
+        return listOfCombinationForOrder.get(index);
+    }
+
 }

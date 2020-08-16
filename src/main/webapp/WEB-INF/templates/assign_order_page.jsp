@@ -1,5 +1,7 @@
+<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 
 <head>
@@ -59,8 +61,9 @@
                                 <td scope="row" align="center">${combination.listOfDrivers}</td>
                                 <td scope="row" align="center">${combination.totalHours}</td>
                                 <td scope="row" align="center">${combination.totalBillableHours}</td>
-                                <td scope="row" align="center"><button class="btn btn-success"
-                                              id="${combination.listOfDrivers}" onclick="setData()"> Choose </button>
+                                <td scope="row" align="center"><a class="btn btn-success"
+                                   href="choose_assignment/${order.id}/${combination.id}" >
+                                    Choose </a>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -72,7 +75,7 @@
 </body>
 <script>
     function setData(){
-        var category = $('#category').val();
+        var category = $('#assignment').val();
         $.ajax({
             type: 'POST',
             dataType: 'json',

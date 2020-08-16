@@ -22,7 +22,7 @@
         }
 
         .mainDiv {
-            width: 50%;
+            width: 55%;
             height: 400px;
             overflow-y: auto;
             overflow-x: auto;
@@ -93,6 +93,7 @@
                         <c:forEach var="order" items="${mapOfOrders.keySet()}" varStatus="loop">
                             <tr>
                                 <td scope="row" align="center">${loop.count}</td>
+                                <td scope="row" align="center">${order.number}</td>
                                 <td scope="row" align="center">${mapOfDriversForOrders.get(order)}</td>
                                 <td scope="row" align="center">${order.orderTruck.number}</td>
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>

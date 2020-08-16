@@ -30,6 +30,11 @@ public class Order extends AbstractEntity {
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Cargo> cargoes;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "currentOrder", cascade = CascadeType.PERSIST)
+    private List<Driver> drivers;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

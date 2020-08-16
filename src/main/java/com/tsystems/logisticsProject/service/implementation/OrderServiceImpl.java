@@ -1,10 +1,7 @@
 package com.tsystems.logisticsProject.service.implementation;
 
 import com.tsystems.logisticsProject.dao.OrderDao;
-import com.tsystems.logisticsProject.entity.Cargo;
-import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.Order;
-import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.service.DriverService;
@@ -185,6 +182,15 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void add(Order order) {
         orderDao.add(order);
+    }
+
+    @Transactional
+    public void assign(Long orderId, Truck truck, List<Driver> listOfDrivers) {
+        Order orderToUpdate = findById(orderId);
+        orderToUpdate.setOrderTruck(truck);
+        orderToUpdate.setDrivers(listOfDrivers);
+        orderToUpdate.setStatus(OrderStatus.WAITING);
+        orderDao.update(orderToUpdate);
     }
 
 }
