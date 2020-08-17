@@ -22,4 +22,6 @@ public interface DriverDao extends GenericDao<Driver> {
 
     boolean findByTelephoneNubmer(String telephoneNumber);
 
+    List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver);
+
 }

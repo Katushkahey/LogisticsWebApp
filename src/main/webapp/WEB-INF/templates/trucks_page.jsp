@@ -24,8 +24,8 @@
         }
 
         .tableTab {
-            width: 54%;
-            height: 400px;
+            width: 59%;
+            height: 450px;
             overflow-x: auto;
             margin-left: 1rem;
         }
@@ -82,20 +82,38 @@
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="truck" items="${listOfTrucks}">
+                        <c:forEach var="truck" items="${listOfTrucks}" varStatus="loop">
                             <tr id="truck-${truck.id}">
-                                <td scope="row" align="center">${truck.id}</td>
+                                <td scope="row" align="center">${loop.count}</td>
                                 <td scope="row" align="center">${truck.number}</td>
                                 <td scope="row" align="center">${truck.capacity}</td>
                                 <td scope="row" align="center">${truck.crewSize}</td>
                                 <td scope="row" align="center">${truck.truckState}</td>
-                                <td scope="row" align="center">${truck.order.id}</td>
+                                <c:choose>
+                                    <c:when test="${truck.order==null}">
+                                        <td scope="row" align="center"> Yes </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td scope="row" align="center"> No </td>
+                                    </c:otherwise>
+                                </c:choose>
                                 <td scope="row" align="center">${truck.currentCity.name}</td>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
+                                        <c:if test="${truck.order!=null}"><c:out value="disabled='disabled'"/></c:if>
                                                                        data-toggle="modal" data-target="#edit_truck"
                                                                        data-truck-id="${truck.id}"> Edit </button></td>
-                                <td scope="row" align="center"><a class="btn btn-danger"
-                                                                  href="/truck/delete_truck/${truck.id}"> Delete </a></td>
+                                <c:choose>
+                                    <c:when test="${truck.order!= null}">
+                                        <td scope="row" align="center"><button type="button" class="btn btn-secondary"
+                                                                               value="disabled='disabled'"> Delete </button></td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td scope="row" align="center"><a class="btn btn-danger"
+                                                                          href="/truck/delete_truck/${truck.id}"> Delete </a></td>
+                                    </c:otherwise>
+                                </c:choose>
+
+
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -116,9 +134,9 @@
             <div class="modal-body">
                 <form action="/truck/edit_truck/" method="get" class="formWithValidation" role="form">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="idInput">ID</label>
+                        <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
                         <div class="col-sm-9">
-                            <input type="number" readonly
+                            <input type="number" readonly visibility: hidden
                                    class="id field" name="id" id="idInput"/>
                         </div>
                     </div>
@@ -129,7 +147,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="capacityInput">Capacity</label>
+                        <label class="col-sm-3 control-label" for="capacityInput">Capacity, ton</label>
                         <div class="col-sm-9">
                             <input type="number" class="capacity field" name="capacity" id="capacityInput"/>
                         </div>
@@ -193,7 +211,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="input3">Capacity</label>
+                        <label class="col-sm-3 control-label" for="input3">Capacity, ton</label>
                         <div class="col-sm-9">
                             <input type="number" class="capacity field" name="capacity" id="input3"/>
                         </div>
@@ -232,7 +250,7 @@
     $("#edit_truck").on('show.bs.modal', function (e) {
         var truckId = $(e.relatedTarget).data('truck-id');
         var cols = $('#truck-' + truckId + ' td');
-        var id = $(cols[0]).text();
+        var id = truckId
         var number = $(cols[1]).text();
         var capacity = $(cols[2]).text();
         var crew = $(cols[3]).text();

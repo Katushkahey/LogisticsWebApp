@@ -1,14 +1,12 @@
 package com.tsystems.logisticsProject.service.implementation;
 
 import com.tsystems.logisticsProject.dao.OrderDao;
-import com.tsystems.logisticsProject.entity.Cargo;
-import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.Order;
-import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
+import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,27 +16,20 @@ import java.util.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private Set<Cargo> cargoes = new HashSet<>();
-    private Map<Order, List<Driver>> mapOfDriversForCompletedOders = new HashMap<>();
-    private Map<Order, List<Driver>> mapOfDriversForUnassignedOders = new HashMap<>();
-    private Map<Order, List<Driver>> mapOfDriversForWaitingOrders = new HashMap<>();
-    private Map<Order, List<Driver>> mapOfDriversForOrdersInProgress = new HashMap<>();
-
-    @Autowired
     private OrderDao orderDao;
+    private DriverService driverService;
+    private WaypointService waypointService;
 
     @Autowired
-    private DriverService driverService;
+    public void setDependencies(OrderDao orderDao, DriverService driverService, WaypointService waypointService) {
+        this.orderDao = orderDao;
+        this.driverService = driverService;
+        this.waypointService = waypointService;
+    }
 
     @Transactional
     public List<Waypoint> findWaypointsForCurrentOrderById(Long id) {
-        List<Waypoint> listOfWaypoints = new ArrayList<>();
-        List<Cargo> listOfCargoes = orderDao.findById(id).getCargoes();
-        for(Cargo cargo: listOfCargoes) {
-            listOfWaypoints.add(cargo.getWaypoints().get(0));
-            listOfWaypoints.add(cargo.getWaypoints().get(1));
-        }
-        return listOfWaypoints;
+        return waypointService.getListOfWaypointsByOrderId(id);
     }
 
     @Transactional
@@ -47,7 +38,6 @@ public class OrderServiceImpl implements OrderService {
         List<Order> completedOrders = orderDao.findCompetedOrders();
         for (Order order : completedOrders) {
             completedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForCompletedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return completedOrderHashMap;
     }
@@ -58,7 +48,6 @@ public class OrderServiceImpl implements OrderService {
         List<Order> unassignedOrders = orderDao.findUnassignedOrders();
         for (Order order : unassignedOrders) {
             unassignedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForUnassignedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return unassignedOrderHashMap;
     }
@@ -69,7 +58,6 @@ public class OrderServiceImpl implements OrderService {
         List<Order> waytingOrders = orderDao.findWaitingOrders();
         for (Order order : waytingOrders) {
             waytingOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForWaitingOrders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return waytingOrderHashMap;
 
@@ -81,9 +69,41 @@ public class OrderServiceImpl implements OrderService {
         List<Order> ordersInProgress = orderDao.findOrdersInProgress();
         for (Order order : ordersInProgress) {
             ordersInProgressHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForOrdersInProgress.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return ordersInProgressHashMap;
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForCompletedOrders() {
+        List<Order> completedOrders = orderDao.findCompetedOrders();
+        return findListOfWaypointsForOrders(completedOrders);
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForWaytingOrders() {
+        List<Order> waitingOrders = orderDao.findWaitingOrders();
+        return findListOfWaypointsForOrders(waitingOrders);
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForOrdersInProgress() {
+        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
+        return findListOfWaypointsForOrders(ordersInProgress);
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForUnassignedOrders() {
+        List<Order> unassignedOrders = orderDao.findUnassignedOrders();
+        return findListOfWaypointsForOrders(unassignedOrders);
+    }
+
+    @Transactional
+    public HashMap<Order, List<Waypoint>> findListOfWaypointsForOrders(List<Order> listOfOrders) {
+        HashMap<Order, List<Waypoint>> mapOfWaypoints = new HashMap<>();
+        for (Order order : listOfOrders) {
+            mapOfWaypoints.put(order, findWaypointsForCurrentOrderById(order.getId()));
+        }
+        return mapOfWaypoints;
     }
 
     @Transactional
@@ -116,21 +136,41 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public Map<Order, List<Driver>> getMapOfDriversForWaitingOrders() {
+        Map<Order, List<Driver>> mapOfDriversForWaitingOrders = new HashMap<>();
+        List<Order> waytingOrders = orderDao.findWaitingOrders();
+        for (Order order : waytingOrders) {
+            mapOfDriversForWaitingOrders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
         return mapOfDriversForWaitingOrders;
     }
 
     @Transactional
     public Map<Order, List<Driver>> getMapOfDriversForUnassignedOrders() {
+        Map<Order, List<Driver>> mapOfDriversForUnassignedOders = new HashMap<>();
+        List<Order> unassignedOrders = orderDao.findUnassignedOrders();
+        for (Order order : unassignedOrders) {
+            mapOfDriversForUnassignedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
         return mapOfDriversForUnassignedOders;
     }
 
     @Transactional
     public Map<Order, List<Driver>> getMapOfDriversForCompletedOrders() {
+        Map<Order, List<Driver>> mapOfDriversForCompletedOders = new HashMap<>();
+        List<Order> completedOrders = orderDao.findCompetedOrders();
+        for (Order order : completedOrders) {
+            mapOfDriversForCompletedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
         return mapOfDriversForCompletedOders;
     }
 
     @Transactional
     public Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress() {
+        Map<Order, List<Driver>> mapOfDriversForOrdersInProgress = new HashMap<>();
+        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
+        for (Order order : ordersInProgress) {
+            mapOfDriversForOrdersInProgress.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
         return mapOfDriversForOrdersInProgress;
     }
 
@@ -148,12 +188,39 @@ public class OrderServiceImpl implements OrderService {
     public void startOrder(Long id) {
         Order order = findById(id);
         order.setStatus(OrderStatus.IN_PROGRESS);
-        orderDao.update(order);
+        update(order);
     }
 
     @Transactional
     public void add(Order order) {
         orderDao.add(order);
+    }
+
+    @Transactional
+    public void assign(Long orderId, Truck truck, List<Driver> listOfDrivers) {
+        Order orderToUpdate = findById(orderId);
+        orderToUpdate.setOrderTruck(truck);
+        orderToUpdate.setDrivers(listOfDrivers);
+        orderToUpdate.setStatus(OrderStatus.WAITING);
+        for (Driver driver : listOfDrivers) {
+            driver.setCurrentOrder(orderToUpdate);
+            driverService.update(driver);
+        }
+        update(orderToUpdate);
+    }
+
+    @Transactional
+    public void cancelAssignment(Long orderId) {
+        Order orderToUpdate = findById(orderId);
+        orderToUpdate.setOrderTruck(null);
+        orderToUpdate.setStatus(OrderStatus.NOT_ASSIGNED);
+        orderToUpdate.setDrivers(null);
+        List<Driver> listOfDrivers = driverService.getParnersForCurrentOrder(orderId);
+        for(Driver driver: listOfDrivers) {
+            driver.setCurrentOrder(null);
+            driverService.update(driver);
+        }
+        update(orderToUpdate);
     }
 
 }

@@ -22,7 +22,7 @@
         }
 
         .mainDiv {
-            width: 50%;
+            width: 65%;
             height: 400px;
             overflow-y: auto;
             overflow-x: auto;
@@ -61,7 +61,8 @@
             <div class="navbar-nav">
                 <a class="nav-link" href="/order/info"><strong> No assigned </strong></a>
                 <a class="nav-link" href="/order/info-2"><strong> Waiting </strong></a>
-                <a class="nav-link active" href="/order/info-4"><strong><u> In Progress </u></strong><span class="sr-only">(current)</span></a>
+                <a class="nav-link active" href="/order/info-4"><strong><u> In Progress </u></strong><span
+                        class="sr-only">(current)</span></a>
                 <a class="nav-link" href="/order/info-3"><strong> Completed </strong></a>
             </div>
         </div>
@@ -79,21 +80,30 @@
                     <thead style="background: rgba(255,162,69,0.57)" align="center">
                             <tr>
                                 <th scope="col"> № </th>
+                                <th scope="col"> Number </th>
                                 <th scope="col"> Drivers </th>
                                 <th scope="col"> Truck </th>
-                                <th scope="col"> Max weight </th>
+                                <th scope="col"> Max weight, kg </th>
+                                <th scope="col"> List of cargoes </th>
+                                <th scope="col"> City From </th>
+                                <th scope="col"> City To </th>
                                 <th scope="col"> Details </th>
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="order" items="${mapOfOrders.keySet()}">
+                        <c:forEach var="order" items="${mapOfOrders.keySet()}" varStatus="loop">
                             <tr>
-                                <td scope="row" align="center">${order.id}</td>
+                                <td scope="row" align="center">${loop.count}</td>
+                                <td scope="row" align="center">${order.number}</td>
                                 <td scope="row" align="center">${mapOfDriversForOrders.get(order)}</td>
                                 <td scope="row" align="center">${order.orderTruck.number}</td>
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>
+                                <td scope="row" align="center">${order.cargoes}</td>
+                                <td scope="row" align="center">${listOfWaypoints.get(order).get(0).city.name}</td>
+                                <td scope="row"
+                                    align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                  href="/order/show_info/${order.id}" > Details </a></td>
+                                                                  href="/order/show_info/${order.id}"> Details </a></td>
                             </tr>
                         </c:forEach>
                     </tbody>

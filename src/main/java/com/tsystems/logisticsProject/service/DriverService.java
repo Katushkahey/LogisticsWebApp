@@ -14,7 +14,7 @@ public interface DriverService {
 
     List<Waypoint> getListOfWaypointsFromPrincipal(String name);
 
-    Driver getPartnerFromPrincipal(String name);
+    List<Driver> getPartnersFromPrincipal(String name);
 
     List<Driver> getListOfDrivers();
 
@@ -40,5 +40,7 @@ public interface DriverService {
 
     void finishOrder(Long id);
 
-//    List<Driver> findDriversForTruck(City city, int requiredNumberOfHours);
+    List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver);
+
+    void update(Driver driver);
 }

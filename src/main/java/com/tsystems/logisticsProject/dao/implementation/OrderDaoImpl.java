@@ -2,6 +2,7 @@ package com.tsystems.logisticsProject.dao.implementation;
 
 import com.tsystems.logisticsProject.dao.OrderDao;
 import com.tsystems.logisticsProject.entity.Order;
+import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,25 +29,25 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     }
 
     public List<Order> findCompetedOrders() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status order by o.id", Order.class)
                 .setParameter("status", OrderStatus.COMPLETED)
                 .getResultList();
     }
 
     public List<Order> findUnassignedOrders() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status order by o.id", Order.class)
                 .setParameter("status", OrderStatus.NOT_ASSIGNED)
                 .getResultList();
     }
 
     public List<Order> findWaitingOrders() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status order by o.id", Order.class)
                 .setParameter("status", OrderStatus.WAITING)
                 .getResultList();
     }
 
     public List<Order> findOrdersInProgress() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status", Order.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.status=:status order by o.id", Order.class)
                 .setParameter("status", OrderStatus.IN_PROGRESS)
                 .getResultList();
     }
@@ -54,4 +55,5 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     public void delete(Order order) {
         sessionFactory.getCurrentSession().delete(order);
     }
+
 }

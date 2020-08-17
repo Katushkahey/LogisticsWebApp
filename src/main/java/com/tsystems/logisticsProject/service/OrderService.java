@@ -1,9 +1,6 @@
 package com.tsystems.logisticsProject.service;
 
-import com.tsystems.logisticsProject.entity.Cargo;
-import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.Order;
-import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,4 +41,15 @@ public interface OrderService {
 
     void startOrder(Long id);
 
+    HashMap<Order, List<Waypoint>> findListOfWaypointsForCompletedOrders();
+
+    HashMap<Order, List<Waypoint>> findListOfWaypointsForWaytingOrders();
+
+    HashMap<Order, List<Waypoint>> findListOfWaypointsForOrdersInProgress();
+
+    HashMap<Order, List<Waypoint>> findListOfWaypointsForUnassignedOrders();
+
+    void assign(Long orderId, Truck truck, List<Driver> listOfDrivers);
+
+    void cancelAssignment(Long orderId);
 }

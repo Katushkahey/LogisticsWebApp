@@ -5,5 +5,5 @@ import com.tsystems.logisticsProject.entity.Waypoint;
 
 public interface CargoService {
 
-    void addWaypoint(Cargo cargo, Waypoint waypoint);
+    void delete(Cargo cargo);
 }

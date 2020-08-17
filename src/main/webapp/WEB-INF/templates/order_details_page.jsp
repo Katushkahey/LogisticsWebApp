@@ -21,8 +21,8 @@
         }
 
         .mainDiv {
-            width: 50%;
-            height: 400px;
+            width: 55%;
+            height: 450px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -41,35 +41,51 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center"> Details of
-                    order № ${order}  </h5>
+                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center"> Details of order
+                    № ${order.number}  </h5>
                 <span class="text-black">
                     <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>
                                 <th scope="col"> № </th>
                                 <th scope="col"> Cargo </th>
-                                <th scope="col"> Weight </th>
+                                <th scope="col"> Weight, kg </th>
                                 <th scope="col"> City </th>
                                 <th scope="col"> Action </th>
                                 <th scope="col"> Status </th>
-                                <th scope="col"> Edit </th>
+                                <c:choose>
+                                    <c:when test="${order_status=='IN_PROGRESS' || order_status=='COMPLETED' || order_status=='WAITING'}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <th scope="col"> Edit </th>
+                                        <th scope="col"> Delete </th>
+                                    </c:otherwise>
+                                </c:choose>
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="waypoint" items="${waypoints}">
+                        <c:forEach var="waypoint" items="${waypoints}" varStatus="loop">
                             <tr id="waypoint-${waypoint.id}">
-                                <td scope="row" align="center">${waypoint.id}</td>
+                                <td scope="row" align="center">${loop.count}</td>
                                 <td scope="row" align="center">${waypoint.cargo.name}</td>
                                 <td scope="row" align="center">${waypoint.cargo.weight}</td>
                                 <td scope="row" align="center">${waypoint.city.name}</td>
                                 <td scope="row" align="center">${waypoint.action}</td>
                                 <td scope="row" align="center">${waypoint.status}</td>
-                                <td scope="row" align="center"><button type="button" class="btn btn-secondary"
-                                                                       data-toggle="modal" data-target="#edit_waypoint"
-                                        <c:if test="${(order_status=='IN_PROGRESS')or
-                                                                        (order_status=='COMPLETED')or(order_status=='WAITING')}">
-                                            <c:out value="disabled='disabled'"/></c:if>
-                                                                       data-waypoint-id="${waypoint.id}"> Edit </button>
+                                <c:choose>
+                                    <c:when test="${order_status=='IN_PROGRESS' || order_status=='COMPLETED' || order_status=='WAITING'}">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td scope="row" align="center"><button type="button" class="btn btn-secondary"
+                                                                               data-toggle="modal"
+                                                                               data-target="#edit_waypoint"
+                                                                               data-waypoint-id="${waypoint.id}"> Edit </button>
+                                        <%--<td scope="row" align="center"><button type="button" class="btn btn-danger"--%>
+                                                                               <%--data-toggle="modal" data-target="#delete_waypoint"--%>
+                                                                               <%--data-waypoint-id="${waypoint.id}"> Delete </button>--%>
+                                        <td scope="row" align="center"><a class="btn btn-danger"
+                                                                          href="/order/delete_waypoint/${order.id}/${waypoint.id}"> Delete </a></td>
+                                    </c:otherwise>
+                                </c:choose>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -88,29 +104,34 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
+                <form action="/order/edit_waypoint/${order.id}" method="get" class="formWithValidation" role="form">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="cargoInput">Cargo</label>
+                        <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="cargoInput"/>
+                            <input type="number" readonly visibility: hidden
+                                   class="id field" name="id" id="idInput"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="weightInput">Weight</label>
+                        <label class="col-sm-3 control-label" for="cargoInput">Cargo</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" id="weightInput"/>
+                            <input type="text" class="cargo field" name="cargoName" id="cargoInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="weightInput">Weight, kg</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="weight field" name="weight" id="weightInput"/>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="cityInput">City</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="cityInput"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label" for="actionInput">Action</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="actionInput"/>
+                        <div>
+                            <select class="col-sm-6 field" name="city" id="cityInput">
+                                <c:forEach var="city" items="${listOfCities}">
+                                    <option value=${city.name}>${city.name}</option>
+                                </c:forEach>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -119,9 +140,6 @@
                         </div>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -134,15 +152,62 @@
         var cargo = $(cols[1]).text();
         var weight = $(cols[2]).text();
         var city = $(cols[3]).text();
-        var action = $(cols[4]).text();
+        $('#idInput').val(waypointId);
         $('#cargoInput').val(cargo);
         $('#weightInput').val(weight);
         $('#cityInput').val(city);
-        $('#actionInput').val(action);
     });
     $("#edit_waypoint").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
         form[0].reset();
     });
+
+    var form = document.querySelector('.formWithValidation')
+    var weight = form.querySelector('.weight')
+    var fields = form.querySelectorAll('.field')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        var errors = form.querySelectorAll('.error')
+
+        for (var i = 0; i < errors.length; i++) {
+            errors[i].remove()
+        }
+
+        var errors_counter = 0
+        for (var i = 0; i < fields.length; i++) {
+            if (!fields[i].value) {
+                errors_counter += 1
+                var error = document.createElement('div')
+                error.className = 'error'
+                error.style.color = 'red'
+                error.innerHTML = 'Can`t be empty'
+                form[i].parentElement.insertBefore(error, fields[i])
+            }
+        }
+
+        if (errors_counter < 1) {
+            form.submit()
+        }
+
+        if (weight.value > ${maxWeight} * 1000) {
+            errors_counter += 1
+            var error2 = document.createElement('div')
+            error2.className = 'error'
+            error2.style.color = 'red'
+            error2.innerHTML = 'This weight bigger than capacity of the biges`t truck'
+            weight.parentElement.insertBefore(error2, weight)
+        }
+
+        if (weight.value <= 0) {
+            errors_counter += 1
+            var error3 = document.createElement('div')
+            error3.className = 'error'
+            error3.style.color = 'red'
+            error3.innerHTML = 'Can`t be < 0'
+            weight.parentElement.insertBefore(error3, weight)
+        }
+    })
 </script>
 </html>

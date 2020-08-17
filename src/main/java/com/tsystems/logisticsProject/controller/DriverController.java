@@ -36,27 +36,15 @@ public class DriverController {
         return "redirect:/drivers/info";
     }
 
-    //могу ли я создать здесь сущность User, что бы не гонять 1 и тот же довольно сложный метод дважды?
     @GetMapping("/create_driver")
     public String createDriver(@RequestParam("name") String name, @RequestParam("surname") String surname,
                                @RequestParam("telephone") String telephoneNumber, @RequestParam("city") String cityName,
                                @RequestParam("userName") String userName) {
         if (driverService.findDriverByTelephoneNumber(telephoneNumber)) {
             return "error"; //водитель с таким номером телефона уже существует
-        } else if (driverService.returnUserToCreateDriver(userName) == null) {
-            return "error";  //данное имя пользователя уже занято
         }
         driverService.add(name, surname, telephoneNumber, cityName, driverService.returnUserToCreateDriver(userName));
-//        альтернативный вариант с User:
 
-//        } else {
-//            User user = driverService.returnUserToCreateDriver(userName);
-//            if (user == null) {
-//                return "error" //данное имя пользовотеля уже занято
-//            } else {
-//                driverService.add(name, surname, telephoneNumber, cityName, user);
-//            }
-//        }
         return "redirect:/drivers/info";
     }
 

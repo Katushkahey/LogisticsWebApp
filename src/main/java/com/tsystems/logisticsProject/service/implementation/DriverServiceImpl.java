@@ -9,6 +9,7 @@ import com.tsystems.logisticsProject.event.EntityUpdateEvent;
 import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,26 +20,34 @@ import java.util.List;
 @Service
 public class DriverServiceImpl implements DriverService {
 
-    @Autowired
     private DriverDao driverDao;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private OrderService orderService;
-
-    @Autowired
     private CityService cityService;
-
-    @Autowired
     private WaypointService waypointService;
-
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     public DriverServiceImpl(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    @Autowired
+    public void setDependencies(DriverDao driverDao, UserService userService, OrderService orderService, CityService cityService, WaypointService waypointService) {
+        this.driverDao = driverDao;
+        this.userService = userService;
+        this.orderService = orderService;
+        this.cityService = cityService;
+        this.waypointService = waypointService;
+    }
+
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void ScheduledTasks() {
+        List<Driver> listOfAllDrivers = getListOfDrivers();
+        for(Driver driver: listOfAllDrivers) {
+            driver.setHoursThisMonth(0);
+            driverDao.update(driver);
+        }
     }
 
     @Transactional
@@ -50,6 +59,7 @@ public class DriverServiceImpl implements DriverService {
     public Driver findByUser(User user) {
         return driverDao.findByUser(user);
     }
+
     @Transactional
     public Driver getDriverByPrincipalName(String name) {
         User userPrincipal = userService.findByUsername(name);
@@ -63,21 +73,15 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     public List<Waypoint> getListOfWaypointsFromPrincipal(String name) {
-        List<Waypoint> listOfWaypoints = new ArrayList<>();
         Order order = getCurrentOrderFromPrincipal(name);
         if (order == null) {
             return null;
         }
-        List<Cargo> listOfCargoes = order.getCargoes();
-        for (Cargo cargo: listOfCargoes) {
-            listOfWaypoints.add(cargo.getWaypoints().get(0));
-            listOfWaypoints.add(cargo.getWaypoints().get(1));
-        }
-        return listOfWaypoints;
+        return orderService.findWaypointsForCurrentOrderById(order.getId());
     }
 
     @Transactional
-    public Driver getPartnerFromPrincipal(String name) {
+    public List<Driver> getPartnersFromPrincipal(String name) {
         Driver currentDriver = getDriverByPrincipalName(name);
         Order currentOrder = getCurrentOrderFromPrincipal(name);
         if (currentOrder == null) {
@@ -93,7 +97,7 @@ public class DriverServiceImpl implements DriverService {
         if (partners.size() == 0) {
             return null;
         }
-        return partners.get(0);
+        return partners;
     }
 
     @Transactional
@@ -139,6 +143,7 @@ public class DriverServiceImpl implements DriverService {
         return userToReturn;
     }
 
+    @Transactional
     public boolean checkUserNameToCreateDriver(String userName) {
         return userService.checkUserNameToCreateDriver(userName);
     }
@@ -150,7 +155,13 @@ public class DriverServiceImpl implements DriverService {
         driver.setSurname(surname);
         driver.setTelephoneNumber(telephoneNumber);
         driver.setCurrentCity(cityService.findByCityName(cityName));
+        driver.setDriverState(DriverState.REST);
         driver.setUser(user);
+        add(driver);
+    }
+
+    @Transactional
+    public void add(Driver driver) {
         driverDao.add(driver);
     }
 
@@ -166,14 +177,14 @@ public class DriverServiceImpl implements DriverService {
         driverToUpdate.setSurname(surname);
         driverToUpdate.setTelephoneNumber(telephoneNumber);
         driverToUpdate.setCurrentCity(cityService.findByCityName(cityName));
-        driverDao.update(driverToUpdate);
+        update(driverToUpdate);
     }
 
     @Transactional
     public void update(Long id, String telephoneNumber) {
         Driver driverToUpdate = findById(id);
         driverToUpdate.setTelephoneNumber(telephoneNumber);
-        driverDao.update(driverToUpdate);
+        update(driverToUpdate);
     }
 
     @Transactional
@@ -185,23 +196,23 @@ public class DriverServiceImpl implements DriverService {
                 Date endWorkingTime = new Date();
                 Date startWorkingTime = new Date(driverToUpdate.getStartWorkingTime());
                 Long totalWorkingTimePerInterval = endWorkingTime.getTime() - startWorkingTime.getTime();
-                driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingTimePerInterval);
+                int totalWorkingHoursPerInterval = (int) Math.ceil(totalWorkingTimePerInterval / 1000 / 60 / 60);
+                driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingHoursPerInterval);
                 driverToUpdate.setDriverState(state);
-                driverDao.update(driverToUpdate);
+                update(driverToUpdate);
             }
             driverToUpdate.setDriverState(state);
-            driverDao.update(driverToUpdate);
+            update(driverToUpdate);
         } else {
             if (lastState == DriverState.REST || lastState == DriverState.SECOND_DRIVER) {
                 Date startWorkingTime = new Date();
                 driverToUpdate.setStartWorkingTime(startWorkingTime.getTime());
                 driverToUpdate.setDriverState(state);
-                driverDao.update(driverToUpdate);
+                update(driverToUpdate);
             }
             driverToUpdate.setDriverState(state);
-            driverDao.update(driverToUpdate);
+            update(driverToUpdate);
         }
-
     }
 
     @Transactional
@@ -215,11 +226,11 @@ public class DriverServiceImpl implements DriverService {
         if (listOfCargoesForCompletedOrder == null) {
             return;
         }
-        for (Cargo cargo: listOfCargoesForCompletedOrder) {
+        for (Cargo cargo : listOfCargoesForCompletedOrder) {
             listOfWaypointsForCompletedOrder.add(cargo.getWaypoints().get(0));
             listOfWaypointsForCompletedOrder.add(cargo.getWaypoints().get(1));
         }
-        for (Waypoint waypoint: listOfWaypointsForCompletedOrder) {
+        for (Waypoint waypoint : listOfWaypointsForCompletedOrder) {
             waypoint.setStatus(WaypointStatus.DONE);
             waypointService.update(waypoint);
         }
@@ -227,18 +238,25 @@ public class DriverServiceImpl implements DriverService {
         if (listOfDriversForCompletedOrder == null) {
             return;
         }
-        for (Driver driver: listOfDriversForCompletedOrder) {
+        for (Driver driver : listOfDriversForCompletedOrder) {
             driver.setCurrentOrder(null);
-            driverDao.update(driver);
+            update(driver);
             editState(driver.getId(), DriverState.REST);
         }
+        completedOrder.setOrderTruck(null);
         completedOrder.setStatus(OrderStatus.COMPLETED);
         completedOrder.setCompletionDate(new Date().getTime());
         orderService.update(completedOrder);
     }
 
-//    public List<Driver> findDriversForTruck(City city, int requiredNumberOfHours) {
-//        driverDao.
-//    }
+    @Transactional
+    public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
+        return driverDao.findDriversForTruck(city, maxSpentTimeForDriver);
+    }
+
+    @Transactional
+    public void update(Driver driver) {
+        driverDao.update(driver);
+    }
 
 }

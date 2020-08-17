@@ -21,8 +21,8 @@
         }
 
         .mainDiv {
-            width: 50%;
-            height: 400px;
+            width: 60%;
+            height: 500px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -41,28 +41,30 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center">Order №${order} assignment: truck and drivers </h5>
+                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center">Order
+                    №${order.number} assignment: truck and drivers </h5>
                 <span class="text-black">
                     <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>
-                                <th scope="col"> № </th>
                                 <th scope="col"> Truck </th>
                                 <th scope="col"> Drivers </th>
-                                <th scope="col"> Number of days to complete the order </th>
+                                <th scope="col"> Home city </th>
+                                <th scope="col"> Number of hours to complete the order </th>
                                 <th scope="col"> Total billable hours </th>
                                 <th scope="col"> Choose </th>
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="truck" items="${trucks}">
-                            <tr id="truck-${truck.id}">
-                                <td scope="row" align="center">${truck.id}</td>
-                                <td scope="row" align="center">${truck.number}</td>
-                                <td scope="row" align="center">${drivers}</td>
-                                <td scope="row" align="center">5</td>
-                                <td scope="row" align="center">120</td>
+                        <c:forEach var="combination" items="${listOfCombinations}">
+                            <tr id="combination-${combination.id}">
+                                <td scope="row" align="center">${combination.truck.number}</td>
+                                <td scope="row" align="center">${combination.listOfDrivers}</td>
+                                <td scope="row" align="center">${combination.truck.currentCity.name}</td>
+                                <td scope="row" align="center">${combination.totalHours}</td>
+                                <td scope="row" align="center">${combination.totalBillableHours}</td>
                                 <td scope="row" align="center"><a class="btn btn-success"
-                                                       href="choose_assignment"> Choose </a>
+                                                                  href="choose_assignment/${order.id}/${combination.id}">
+                                    Choose </a>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -72,4 +74,15 @@
     </div>
 </div>
 </body>
+<script>
+    function setData() {
+        var category = $('#assignment').val();
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            data: {categoryList: category},
+            url: '/order/assign_order/choose_assignment'
+        });
+    }
+</script>
 </html>

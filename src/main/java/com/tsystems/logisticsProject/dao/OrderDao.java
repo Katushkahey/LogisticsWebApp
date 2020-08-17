@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.dao;
 
 import com.tsystems.logisticsProject.entity.Order;
+import com.tsystems.logisticsProject.entity.Waypoint;
 
 import java.util.List;
 
@@ -21,4 +22,5 @@ public interface OrderDao extends GenericDao<Order> {
     List<Order> findWaitingOrders();
 
     List<Order> findOrdersInProgress();
+
 }

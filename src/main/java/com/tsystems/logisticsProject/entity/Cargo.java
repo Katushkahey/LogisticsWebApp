@@ -14,6 +14,7 @@ import java.util.List;
 public class Cargo extends AbstractEntity {
 
     @Id
+    @ToString.Exclude
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -26,14 +27,19 @@ public class Cargo extends AbstractEntity {
     @Column(name = "weight")
     private Double weight;
 
+    @ToString.Exclude
     @NonNull
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order order;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "cargo", cascade =  CascadeType.ALL)
+    @OneToMany(mappedBy = "cargo", cascade = CascadeType.ALL)
     List<Waypoint> waypoints;
 
+    @Override
+    public String toString() {
+        return "" + name + ": " + weight;
+    }
 }

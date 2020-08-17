@@ -33,7 +33,7 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
     }
 
     public List<Truck> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t", Truck.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t order by t.id", Truck.class)
                 .getResultList();
     }
 
@@ -62,8 +62,9 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
 
     public List<Truck> findTrucksForOrder(double maxOneTimeWeight) {
         try {
-            return sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t WHERE t.capacity>=:weight" +
-                    " AND t.truckState=:state AND t.order is null", Truck.class)
+            return sessionFactory.getCurrentSession()
+                    .createQuery("SELECT t FROM Truck t WHERE t.capacity>=:weight AND t.truckState=:state " +
+                            "AND t.id NOT IN (SELECT o.orderTruck FROM Order o where o.orderTruck is not null)", Truck.class)
                     .setParameter("weight", maxOneTimeWeight)
                     .setParameter("state", TruckState.OK)
                     .getResultList();

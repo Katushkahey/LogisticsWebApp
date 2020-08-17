@@ -13,6 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CombinationForOrder {
 
+    private Long id;
+
     private Truck truck;
 
     private List<Driver> listOfDrivers;

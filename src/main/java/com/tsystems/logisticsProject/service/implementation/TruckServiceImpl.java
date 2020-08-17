@@ -17,16 +17,18 @@ import java.util.List;
 public class TruckServiceImpl implements TruckService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
-
-    @Autowired
     private CityService cityService;
-
-    @Autowired
     private TruckDao truckDao;
 
     @Autowired
     public TruckServiceImpl(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    @Autowired
+    public void setDependencies(CityService cityService, TruckDao truckDao) {
+        this.truckDao = truckDao;
+        this.cityService = cityService;
     }
 
     @Transactional
@@ -56,6 +58,16 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
+    public List<Truck> findAll() {
+        return truckDao.findAll();
+    }
+
+    @Transactional
+    public void add(Truck truck) {
+        truckDao.add(truck);
+    }
+
+    @Transactional
     public void add(String number, int crew_cize, double capacity, TruckState state, String cityName) {
         Truck newTruck = new Truck();
         newTruck.setNumber(number);
@@ -63,7 +75,7 @@ public class TruckServiceImpl implements TruckService {
         newTruck.setCapacity(capacity);
         newTruck.setTruckState(state);
         newTruck.setCurrentCity(cityService.findByCityName(cityName));
-        truckDao.add(newTruck);
+        add(newTruck);
     }
 
     @Transactional
@@ -73,18 +85,13 @@ public class TruckServiceImpl implements TruckService {
 
     @Transactional
     public void update(Long id, String number, double capacity, int crew, TruckState truckState, String cityName) {
-        Truck truckToUpdate = truckDao.findById(id);
+        Truck truckToUpdate = findById(id);
         truckToUpdate.setNumber(number);
         truckToUpdate.setCapacity(capacity);
         truckToUpdate.setCrewSize(crew);
         truckToUpdate.setTruckState(truckState);
         truckToUpdate.setCurrentCity(cityService.findByCityName(cityName));
-        truckDao.update(truckToUpdate);
-    }
-
-    @Transactional
-    public List<Truck> findAll() {
-        return truckDao.findAll();
+        update(truckToUpdate);
     }
 
     @Transactional

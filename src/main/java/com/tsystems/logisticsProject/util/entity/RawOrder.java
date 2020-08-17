@@ -5,9 +5,12 @@ import com.tsystems.logisticsProject.entity.City;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
+import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.service.CargoService;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.OrderService;
+import com.tsystems.logisticsProject.service.TruckService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -23,6 +26,9 @@ import java.util.*;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class RawOrder {
 
+    @Autowired
+    private TruckService truckService;
+
     private Cargo cargo;
     Map<Cargo, Integer> mapOfCargoes;
     List<Cargo> listOfCargoes;
@@ -31,9 +37,6 @@ public class RawOrder {
 
     @Autowired
     private CityService cityService;
-
-    @Autowired
-    private CargoService cargoService;
 
     @Autowired
     private OrderService orderService;
@@ -94,7 +97,7 @@ public class RawOrder {
 
         for (Cargo cargo : listOfCargoes) {
             if (cargo.getId() == cargoId) {
-                cargoService.addWaypoint(cargo, newWaypoint);
+                addWaypoint(cargo, newWaypoint);
             }
         }
 
@@ -115,6 +118,15 @@ public class RawOrder {
                 break;
             }
         }
+    }
+
+    private void addWaypoint(Cargo cargo, Waypoint waypoint) {
+        if (cargo.getWaypoints() == null) {
+            List<Waypoint> listOfWaypoints = new ArrayList<>();
+            listOfWaypoints.add(waypoint);
+            cargo.setWaypoints(listOfWaypoints);
+        }
+        cargo.getWaypoints().add(waypoint);
     }
 
     public void editWaypoint(Long id, String cityName) {
@@ -174,20 +186,25 @@ public class RawOrder {
                 for (Waypoint waypoint : listOfWaypoint) {
                     if (waypoint.getId() == id) {
                         listOfWaypoint.remove(waypoint);
+                        break;
                     }
                 }
             }
         }
     }
 
-    public void saveOrder() {
+    public void saveOrder(String number) {
         for (Waypoint waypoint : listOfWaypoints) {
+            waypoint.setSequence(waypoint.getId());
             waypoint.setId(null);
+            waypoint.setStatus(WaypointStatus.TODO);
             waypoint.getCargo().setId(null);
 
         }
         Order order = new Order();
         order.setCargoes(listOfCargoes);
+        order.setStatus(OrderStatus.NOT_ASSIGNED);
+        order.setNumber(number);
         for (Cargo cargo : listOfCargoes) {
             cargo.setOrder(order);
         }
@@ -210,5 +227,24 @@ public class RawOrder {
             Map.Entry cargoInfo = (Map.Entry) it.next();
             System.out.println("" + cargoInfo.getKey() + " " + cargoInfo.getValue());
         }
+    }
+
+    public boolean checkMaxWeightOfOrder() {
+        double maxWeight = 0;
+        double totalWeight = 0;
+        for (Waypoint waypoint : listOfWaypoints) {
+            if (waypoint.getAction().equals(Action.LOADING)) {
+                totalWeight += waypoint.getCargo().getWeight();
+                if (maxWeight < totalWeight) {
+                    maxWeight = totalWeight;
+                }
+            } else {
+                totalWeight -= waypoint.getCargo().getWeight();
+            }
+        }
+        if (maxWeight / 1000 > truckService.getMaxCapacity()) {
+            return false;
+        }
+        return true;
     }
 }

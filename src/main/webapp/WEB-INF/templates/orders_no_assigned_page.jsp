@@ -22,7 +22,7 @@
         }
 
         .mainDiv {
-            width: 53%;
+            width: 65%;
             height: 400px;
             overflow-y: auto;
             overflow-x: auto;
@@ -79,44 +79,37 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(116,219,116,0.61)" align="center"> List of orders </h5>
+                <h5 class="text-black h4" style="background: rgba(116,219,116,0.61)" align="center"> List of
+                    orders </h5>
                 <span class="text-black">
                     <thead style="background:  rgba(116,219,116,0.61)" align="center">
                             <tr>
                                 <th scope="col"> № </th>
-<%--                                <th scope="col"> Drivers </th>--%>
-                                <th scope="col"> Details </th>
-                                <th scope="col"> Assign truck and drivers </th>
-<%--                                <th scope="col"> Max weight </th>--%>
-<%--                                <th scope="col"> Add Driver </th>--%>
+                                <th scope="col"> Number </th>
+                                <th scope="col"> Max weight,kg </th>
+                                <th scope="col"> List of cargoes </th>
+                                <th scope="col"> City From </th>
+                                <th scope="col"> City To </th>
+                                <th scope="col"> Edit details </th>
+                                <th scope="col"> Assign </th>
                                 <th scope="col"> Delete </th>
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="order" items="${mapOfOrders.keySet()}">
+                        <c:forEach var="order" items="${mapOfOrders.keySet()}" varStatus="loop">
                             <tr>
-                                <td scope="row" align="center">${order.id}</td>
-<%--                                <td scope="row" align="center">${mapOfDriversForOrders.get(order)}</td>--%>
+                                <td scope="row" align="center">${loop.count}</td>
+                                <td scope="row" align="center">${order.number}</td>
+                                <td scope="row" align="center">${mapOfOrders.get(order)}</td>
+                                <td scope="row" align="center">${order.cargoes}</td>
+                                <td scope="row" align="center">${listOfWaypoints.get(order).get(0).city.name}</td>
+                                <td scope="row"
+                                    align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
                                                                   href="/order/show_info/${order.id}"> Details </a></td>
-<%--                                <td scope="row" align="center"> <a class="btn btn-success"--%>
-<%--                                                href="/order/add_truck/${order.id}"> Assign truck and drivers </a></td>--%>
-<%--                                <td scope="row" align="center"><button type="button" class="btn btn-success"--%>
-<%--                                                   data-toggle="modal" data-target="#assign"--%>
-<%--                                                   data-order-id="${order.id}"> Assign truck and drivers </button></td>--%>
-                                <td scope="row" align="center"><a class="btn btn-success" href="/order/assign_order/${order.id}"> Assign truck and drivers </a></td>
-<%--                                <c:choose>--%>
-<%--                                    <c:when test="${order.orderTruck==null}">--%>
-<%--                                        <td scope="row"> <a class="btn btn-secondary"--%>
-<%--                                                            href="/order/add_truck/${order.id}"> Add truck </a>--%>
-<%--                                        </td>--%>
-<%--                                    </c:when>--%>
-<%--                                    <c:otherwise>--%>
-<%--                                        <td scope="row" align="center">${order.orderTruck.number}</td>--%>
-<%--                                    </c:otherwise>--%>
-<%--                                </c:choose>--%>
-<%--                                <td scope="row" align="center">${mapOfOrders.get(order)}</td>--%>
-<%--                                <td scope="row" align="center"> Add Driver </td>--%>
+                                <td scope="row" align="center"><a class="btn btn-success"
+                                                                  href="/order/assign_order/${order.id}"> Assign </a></td>
+
                                 <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/order/delete_order/${order.id}"> Delete </a></td>
                             </tr>
