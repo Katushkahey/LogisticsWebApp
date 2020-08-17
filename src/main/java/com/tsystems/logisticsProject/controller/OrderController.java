@@ -117,4 +117,10 @@ public class OrderController {
         return "redirect:/order/show_info/{id}";
     }
 
+    @GetMapping("/cancel_assignment/{id}")
+    public String cancelAssignment(@PathVariable("id") Long id) {
+        orderService.cancelAssignment(id);
+        return "redirect:/order/info-2";
+    }
+
 }

@@ -24,7 +24,6 @@ public class OrderAssignmentService {
     private final int AVERAGE_VELOCITY = 60;
     private final int TIME_OF_ORDER_FOR_ONE_DRIVER_MAX = 12;
     private final int TIME_OF_ORDER_FOR_TWO_DRIVERS_MAX = 48;
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     private static int fullDaysToEndMonth;
     private static int hoursToEndMonth;
     private List<CombinationForOrder> listOfCombinationForOrder;
@@ -58,7 +57,7 @@ public class OrderAssignmentService {
             int optionalMaxDriversForOrderFromThisCity = mapOfMaxOptionalNumberOfDrivers.get(city);
 
             // получаем количество часов, необходимое для выполнения данного заказа из этого города
-            // с учетом расстояния от города старта и возвращеня домой
+            // с учетом расстояния от города старта и расстояния до города возвращеня домой
             int hoursForOrderFromThisCity = mapOfHoursForOrderFromEveryCity.get(city);
 
             //заходим в каждую фуру и подбираем ей список водителей, если таковые найдутся
@@ -88,6 +87,7 @@ public class OrderAssignmentService {
                      * ему хватило времени на выполнение заказа
                      */
                     int maxSpentTimeForDriver = calculateMaxSpentTimeForDriverFromRequiredNumberOfHoursPerPerson(requiredNumberOfHoursPerPerson);
+
                     /** осуществляем запрос, который отдас нам водителей, у которых сейчас нет назначенного заказа, которые находятся в том же городе,
                      * что и фура и у которых хватает часов на выполнение заказа.
                      */
@@ -124,7 +124,6 @@ public class OrderAssignmentService {
                              * возможных комбинаций.
                              */
                             List<Driver> listOfDriversForCombination = returnDriversWithMinValidTimeAsList(listOfDrivers, 2);
-
                             addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversForCombination, optionalMaxDriversForOrderFromThisCity);
                         }
                     }
@@ -141,19 +140,20 @@ public class OrderAssignmentService {
                         }
                         int maxSpentTimeForDriver = calculateMaxSpentTimeForDriverFromRequiredNumberOfHoursPerPerson(requiredNumberOfHoursToSelectDriver);
                         List<Driver> listOfDrivers = driverService.findDriversForTruck(city, maxSpentTimeForDriver);
-                        System.out.println(listOfDrivers.toString());
+
                         /** если мы нашли людей, подходящих под это  заказ, то из них выберем того, у кого до конца месяца осталось наименьшее кол-во
                          * свободных часов, что бы оптимальнее расходовать ресурсы.
                          */
                         if (listOfDrivers != null && listOfDrivers.size() != 0) {
                             List<Driver> listOfDriversToCombination = returnDriversWithMinValidTimeAsList(listOfDrivers, 1);
-                            System.out.println(listOfDriversToCombination);
                             addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversToCombination, optionalMaxDriversForOrderFromThisCity);
                         }
+
                         /**
                          *   если оптимальное количество человек для выполнения заказа = 2, значит заказ от 24 до 48 часов, значит мы предполагаем ,что
                          *   водители будут работать по 12 часов в день, тк заказ при таком расклады выходит максимум на 2 дня.
                          */
+
                     } else if (optionalMaxDriversForOrderFromThisCity == 2) {
                         int requiredNumberOfHoursToSelectDriver;
                         if (hoursToEndMonth < hoursForOrderFromThisCity) {
@@ -293,9 +293,9 @@ public class OrderAssignmentService {
     }
 
     private List<Driver> returnDriversWithMinValidTimeAsList(List<Driver> listOfDrivers, int numberOfDrivers) {
-        long minHours = 200;
         List<Driver> listOfDriversToReturn = new ArrayList<>();
         while (numberOfDrivers > 0) {
+            long minHours = 200;
             Driver driverToReturn = null;
             for (Driver driver : listOfDrivers) {
                 long validHours = Driver.MAX_HOURS_IN_MONTH - driver.getHoursThisMonth();

@@ -208,4 +208,18 @@ public class OrderServiceImpl implements OrderService {
         orderDao.update(orderToUpdate);
     }
 
+    @Transactional
+    public void cancelAssignment(Long orderId) {
+        Order orderToUpdate = findById(orderId);
+        orderToUpdate.setOrderTruck(null);
+        orderToUpdate.setStatus(OrderStatus.NOT_ASSIGNED);
+        orderToUpdate.setDrivers(null);
+        List<Driver> listOfDrivers = driverService.getParnersForCurrentOrder(orderId);
+        for(Driver driver: listOfDrivers) {
+            driver.setCurrentOrder(null);
+            driverService.update(driver);
+        }
+        orderDao.update(orderToUpdate);
+    }
+
 }

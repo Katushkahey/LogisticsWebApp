@@ -51,4 +51,5 @@ public interface OrderService {
 
     void assign(Long orderId, Truck truck, List<Driver> listOfDrivers);
 
+    void cancelAssignment(Long orderId);
 }

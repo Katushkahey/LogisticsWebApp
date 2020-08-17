@@ -87,6 +87,7 @@
                                 <th scope="col"> City From </th>
                                 <th scope="col"> City To </th>
                                 <th scope="col"> Details </th>
+                                <th scope="col"> Cancel </th>
                             </tr>
                     </thead>
                     <tbody>
@@ -102,6 +103,8 @@
                                 <td scope="row" align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
                                                                   href="/order/show_info/${order.id}" > Details </a></td>
+                                <td scope="row" align="center"><a class="btn btn-danger"
+                                                                  href="/order/cancel_assignment/${order.id}"> Cancel </a></td>
                             </tr>
                         </c:forEach>
                     </tbody>
