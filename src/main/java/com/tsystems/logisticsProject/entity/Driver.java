@@ -15,7 +15,7 @@ import java.time.YearMonth;
 public class Driver extends AbstractEntity {
 
     public static final int MAX_HOURS_IN_MONTH = 176;
-    private static LocalDate firstDayOfCurrentMounth = YearMonth.now().atDay( 1 );
+    private static LocalDate firstDayOfCurrentMounth = YearMonth.now().atDay(1);
 
 
     @ToString.Exclude

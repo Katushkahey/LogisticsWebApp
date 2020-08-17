@@ -91,7 +91,7 @@ public class OrderController {
     @GetMapping("/assign_order/choose_assignment/{orderId}/{combinationId}")
     public String saveOrder(@PathVariable("orderId") Long orderId,
                             @PathVariable("combinationId") int combinationId) {
-        CombinationForOrder cf =  orderAssignmentService.getCombinationForOrderByIndex(combinationId - 1);
+        CombinationForOrder cf = orderAssignmentService.getCombinationForOrderByIndex(combinationId - 1);
         orderService.assign(orderId, cf.getTruck(), cf.getListOfDrivers());
         return "redirect:/order/info";
     }
@@ -110,7 +110,7 @@ public class OrderController {
     public String deleteWaypoint(@PathVariable("orderId") Long orderId, @PathVariable("waypointId") Long waypointId,
                                  Model model) {
         model.addAttribute("id", orderId);
-        if(waypointService.deleteWaypoint(orderId, waypointId)) {
+        if (waypointService.deleteWaypoint(orderId, waypointId)) {
             return "redirect:/order/info";
         }
 

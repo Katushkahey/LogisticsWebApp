@@ -180,7 +180,7 @@
     </br>
     <div class="collapse" id="navbarToggleExternalContent">
         <div class="p-4" style="background: rgba(67,41,28,0.99)">
-            <h5 class="text-white h4" align="center">Waypoints of order №${driver.currentOrder.id}</h5>
+            <h5 class="text-white h4" align="center">Waypoints of order №${driver.currentOrder.number}</h5>
             <span class="text-white">
                 <table class="table">
                     <thead class="thead-light" align="center">
@@ -189,7 +189,11 @@
                                 <th scope="col"> Cargo </th>
                                 <th scope="col"> Weight </th>
                                 <th scope="col"> Action </th>
-                                <th scope="col">Status</th>
+                                <c:choose>
+                                    <c:when test="${driver.currentOrder.status == 'IN_PROGRESS'}">
+                                        <th scope="col">Status</th>
+                                    </c:when>
+                                </c:choose>
                             </tr>
                     </thead>
                     <tbody align="center">
@@ -200,14 +204,18 @@
                                 <th scope="row"> ${waypoint.cargo.weight}</th>
                                 <td scope="row"> ${waypoint.action.name()} </td>
                                 <c:choose>
-                                    <c:when test="${waypoint.status.name()=='TODO'}">
-                                        <td scope="row"> <a class="btn btn-secondary"
-                                                                 href="/driver/complete_waypoint/${waypoint.id}"> Done </a>
-                                        </td>
+                                    <c:when test="${driver.currentOrder.status == 'IN_PROGRESS'}">
+                                        <c:choose>
+                                            <c:when test="${waypoint.status.name()=='TODO'}">
+                                                <td scope="row"> <a class="btn btn-secondary"
+                                                                         href="/driver/complete_waypoint/${waypoint.id}"> Done </a>
+                                                </td>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <td scope="row"> ${waypoint.status.name()} </td>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </c:when>
-                                    <c:otherwise>
-                                        <td scope="row"> ${waypoint.status.name()} </td>
-                                    </c:otherwise>
                                 </c:choose>
                             </tr>
                         </c:forEach>
@@ -265,7 +273,7 @@
                 </div>
                 <div class="modal-body">
                     <form action="/driver/finish_order/${driver.currentOrder.id}" method="get" class="formWithValidation3" role="form">
-                        Are you sure, that order №${driver.currentOrder.id} is completed?
+                        Are you sure, that order №${driver.currentOrder.number} is completed?
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal"> No </button>
                             <button type="submit" class="btn btn-success"> Yes </button>

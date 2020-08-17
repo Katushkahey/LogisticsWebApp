@@ -3,7 +3,6 @@ package com.tsystems.logisticsProject.entity;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import lombok.*;
-import org.hibernate.engine.internal.Cascade;
 
 import javax.persistence.*;
 
@@ -23,14 +22,14 @@ public class Waypoint extends AbstractEntity {
     @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="cargo_id")
+    @JoinColumn(name = "cargo_id")
     private Cargo cargo;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne
-    @JoinColumn(name="city_id")
+    @JoinColumn(name = "city_id")
     private City city;
 
     @NonNull

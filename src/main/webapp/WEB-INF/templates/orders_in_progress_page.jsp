@@ -22,7 +22,7 @@
         }
 
         .mainDiv {
-            width: 50%;
+            width: 65%;
             height: 400px;
             overflow-y: auto;
             overflow-x: auto;
@@ -93,11 +93,12 @@
                         <c:forEach var="order" items="${mapOfOrders.keySet()}" varStatus="loop">
                             <tr>
                                 <td scope="row" align="center">${loop.count}</td>
+                                <td scope="row" align="center">${order.number}</td>
                                 <td scope="row" align="center">${mapOfDriversForOrders.get(order)}</td>
                                 <td scope="row" align="center">${order.orderTruck.number}</td>
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>
                                 <td scope="row" align="center">${order.cargoes}</td>
-                               <td scope="row" align="center">${listOfWaypoints.get(order).get(0).city.name}</td>
+                                <td scope="row" align="center">${listOfWaypoints.get(order).get(0).city.name}</td>
                                 <td scope="row" align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
                                                                   href="/order/show_info/${order.id}" > Details </a></td>

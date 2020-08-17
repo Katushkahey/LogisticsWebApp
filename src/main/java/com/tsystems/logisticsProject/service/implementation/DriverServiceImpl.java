@@ -9,6 +9,7 @@ import com.tsystems.logisticsProject.event.EntityUpdateEvent;
 import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,15 @@ public class DriverServiceImpl implements DriverService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    @Scheduled(cron = "0 0 0 1 * ?")
+    public void ScheduledTasks() {
+        List<Driver> listOfAllDrivers = getListOfDrivers();
+        for(Driver driver: listOfAllDrivers) {
+            driver.setHoursThisMonth(0);
+            driverDao.update(driver);
+        }
+    }
+
     @Transactional
     public Driver findById(Long id) {
         return driverDao.findById(id);
@@ -50,6 +60,7 @@ public class DriverServiceImpl implements DriverService {
     public Driver findByUser(User user) {
         return driverDao.findByUser(user);
     }
+
     @Transactional
     public Driver getDriverByPrincipalName(String name) {
         User userPrincipal = userService.findByUsername(name);
@@ -99,6 +110,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public List<Driver> getListOfDrivers() {
         return driverDao.findAll();
+
     }
 
     @Transactional
@@ -181,7 +193,7 @@ public class DriverServiceImpl implements DriverService {
                 Date endWorkingTime = new Date();
                 Date startWorkingTime = new Date(driverToUpdate.getStartWorkingTime());
                 Long totalWorkingTimePerInterval = endWorkingTime.getTime() - startWorkingTime.getTime();
-                int totalWorkingHoursPerInterval = (int)Math.ceil(totalWorkingTimePerInterval / 1000 / 60 / 60);
+                int totalWorkingHoursPerInterval = (int) Math.ceil(totalWorkingTimePerInterval / 1000 / 60 / 60);
                 driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingHoursPerInterval);
                 driverToUpdate.setDriverState(state);
                 driverDao.update(driverToUpdate);
@@ -211,11 +223,11 @@ public class DriverServiceImpl implements DriverService {
         if (listOfCargoesForCompletedOrder == null) {
             return;
         }
-        for (Cargo cargo: listOfCargoesForCompletedOrder) {
+        for (Cargo cargo : listOfCargoesForCompletedOrder) {
             listOfWaypointsForCompletedOrder.add(cargo.getWaypoints().get(0));
             listOfWaypointsForCompletedOrder.add(cargo.getWaypoints().get(1));
         }
-        for (Waypoint waypoint: listOfWaypointsForCompletedOrder) {
+        for (Waypoint waypoint : listOfWaypointsForCompletedOrder) {
             waypoint.setStatus(WaypointStatus.DONE);
             waypointService.update(waypoint);
         }
@@ -223,11 +235,12 @@ public class DriverServiceImpl implements DriverService {
         if (listOfDriversForCompletedOrder == null) {
             return;
         }
-        for (Driver driver: listOfDriversForCompletedOrder) {
+        for (Driver driver : listOfDriversForCompletedOrder) {
             driver.setCurrentOrder(null);
             driverDao.update(driver);
             editState(driver.getId(), DriverState.REST);
         }
+        completedOrder.setOrderTruck(null);
         completedOrder.setStatus(OrderStatus.COMPLETED);
         completedOrder.setCompletionDate(new Date().getTime());
         orderService.update(completedOrder);
@@ -235,7 +248,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
-       return driverDao.findDriversForTruck(city, maxSpentTimeForDriver);
+        return driverDao.findDriversForTruck(city, maxSpentTimeForDriver);
     }
 
     @Transactional

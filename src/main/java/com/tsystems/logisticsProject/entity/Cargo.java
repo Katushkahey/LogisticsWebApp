@@ -40,6 +40,6 @@ public class Cargo extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "" + name + ": " + weight + " kg";
+        return "" + name + ": " + weight;
     }
 }

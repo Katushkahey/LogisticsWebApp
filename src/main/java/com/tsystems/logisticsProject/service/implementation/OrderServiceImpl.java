@@ -16,11 +16,6 @@ import java.util.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private Set<Cargo> cargoes = new HashSet<>();
-    private Map<Order, List<Driver>> mapOfDriversForCompletedOders = new HashMap<>();
-    private Map<Order, List<Driver>> mapOfDriversForUnassignedOders = new HashMap<>();
-    private Map<Order, List<Driver>> mapOfDriversForWaitingOrders = new HashMap<>();
-    private Map<Order, List<Driver>> mapOfDriversForOrdersInProgress = new HashMap<>();
 
     @Autowired
     private OrderDao orderDao;
@@ -42,7 +37,6 @@ public class OrderServiceImpl implements OrderService {
         List<Order> completedOrders = orderDao.findCompetedOrders();
         for (Order order : completedOrders) {
             completedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForCompletedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return completedOrderHashMap;
     }
@@ -53,7 +47,6 @@ public class OrderServiceImpl implements OrderService {
         List<Order> unassignedOrders = orderDao.findUnassignedOrders();
         for (Order order : unassignedOrders) {
             unassignedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForUnassignedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return unassignedOrderHashMap;
     }
@@ -64,7 +57,6 @@ public class OrderServiceImpl implements OrderService {
         List<Order> waytingOrders = orderDao.findWaitingOrders();
         for (Order order : waytingOrders) {
             waytingOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForWaitingOrders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return waytingOrderHashMap;
 
@@ -76,7 +68,6 @@ public class OrderServiceImpl implements OrderService {
         List<Order> ordersInProgress = orderDao.findOrdersInProgress();
         for (Order order : ordersInProgress) {
             ordersInProgressHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-            mapOfDriversForOrdersInProgress.put(order, driverService.getParnersForCurrentOrder(order.getId()));
         }
         return ordersInProgressHashMap;
     }
@@ -144,21 +135,41 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public Map<Order, List<Driver>> getMapOfDriversForWaitingOrders() {
+        Map<Order, List<Driver>> mapOfDriversForWaitingOrders = new HashMap<>();
+        List<Order> waytingOrders = orderDao.findWaitingOrders();
+        for (Order order : waytingOrders) {
+            mapOfDriversForWaitingOrders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
         return mapOfDriversForWaitingOrders;
     }
 
     @Transactional
     public Map<Order, List<Driver>> getMapOfDriversForUnassignedOrders() {
+        Map<Order, List<Driver>> mapOfDriversForUnassignedOders = new HashMap<>();
+        List<Order> unassignedOrders = orderDao.findUnassignedOrders();
+        for (Order order : unassignedOrders) {
+            mapOfDriversForUnassignedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
         return mapOfDriversForUnassignedOders;
     }
 
     @Transactional
     public Map<Order, List<Driver>> getMapOfDriversForCompletedOrders() {
+        Map<Order, List<Driver>> mapOfDriversForCompletedOders = new HashMap<>();
+        List<Order> completedOrders = orderDao.findCompetedOrders();
+        for (Order order : completedOrders) {
+            mapOfDriversForCompletedOders.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
         return mapOfDriversForCompletedOders;
     }
 
     @Transactional
     public Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress() {
+        Map<Order, List<Driver>> mapOfDriversForOrdersInProgress = new HashMap<>();
+        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
+        for (Order order : ordersInProgress) {
+            mapOfDriversForOrdersInProgress.put(order, driverService.getParnersForCurrentOrder(order.getId()));
+        }
         return mapOfDriversForOrdersInProgress;
     }
 

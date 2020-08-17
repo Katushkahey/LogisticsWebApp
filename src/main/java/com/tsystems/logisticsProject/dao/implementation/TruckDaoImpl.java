@@ -63,7 +63,7 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
     public List<Truck> findTrucksForOrder(double maxOneTimeWeight) {
         try {
             return sessionFactory.getCurrentSession()
-                    .createQuery("SELECT t FROM Truck t WHERE t.capacity>=:weight AND t.truckState=:state "+
+                    .createQuery("SELECT t FROM Truck t WHERE t.capacity>=:weight AND t.truckState=:state " +
                             "AND t.id NOT IN (SELECT o.orderTruck FROM Order o where o.orderTruck is not null)", Truck.class)
                     .setParameter("weight", maxOneTimeWeight)
                     .setParameter("state", TruckState.OK)
@@ -73,5 +73,3 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
         }
     }
 }
-
-

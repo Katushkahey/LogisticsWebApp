@@ -22,7 +22,7 @@
         }
 
         .mainDiv {
-            width: 55%;
+            width: 65%;
             height: 400px;
             overflow-y: auto;
             overflow-x: auto;
