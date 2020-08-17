@@ -10,8 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CargoServiceImpl implements CargoService {
 
+    private CargoDao cargoDao;
+
     @Autowired
-    CargoDao cargoDao;
+    public void setCargoDao(CargoDao cargoDao) {
+        this.cargoDao = cargoDao;
+    }
 
     @Transactional
     public void delete(Cargo cargo) {

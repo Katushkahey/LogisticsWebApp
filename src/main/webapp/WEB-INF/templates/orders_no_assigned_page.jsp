@@ -79,7 +79,8 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(116,219,116,0.61)" align="center"> List of orders </h5>
+                <h5 class="text-black h4" style="background: rgba(116,219,116,0.61)" align="center"> List of
+                    orders </h5>
                 <span class="text-black">
                     <thead style="background:  rgba(116,219,116,0.61)" align="center">
                             <tr>
@@ -102,10 +103,12 @@
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>
                                 <td scope="row" align="center">${order.cargoes}</td>
                                 <td scope="row" align="center">${listOfWaypoints.get(order).get(0).city.name}</td>
-                                <td scope="row" align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
+                                <td scope="row"
+                                    align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
                                                                   href="/order/show_info/${order.id}"> Details </a></td>
-                                <td scope="row" align="center"><a class="btn btn-success" href="/order/assign_order/${order.id}"> Assign </a></td>
+                                <td scope="row" align="center"><a class="btn btn-success"
+                                                                  href="/order/assign_order/${order.id}"> Assign </a></td>
 
                                 <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/order/delete_order/${order.id}"> Delete </a></td>

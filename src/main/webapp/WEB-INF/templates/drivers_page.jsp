@@ -40,8 +40,8 @@
         }
 
         .not-active {
-         pointer-events: none;
-         cursor: default;
+            pointer-events: none;
+            cursor: default;
         }
 
 
@@ -98,26 +98,27 @@
                                 <td scope="row" align="center">${driver.hoursThisMonth}</td>
                                 <td scope="row" align="center">${driver.currentCity.name}</td>
                                 <c:choose>
-                                   <c:when test="${driver.currentOrder.id==null}">
-                                       <td scope="row" align="center"> Yes </td>
-                                   </c:when>
-                                   <c:otherwise>
-                                       <td scope="row" align="center"> No </td>
-                                   </c:otherwise>
+                                    <c:when test="${driver.currentOrder.id==null}">
+                                        <td scope="row" align="center"> Yes </td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td scope="row" align="center"> No </td>
+                                    </c:otherwise>
                                 </c:choose>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
-                                        <c:if test="${driver.currentOrder!=null}"><c:out value="disabled='disabled'"/></c:if>
+                                        <c:if test="${driver.currentOrder!=null}"><c:out
+                                                value="disabled='disabled'"/></c:if>
                                                                        data-toggle="modal" data-target="#edit_driver"
 
                                                                        data-driver-id="${driver.id}"> Edit </button>
                                 <c:choose>
                                 <c:when test="${driver.currentOrder != null}">
                                         <td scope="row" align="center"><button type="button" class="btn btn-secondary"
-                                                                   value="disabled='disabled'"> Delete </button></td>
+                                                                               value="disabled='disabled'"> Delete </button></td>
                                     </c:when>
                                     <c:otherwise>
                                         <td scope="row" align="center"><a class="btn btn-danger"
-                                               href="/drivers/delete_driver/${driver.id}"> Delete </a></td>
+                                                                          href="/drivers/delete_driver/${driver.id}"> Delete </a></td>
                                     </c:otherwise>
                                 </c:choose>
                             </tr>

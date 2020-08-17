@@ -16,15 +16,16 @@ import java.util.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-
-    @Autowired
     private OrderDao orderDao;
-
-    @Autowired
     private DriverService driverService;
+    private WaypointService waypointService;
 
     @Autowired
-    private WaypointService waypointService;
+    public void setDependencies(OrderDao orderDao, DriverService driverService, WaypointService waypointService) {
+        this.orderDao = orderDao;
+        this.driverService = driverService;
+        this.waypointService = waypointService;
+    }
 
     @Transactional
     public List<Waypoint> findWaypointsForCurrentOrderById(Long id) {
@@ -187,7 +188,7 @@ public class OrderServiceImpl implements OrderService {
     public void startOrder(Long id) {
         Order order = findById(id);
         order.setStatus(OrderStatus.IN_PROGRESS);
-        orderDao.update(order);
+        update(order);
     }
 
     @Transactional
@@ -205,7 +206,7 @@ public class OrderServiceImpl implements OrderService {
             driver.setCurrentOrder(orderToUpdate);
             driverService.update(driver);
         }
-        orderDao.update(orderToUpdate);
+        update(orderToUpdate);
     }
 
     @Transactional
@@ -219,7 +220,7 @@ public class OrderServiceImpl implements OrderService {
             driver.setCurrentOrder(null);
             driverService.update(driver);
         }
-        orderDao.update(orderToUpdate);
+        update(orderToUpdate);
     }
 
 }

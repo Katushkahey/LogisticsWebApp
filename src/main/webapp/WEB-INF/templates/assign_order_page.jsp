@@ -1,7 +1,5 @@
-<%@ page import="java.util.ArrayList" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 
 <head>
@@ -24,7 +22,7 @@
 
         .mainDiv {
             width: 60%;
-            height: 450px;
+            height: 500px;
             overflow-y: auto;
             overflow-x: auto;
             margin-left: 1rem;
@@ -43,12 +41,14 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center">Order №${order.number} assignment: truck and drivers </h5>
+                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center">Order
+                    №${order.number} assignment: truck and drivers </h5>
                 <span class="text-black">
                     <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>
                                 <th scope="col"> Truck </th>
                                 <th scope="col"> Drivers </th>
+                                <th scope="col"> Home city </th>
                                 <th scope="col"> Number of hours to complete the order </th>
                                 <th scope="col"> Total billable hours </th>
                                 <th scope="col"> Choose </th>
@@ -59,10 +59,11 @@
                             <tr id="combination-${combination.id}">
                                 <td scope="row" align="center">${combination.truck.number}</td>
                                 <td scope="row" align="center">${combination.listOfDrivers}</td>
+                                <td scope="row" align="center">${combination.truck.currentCity.name}</td>
                                 <td scope="row" align="center">${combination.totalHours}</td>
                                 <td scope="row" align="center">${combination.totalBillableHours}</td>
                                 <td scope="row" align="center"><a class="btn btn-success"
-                                   href="choose_assignment/${order.id}/${combination.id}" >
+                                                                  href="choose_assignment/${order.id}/${combination.id}">
                                     Choose </a>
                             </tr>
                         </c:forEach>
@@ -74,12 +75,12 @@
 </div>
 </body>
 <script>
-    function setData(){
+    function setData() {
         var category = $('#assignment').val();
         $.ajax({
             type: 'POST',
             dataType: 'json',
-            data: {categoryList : category},
+            data: {categoryList: category},
             url: '/order/assign_order/choose_assignment'
         });
     }

@@ -100,9 +100,10 @@
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>
                                 <td scope="row" align="center">${order.cargoes}</td>
                                 <td scope="row" align="center">${listOfWaypoints.get(order).get(0).city.name}</td>
-                                <td scope="row" align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
+                                <td scope="row"
+                                    align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                  href="/order/show_info/${order.id}" > Details </a></td>
+                                                                  href="/order/show_info/${order.id}"> Details </a></td>
                                 <td scope="row" align="center"><a class="btn btn-danger"
                                                                   href="/order/cancel_assignment/${order.id}"> Cancel </a></td>
                             </tr>
@@ -115,4 +116,3 @@
 </div>
 </body>
 </html>
-

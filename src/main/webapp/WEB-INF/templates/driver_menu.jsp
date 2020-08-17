@@ -12,6 +12,7 @@
         html {
             height: 100%; /* Высота страницы */
         }
+
         body {
             background: rgb(247, 205, 145) url("../images/driver_page.jpg"); /* путь к файлу */
             background-position: right;
@@ -19,19 +20,23 @@
             background-size: contain;
             color: #000; /* Цвет текста */
         }
+
         .navbar {
             width: 50%;
             margin-left: 1rem;
         }
+
         .p-4 {
             height: 250px;
             width: 50%;
             overflow-x: auto;
             margin-left: 1rem;
         }
+
         .info {
             margin-left: 1rem;
         }
+
         .form-group {
             margin-left: 1rem;
             width: 50%;
@@ -42,6 +47,7 @@
             left: 5em;
             margin-top: 0.3rem;
         }
+
         .nav-item2 {
             position: absolute;
             margin-top: 0.3rem;
@@ -67,13 +73,14 @@
                     <span class="text-white">${driver.name} ${driver.surname}, ${driver.telephoneNumber}</span>
                 </a>
                 <a class="nav-item">
-                    <form data-toggle="modal" data-target="#edit_phone" data-driver-telephone="${driver.telephoneNumber}">
-                        <button type="button"class="btn btn-" style="background: #e7ecf0"> Edit phone </button>
+                    <form data-toggle="modal" data-target="#edit_phone"
+                          data-driver-telephone="${driver.telephoneNumber}">
+                        <button type="button" class="btn btn-" style="background: #e7ecf0"> Edit phone</button>
                     </form>
                 </a>
                 <a class="nav-item3">
                     <form data-toggle="modal" data-target="#edit_password">
-                        <button type="button"class="btn btn-" style="background: #ffffff"> Edit password </button>
+                        <button type="button" class="btn btn-" style="background: #ffffff"> Edit password</button>
                     </form>
                 </a>
                 <a class="nav-item2">
@@ -96,7 +103,8 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/driver/edit_telephoneNumber/${driver.id}" method="get" class="formWithValidation" role="form">
+                <form action="/driver/edit_telephoneNumber/${driver.id}" method="get" class="formWithValidation"
+                      role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="phoneInput">Phone Number</label>
                         <div class="col-sm-9">
@@ -115,73 +123,79 @@
 </div>
 <c:choose>
     <c:when test="${(driver.currentOrder.id==null) or (driver.currentOrder.status=='NOT_ASSIGNED')}">
-        <br />
+        <br/>
         <h6><strong> You are not assigned to any order. </strong></h6>
-        <br />
+        <br/>
     </c:when>
     <c:otherwise>
-    <c:choose>
-        <c:when test="${driver.currentOrder.status=='WAITING'}">
-            <a class="nav-item3">
-                <form action="/driver/start_order/${driver.currentOrder.id}" method="get">
-                    <input type="submit" class="btn btn-success" value="Start"/>
-                </form>
-            </a>
-        </c:when>
-        <c:otherwise>
-        <div id="loginbox" style="..." class="mainbox col-md-3 col-md-offset-2 col-sm-4 col-sm-offset-2">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <div class="panel-title"><h5><u> The working process </u></h5></div>
-                </div>
-                <div style="..." class="panel-body">
-                    <div class="info"><h5><strong>State:</strong> ${driver.driverState}</h5></div>
-                    <div>
-                        <button type="button" class="btn btn-secondary"
-                                data-toggle="modal" data-target="#edit_state"
-                                data-driver-state="${driver.driverState}"> Edit state </button>
-                        <button type="button" class="btn btn-success"
-                                data-toggle="modal" data-target="#finish_order"
-                                data-driver-order="${driver.currentOrder.id}"> Finish </button>
+        <c:choose>
+            <c:when test="${driver.currentOrder.status=='WAITING'}">
+                <a class="nav-item3">
+                    <form action="/driver/start_order/${driver.currentOrder.id}" method="get">
+                        <input type="submit" class="btn btn-success" value="Start"/>
+                    </form>
+                </a>
+            </c:when>
+            <c:otherwise>
+                <div id="loginbox" style="..." class="mainbox col-md-3 col-md-offset-2 col-sm-4 col-sm-offset-2">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <div class="panel-title"><h5><u> The working process </u></h5></div>
+                        </div>
+                        <div style="..." class="panel-body">
+                            <div class="info"><h5><strong>State:</strong> ${driver.driverState}</h5></div>
+                            <div>
+                                <button type="button" class="btn btn-secondary"
+                                        data-toggle="modal" data-target="#edit_state"
+                                        data-driver-state="${driver.driverState}"> Edit state
+                                </button>
+                                <button type="button" class="btn btn-success"
+                                        data-toggle="modal" data-target="#finish_order"
+                                        data-driver-order="${driver.currentOrder.id}"> Finish
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        </c:otherwise>
-    </c:choose>
-    <c:choose>
-        <c:when test="${partners==null}">
-        </c:when>
-        <c:otherwise>
-            <c:choose>
-                <c:when test="${partners.size() == 1}">
-                    </br>
-                    <div class="info"><h5><strong>Partner:</strong> ${partners.get(0).name} ${partners.get(0).surname}, ${partners.get(0).telephoneNumber}</h5>
-                    </div>
-                </c:when>
-                <c:otherwise>
-                    </br>
-                    <div class="info"><h5><strong>Partners:</strong> ${partners.get(0).name} ${partners.get(0).surname}, ${partners.get(0).telephoneNumber}
-                    </br> ${partners.get(1).name} ${partners.get(1).surname}, ${partners.get(1).telephoneNumber}</h5>
-                    </div>
-                </c:otherwise>
-            </c:choose>
-        </c:otherwise>
-    </c:choose>
-    <c:choose>
-        <c:when test="${driver.currentOrder.orderTruck==null}">
-        </c:when>
-        <c:otherwise>
-            </br>
-            <div class="info"><h5><strong>Truck:</strong> ${driver.currentOrder.orderTruck.number}</h5></div>
-            </div>
-        </c:otherwise>
-    </c:choose>
-    </br>
-    <div class="collapse" id="navbarToggleExternalContent">
-        <div class="p-4" style="background: rgba(67,41,28,0.99)">
-            <h5 class="text-white h4" align="center">Waypoints of order №${driver.currentOrder.number}</h5>
-            <span class="text-white">
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${partners==null}">
+            </c:when>
+            <c:otherwise>
+                <c:choose>
+                    <c:when test="${partners.size() == 1}">
+                        </br>
+                        <div class="info"><h5>
+                            <strong>Partner:</strong> ${partners.get(0).name} ${partners.get(0).surname}, ${partners.get(0).telephoneNumber}
+                        </h5>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        </br>
+                        <div class="info"><h5>
+                            <strong>Partners:</strong> ${partners.get(0).name} ${partners.get(0).surname}, ${partners.get(0).telephoneNumber}
+                            </br> ${partners.get(1).name} ${partners.get(1).surname}, ${partners.get(1).telephoneNumber}
+                        </h5>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </c:otherwise>
+        </c:choose>
+        <c:choose>
+            <c:when test="${driver.currentOrder.orderTruck==null}">
+            </c:when>
+            <c:otherwise>
+                </br>
+                <div class="info"><h5><strong>Truck:</strong> ${driver.currentOrder.orderTruck.number}</h5></div>
+                </div>
+            </c:otherwise>
+        </c:choose>
+        </br>
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class="p-4" style="background: rgba(67,41,28,0.99)">
+                <h5 class="text-white h4" align="center">Waypoints of order №${driver.currentOrder.number}</h5>
+                <span class="text-white">
                 <table class="table">
                     <thead class="thead-light" align="center">
                             <tr>
@@ -208,7 +222,7 @@
                                         <c:choose>
                                             <c:when test="${waypoint.status.name()=='TODO'}">
                                                 <td scope="row"> <a class="btn btn-secondary"
-                                                                         href="/driver/complete_waypoint/${waypoint.id}"> Done </a>
+                                                                    href="/driver/complete_waypoint/${waypoint.id}"> Done </a>
                                                 </td>
                                             </c:when>
                                             <c:otherwise>
@@ -222,67 +236,70 @@
                     </tbody>
                 </table>
             </span>
+            </div>
         </div>
-    </div>
-    <nav class="navbar navbar-light" style="background: rgba(67,41,28,0.99)">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent"
-                aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-            <span class="text-white">Waypoints of order №${driver.currentOrder.number}</span>
-        </button>
-    </nav>
-    <div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editLabel2"> What are you going to do? </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="/driver/edit_state/${driver.id}" method="get" role="form">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label" for="stateInput">State</label>
-                            <div class="col-sm-9">
-                                <select class="col-sm-20 state field" name="state" id="stateInput">
-                                    <c:forEach var="state" items="${driverState}">
-                                        <option value=${state.toString()}>${state.toString()}</option>
-                                    </c:forEach>
-                                </select>
+        <nav class="navbar navbar-light" style="background: rgba(67,41,28,0.99)">
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarToggleExternalContent"
+                    aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                <span class="text-white">Waypoints of order №${driver.currentOrder.number}</span>
+            </button>
+        </nav>
+        <div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editLabel2"> What are you going to do? </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/driver/edit_state/${driver.id}" method="get" role="form">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="stateInput">State</label>
+                                <div class="col-sm-9">
+                                    <select class="col-sm-20 state field" name="state" id="stateInput">
+                                        <c:forEach var="state" items="${driverState}">
+                                            <option value=${state.toString()}>${state.toString()}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-sm-offset-3 col-sm-10">
-                                <button type="submit" class="saveBtn btn-success">Save</button>
+                            <div class="form-group">
+                                <div class="col-sm-offset-3 col-sm-10">
+                                    <button type="submit" class="saveBtn btn-success">Save</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="finish_order" tabindex="-1" role="dialog" aria-labelledby="allertModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="allertModalLabel">Finish working</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="/driver/finish_order/${driver.currentOrder.id}" method="get" class="formWithValidation3" role="form">
-                        Are you sure, that order №${driver.currentOrder.number} is completed?
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal"> No </button>
-                            <button type="submit" class="btn btn-success"> Yes </button>
-                        </div>
-                    </form>
+        <div class="modal fade" id="finish_order" tabindex="-1" role="dialog" aria-labelledby="allertModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="allertModalLabel">Finish working</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/driver/finish_order/${driver.currentOrder.id}" method="get"
+                              class="formWithValidation3" role="form">
+                            Are you sure, that order №${driver.currentOrder.number} is completed?
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
+                                <button type="submit" class="btn btn-success"> Yes</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </c:otherwise>
 </c:choose>
 </body>
@@ -343,10 +360,6 @@
     });
 </script>
 <script>
-    // $("#finish_order").on('show.bs.modal', function (e) {
-    //     var state = $(e.relatedTarget).data('driver-state');
-    //     $('#phoneInput').val(state);
-    // });
     $("#finish_order").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
         form[0].reset();

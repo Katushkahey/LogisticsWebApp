@@ -41,7 +41,8 @@
     <div class="mainDiv">
         <div class="tableTab">
             <table class="table">
-                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center"> Details of order № ${order.number}  </h5>
+                <h5 class="text-black h4" style="background: rgba(150,214,132,0.93)" align="center"> Details of order
+                    № ${order.number}  </h5>
                 <span class="text-black">
                     <thead style="background: rgba(150,214,132,0.93)" align="center">
                             <tr>
@@ -75,8 +76,9 @@
                                     </c:when>
                                     <c:otherwise>
                                         <td scope="row" align="center"><button type="button" class="btn btn-secondary"
-                                                                       data-toggle="modal" data-target="#edit_waypoint"
-                                                                       data-waypoint-id="${waypoint.id}"> Edit </button>
+                                                                               data-toggle="modal"
+                                                                               data-target="#edit_waypoint"
+                                                                               data-waypoint-id="${waypoint.id}"> Edit </button>
                                         <%--<td scope="row" align="center"><button type="button" class="btn btn-danger"--%>
                                                                                <%--data-toggle="modal" data-target="#delete_waypoint"--%>
                                                                                <%--data-waypoint-id="${waypoint.id}"> Delete </button>--%>

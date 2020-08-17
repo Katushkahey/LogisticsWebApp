@@ -17,19 +17,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class WaypointServiceImp implements WaypointService {
+public class WaypointServiceImpl implements WaypointService {
+
+    private WaypointDao waypointDao;
+    private CityService cityService;
+    private OrderService orderService;
+    private CargoService cargoService;
 
     @Autowired
-    WaypointDao waypointDao;
-
-    @Autowired
-    CityService cityService;
-
-    @Autowired
-    OrderService orderService;
-
-    @Autowired
-    CargoService cargoService;
+    public void setDependencies(WaypointDao waypointDao, CityService cityService, OrderService orderService,
+                               CargoService cargoService) {
+        this.waypointDao = waypointDao;
+        this.cityService = cityService;
+        this.cargoService = cargoService;
+        this.orderService = orderService;
+    }
 
     @Transactional
     public Waypoint findById(Long id) {
@@ -55,11 +57,11 @@ public class WaypointServiceImp implements WaypointService {
 
     @Transactional
     public void editWaypoint(Long waypointId, String cargoName, double cargoWeight, String cityName) {
-        Waypoint waypointToUpdate = waypointDao.findById(waypointId);
+        Waypoint waypointToUpdate = findById(waypointId);
         waypointToUpdate.getCargo().setName(cargoName);
         waypointToUpdate.getCargo().setWeight(cargoWeight);
         waypointToUpdate.setCity(cityService.findByCityName(cityName));
-        waypointDao.update(waypointToUpdate);
+        update(waypointToUpdate);
     }
 
     @Transactional
@@ -70,7 +72,7 @@ public class WaypointServiceImp implements WaypointService {
             orderService.deleteById(orderId);
             return true;
         }
-        Waypoint waypointToDelete = waypointDao.findById(waypointId);
+        Waypoint waypointToDelete = findById(waypointId);
         Cargo cargo = waypointToDelete.getCargo();
         orderToUpdate.getCargoes().remove(cargo);
         orderService.update(orderToUpdate);

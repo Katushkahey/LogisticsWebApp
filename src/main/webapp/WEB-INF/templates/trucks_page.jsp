@@ -103,13 +103,13 @@
                                                                        data-toggle="modal" data-target="#edit_truck"
                                                                        data-truck-id="${truck.id}"> Edit </button></td>
                                 <c:choose>
-                                <c:when test="${truck.order!= null}">
+                                    <c:when test="${truck.order!= null}">
                                         <td scope="row" align="center"><button type="button" class="btn btn-secondary"
                                                                                value="disabled='disabled'"> Delete </button></td>
                                     </c:when>
                                     <c:otherwise>
                                         <td scope="row" align="center"><a class="btn btn-danger"
-                                                                  href="/truck/delete_truck/${truck.id}"> Delete </a></td>
+                                                                          href="/truck/delete_truck/${truck.id}"> Delete </a></td>
                                     </c:otherwise>
                                 </c:choose>
 

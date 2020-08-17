@@ -165,7 +165,8 @@
                                 <form action="/create_order/edit_cargo" method="get" class="formEditWithValidation"
                                       role="form">
                                     <div class="form-group">
-                                        <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
+                                        <label class="col-sm-3 control-label" visibility: hidden
+                                               for="idInput">ID</label>
                                         <div class="col-sm-9">
                                             <input type="number" readonly visibility: hidden
                                                    class="id field" name="id" id="idInput"/>
@@ -207,10 +208,13 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="/create_order/clear_all" method="get" class="formWithValidation15" role="form">
-                                    Are you sure, that you want to delete all changes and redirect to page with saved orders?
+                                <form action="/create_order/clear_all" method="get" class="formWithValidation15"
+                                      role="form">
+                                    Are you sure, that you want to delete all changes and redirect to page with saved
+                                    orders?
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"> No
+                                        </button>
                                         <button type="submit" class="btn btn-success"> Yes</button>
                                     </div>
                                 </form>
@@ -233,7 +237,8 @@
                     </button>
                 </div>
                 <div>
-                    <h6 class="info"><strong> For each cargo you`ll have 2 waypoints : first for LOADING and second for UNLOADING. </strong></h6>
+                    <h6 class="info"><strong> For each cargo you`ll have 2 waypoints : first for LOADING and second for
+                        UNLOADING. </strong></h6>
                 </div>
             </c:otherwise>
         </c:choose>
@@ -277,28 +282,38 @@
                                                 <td scope="row" align="center">
                                                 <c:choose>
                                                 <c:when test="${waypoint.action == 'UNLOADING'}">
-                                                    <a class="btn btn-danger" href="/create_order/delete_waypoint/${waypoint.id}"> Delete </a></td>
+                                                    <a class="btn btn-danger"
+                                                       href="/create_order/delete_waypoint/${waypoint.id}"> Delete </a></td>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <button type="button" class="btn btn-danger"
                                                             data-toggle="modal" data-target="#delete_loading_waypoint"> Delete
-                                                    </button></td>
-                                                    <div class="modal fade" id="delete_loading_waypoint" tabindex="-1" role="dialog" aria-labelledby="allertModalLabel" aria-hidden="true">
+                                                    </button>
+                                                    </td>
+                                                    <div class="modal fade" id="delete_loading_waypoint" tabindex="-1"
+                                                         role="dialog" aria-labelledby="allertModalLabel"
+                                                         aria-hidden="true">
                                                         <div class="modal-dialog" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h5 class="modal-title" id="allertModalLabel10">Delete ${waypoint.cargo.name}</h5>
-                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <button type="button" class="close"
+                                                                            data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <form action="/create_order/delete_waypoint/${waypoint.id}" method="get" class="formWithValidation10" role="form">
+                                                                    <form action="/create_order/delete_waypoint/${waypoint.id}"
+                                                                          method="get" class="formWithValidation10"
+                                                                          role="form">
                                                                         Are you sure, that you want to delete this waypoint? If this cargo has waypoint for UNLOADING
                                                                         if also will be deleted. If you need to change city, you can use button 'Edit'.
                                                                         <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal"> Cancel </button>
-                                                                            <button type="submit" class="btn btn-success"> Yes, delete </button>
+                                                                            <button type="button"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-dismiss="modal"> Cancel </button>
+                                                                            <button type="submit"
+                                                                                    class="btn btn-success"> Yes, delete </button>
                                                                         </div>
                                                                     </form>
                                                                 </div>
@@ -424,7 +439,8 @@
                     </div>
                     <c:choose>
                         <c:when test="${error eq true}">
-                            <div><h2> Total One-Moment weight of this order bigger than the biggest truck`s capacity </h2></div>
+                            <div><h2> Total One-Moment weight of this order bigger than the biggest truck`s
+                                capacity </h2></div>
                         </c:when>
                     </c:choose>
                     <div class="modal-body">

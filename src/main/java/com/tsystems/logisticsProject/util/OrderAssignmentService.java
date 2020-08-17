@@ -28,15 +28,16 @@ public class OrderAssignmentService {
     private static int hoursToEndMonth;
     private List<CombinationForOrder> listOfCombinationForOrder;
     private long combinationId;
-
-    @Autowired
     private OrderService orderService;
-
-    @Autowired
     private TruckService truckService;
+    private DriverService driverService;
 
     @Autowired
-    private DriverService driverService;
+    private void setDependencies(DriverService driverService, TruckService truckService, OrderService orderService) {
+        this.driverService = driverService;
+        this.orderService = orderService;
+        this.truckService = truckService;
+    }
 
     public List<CombinationForOrder> createListOfCombinationsForOrder(Long orderId) {
         listOfCombinationForOrder = new ArrayList<>();
@@ -280,7 +281,7 @@ public class OrderAssignmentService {
         if (optionalMaxDriversForOrderFromThisCity == 1) {
             combinationForOrder.setTotalHours(hoursForOrderFromThisCity);
         } else if (optionalMaxDriversForOrderFromThisCity == 2) {
-            combinationForOrder.setTotalHours(hoursForOrderFromThisCity * 24 / (8 * listOfDriversForCombination.size()));
+            combinationForOrder.setTotalHours(hoursForOrderFromThisCity * 24 / (12 * listOfDriversForCombination.size()));
         } else {
             combinationForOrder.setTotalHours(hoursForOrderFromThisCity * 24 / (8 * listOfDriversForCombination.size()));
         }

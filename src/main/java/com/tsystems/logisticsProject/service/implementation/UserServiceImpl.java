@@ -18,19 +18,22 @@ import org.springframework.transaction.annotation.Transactional;
 @NoArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private UserDao userDao;
-
-    @Autowired
     private RoleDao roleDao;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    public void setDependencies(UserDao userDao, RoleDao roleDao) {
+        this.userDao = userDao;
+        this.roleDao = roleDao;
+    }
+
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userDao.findByUsername(username);
+        User user = findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
@@ -43,8 +46,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
+    public void add(User user) {
+        userDao.add(user);
+    }
+
+    @Transactional
     public void add(User user, String authority) {
-        User newUser = userDao.findByUsername(user.getUsername());
+        User newUser = findByUsername(user.getUsername());
 
         if (newUser != null) {
             return;
@@ -52,12 +60,12 @@ public class UserServiceImpl implements UserService {
 
         user.setAuthority(roleDao.findByAuthority(authority));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.add(user);
+        add(user);
     }
 
     @Transactional
     public User returnUserToCreateDriver(String userName) {
-        User userToReturn = userDao.findByUsername(userName);
+        User userToReturn = findByUsername(userName);
         if (userToReturn == null) {
             User newDriver = new User();
             newDriver.setUsername(userName);
@@ -71,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public boolean checkUserNameToCreateDriver(String userName) {
-        if (userDao.findByUsername(userName) == null) {
+        if (findByUsername(userName) == null) {
             return false;
         }
         return true;

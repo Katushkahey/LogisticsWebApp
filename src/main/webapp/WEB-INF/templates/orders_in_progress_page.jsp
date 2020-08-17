@@ -61,7 +61,8 @@
             <div class="navbar-nav">
                 <a class="nav-link" href="/order/info"><strong> No assigned </strong></a>
                 <a class="nav-link" href="/order/info-2"><strong> Waiting </strong></a>
-                <a class="nav-link active" href="/order/info-4"><strong><u> In Progress </u></strong><span class="sr-only">(current)</span></a>
+                <a class="nav-link active" href="/order/info-4"><strong><u> In Progress </u></strong><span
+                        class="sr-only">(current)</span></a>
                 <a class="nav-link" href="/order/info-3"><strong> Completed </strong></a>
             </div>
         </div>
@@ -99,9 +100,10 @@
                                 <td scope="row" align="center">${mapOfOrders.get(order)}</td>
                                 <td scope="row" align="center">${order.cargoes}</td>
                                 <td scope="row" align="center">${listOfWaypoints.get(order).get(0).city.name}</td>
-                                <td scope="row" align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
+                                <td scope="row"
+                                    align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
-                                                                  href="/order/show_info/${order.id}" > Details </a></td>
+                                                                  href="/order/show_info/${order.id}"> Details </a></td>
                             </tr>
                         </c:forEach>
                     </tbody>
