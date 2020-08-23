@@ -96,9 +96,9 @@
                                 <td scope="row" align="center">${driver.surname}</td>
                                 <td scope="row" align="center">${driver.telephoneNumber}</td>
                                 <td scope="row" align="center">${driver.hoursThisMonth}</td>
-                                <td scope="row" align="center">${driver.currentCity.name}</td>
+                                <td scope="row" align="center">${driver.cityName}</td>
                                 <c:choose>
-                                    <c:when test="${driver.currentOrder.id==null}">
+                                    <c:when test="${driver.orderNumber==null}">
                                         <td scope="row" align="center"> Yes </td>
                                     </c:when>
                                     <c:otherwise>
@@ -106,19 +106,18 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
-                                        <c:if test="${driver.currentOrder!=null}"><c:out
+                                        <c:if test="${driver.orderNumber!=null}"><c:out
                                                 value="disabled='disabled'"/></c:if>
                                                                        data-toggle="modal" data-target="#edit_driver"
-
                                                                        data-driver-id="${driver.id}"> Edit </button>
                                 <c:choose>
-                                <c:when test="${driver.currentOrder != null}">
+                                <c:when test="${driver.orderNumber != null}">
                                         <td scope="row" align="center"><button type="button" class="btn btn-secondary"
                                                                                value="disabled='disabled'"> Delete </button></td>
                                     </c:when>
                                     <c:otherwise>
                                         <td scope="row" align="center"><a class="btn btn-danger"
-                                                                          href="/drivers/delete_driver/${driver.id}"> Delete </a></td>
+                                                                          href="/drivers/delete_driver/${driver}"> Delete </a></td>
                                     </c:otherwise>
                                 </c:choose>
                             </tr>
@@ -246,7 +245,7 @@
     $("#edit_driver").on('show.bs.modal', function (e) {
         var driverId = $(e.relatedTarget).data('driver-id');
         var cols = $('#driver-' + driverId + ' td');
-        var id = driverId
+        var id = driverId;
         var name = $(cols[1]).text();
         var surname = $(cols[2]).text();
         var telephone = $(cols[3]).text();
@@ -265,7 +264,6 @@
     var name2 = form.querySelector('.name2')
     var surname = form.querySelector('.surname')
     var telephone = form.querySelector('.telephone')
-    var city = form.querySelector('.city')
     var fields = form.querySelectorAll('.field')
 
     form.addEventListener("submit", function (event) {

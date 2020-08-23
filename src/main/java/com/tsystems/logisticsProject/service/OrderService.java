@@ -21,19 +21,17 @@ public interface OrderService {
 
     Order findById(Long id);
 
-    List<Cargo> getListOfCargoesForCurrentOrderById(Long id);
-
     double getMaxWeightDuringTheRouteOfCurrentOrderById(Long id);
 
     void deleteById(Long id);
 
-    Map<Order, List<Driver>> getMapOfDriversForWaitingOrders();
-
-    Map<Order, List<Driver>> getMapOfDriversForUnassignedOrders();
-
-    Map<Order, List<Driver>> getMapOfDriversForCompletedOrders();
-
-    Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress();
+//    Map<Order, List<Driver>> getMapOfDriversForWaitingOrders();
+//
+//    Map<Order, List<Driver>> getMapOfDriversForUnassignedOrders();
+//
+//    Map<Order, List<Driver>> getMapOfDriversForCompletedOrders();
+//
+//    Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress();
 
     void add(Order order);
 
@@ -51,5 +49,7 @@ public interface OrderService {
 
     void assign(Long orderId, Truck truck, List<Driver> listOfDrivers);
 
-    void cancelAssignment(Long orderId);
+//    void cancelAssignment(Long orderId);
+
+    boolean deleteWaypoint(Long orderId, Long waypointId);
 }

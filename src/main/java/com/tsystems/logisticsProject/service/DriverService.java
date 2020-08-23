@@ -1,6 +1,8 @@
 package com.tsystems.logisticsProject.service;
 
 
+import com.tsystems.logisticsProject.dto.DriverDto;
+import com.tsystems.logisticsProject.dto.DriverDtoForDriverPage;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 
@@ -10,15 +12,9 @@ public interface DriverService {
 
     Driver findById(Long id);
 
-    Driver getDriverByPrincipalName(String name);
+    DriverDtoForDriverPage getDriverByPrincipalName(String name);
 
-    List<Waypoint> getListOfWaypointsFromPrincipal(String name);
-
-    List<Driver> getPartnersFromPrincipal(String name);
-
-    List<Driver> getListOfDrivers();
-
-    List<Driver> getParnersForCurrentOrder(Long orderId);
+    List<DriverDto> getListOfDrivers();
 
     void deleteById(Long id);
 
@@ -43,4 +39,6 @@ public interface DriverService {
     List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver);
 
     void update(Driver driver);
+
+    void startOrder(Long id);
 }

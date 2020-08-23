@@ -1,41 +1,38 @@
 package com.tsystems.logisticsProject.controller;
 
-import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.service.*;
-import com.tsystems.logisticsProject.util.OrderAssignmentService;
-import com.tsystems.logisticsProject.util.entity.CombinationForOrder;
+import com.tsystems.logisticsProject.service.impl.OrderAssignmentService;
+import com.tsystems.logisticsProject.entity.CombinationForOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/order")
 public class OrderController {
 
-    @Autowired
     private OrderService orderService;
-
-    @Autowired
     private CityService cityService;
-
-    @Autowired
     private TruckService truckService;
-
-    @Autowired
     private WaypointService waypointService;
+    private OrderAssignmentService orderAssignmentService;
 
     @Autowired
-    private OrderAssignmentService orderAssignmentService;
+    public void setDependencies(OrderService orderService, CityService cityService, TruckService truckService,
+                                WaypointService waypointService, OrderAssignmentService orderAssignmentService) {
+        this.orderService = orderService;
+        this.cityService = cityService;
+        this.truckService = truckService;
+        this.waypointService = waypointService;
+        this.orderAssignmentService = orderAssignmentService;
+    }
 
     @GetMapping("/info-2")
     public String waytingOrders(Model model) {
         model.addAttribute("listOfWaypoints", orderService.findListOfWaypointsForWaytingOrders());
         model.addAttribute("mapOfOrders", orderService.findWaitingOrders());
-        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForWaitingOrders());
+//        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForWaitingOrders());
         return "orders_wayting_page";
     }
 
@@ -43,7 +40,7 @@ public class OrderController {
     public String completedOrders(Model model) {
         model.addAttribute("listOfWaypoints", orderService.findListOfWaypointsForCompletedOrders());
         model.addAttribute("mapOfOrders", orderService.findCompletedOrders());
-        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForCompletedOrders());
+//        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForCompletedOrders());
         return "orders_completed_page";
     }
 
@@ -51,7 +48,7 @@ public class OrderController {
     public String ordersInProgress(Model model) {
         model.addAttribute("listOfWaypoints", orderService.findListOfWaypointsForOrdersInProgress());
         model.addAttribute("mapOfOrders", orderService.findOrdersInProgress());
-        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForOrdersInProgress());
+//        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForOrdersInProgress());
         return "orders_in_progress_page";
     }
 
@@ -69,7 +66,7 @@ public class OrderController {
     public String OrdersInfo(Model model) {
         model.addAttribute("listOfWaypoints", orderService.findListOfWaypointsForUnassignedOrders());
         model.addAttribute("mapOfOrders", orderService.findUnassignedOrders());
-        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
+//        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
         return "orders_no_assigned_page";
     }
 
@@ -77,7 +74,7 @@ public class OrderController {
     public String deleteOrder(@PathVariable("id") Long id, Model model) {
         orderService.deleteById(id);
         model.addAttribute("mapOfOrders", orderService.findUnassignedOrders());
-        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
+//        model.addAttribute("mapOfDriversForOrders", orderService.getMapOfDriversForUnassignedOrders());
         return "redirect:/order/info";
     }
 
@@ -98,7 +95,7 @@ public class OrderController {
 
     @GetMapping("/edit_waypoint/{id}")
     public String editWaypoint(@PathVariable("id") Long orderId, @RequestParam("id") Long waypointId,
-                               @RequestParam("cargoName") String cargoName, @RequestParam("weight") double weight,
+                               @RequestParam("cargoName") String cargoName, @RequestParam("cargoWeight") double weight,
                                @RequestParam("city") String city, Model model) {
         model.addAttribute("id", orderId);
         waypointService.editWaypoint(waypointId, cargoName, weight, city);
@@ -110,16 +107,15 @@ public class OrderController {
     public String deleteWaypoint(@PathVariable("orderId") Long orderId, @PathVariable("waypointId") Long waypointId,
                                  Model model) {
         model.addAttribute("id", orderId);
-        if (waypointService.deleteWaypoint(orderId, waypointId)) {
+        if (orderService.deleteWaypoint(orderId, waypointId)) {
             return "redirect:/order/info";
         }
-
         return "redirect:/order/show_info/{id}";
     }
 
     @GetMapping("/cancel_assignment/{id}")
     public String cancelAssignment(@PathVariable("id") Long id) {
-        orderService.cancelAssignment(id);
+//        orderService.cancelAssignment(id);
         return "redirect:/order/info-2";
     }
 

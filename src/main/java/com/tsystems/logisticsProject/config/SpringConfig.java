@@ -1,11 +1,11 @@
 package com.tsystems.logisticsProject.config;
 
-import com.tsystems.logisticsProject.service.implementation.UserServiceImpl;
+import com.tsystems.logisticsProject.service.impl.UserServiceImpl;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.*;
@@ -38,6 +38,11 @@ public class SpringConfig implements WebMvcConfigurer {
     @Bean
     public UserDetailsService getUserDetailsService() {
         return new UserServiceImpl();
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 
 }

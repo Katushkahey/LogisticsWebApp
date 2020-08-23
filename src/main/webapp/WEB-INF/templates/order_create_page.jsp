@@ -532,7 +532,7 @@
             var error4 = document.createElement('div')
             error4.className = 'error'
             error4.style.color = 'red'
-            error4.innerHTML = 'This weight bigger than capacity of the biges`t truck'
+            error4.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'
             weight2.parentElement.insertBefore(error4, weight2)
         }
 
@@ -590,7 +590,7 @@
             var error2 = document.createElement('div')
             error2.className = 'error'
             error2.style.color = 'red'
-            error2.innerHTML = 'This weight bigger than capacity of the biges`t truck'
+            error2.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'
             weight.parentElement.insertBefore(error2, weight)
         }
 

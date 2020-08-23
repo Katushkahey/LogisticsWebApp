@@ -13,11 +13,6 @@ import javax.persistence.*;
 @Table(name = "waypoints")
 public class Waypoint extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NonNull

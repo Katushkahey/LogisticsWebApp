@@ -7,17 +7,14 @@ import javax.persistence.*;
 
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = false)
+@ToString
 @NoArgsConstructor
 @Table(name = "trucks")
 public class Truck extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @NonNull
-    @Column(name = "number") // реализовать валидацию
+    @Column(name = "number")
     private String number;
 
     @NonNull

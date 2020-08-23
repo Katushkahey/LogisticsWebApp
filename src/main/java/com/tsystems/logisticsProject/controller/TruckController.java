@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/truck")
 public class TruckController {
 
-    @Autowired
     private TruckService truckService;
+    private CityService cityService;
 
     @Autowired
-    private CityService cityService;
+    public void setDependencies(TruckService truckService, CityService cityService) {
+        this.truckService = truckService;
+        this.cityService = cityService;
+    }
 
     @GetMapping("/info")
     public String trucksInfo(Model model) {

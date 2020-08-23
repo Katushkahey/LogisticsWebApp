@@ -13,12 +13,6 @@ import java.util.List;
 @Table(name = "cargoes")
 public class Cargo extends AbstractEntity {
 
-    @Id
-    @ToString.Exclude
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @NonNull
     @Column(name = "name")
     private String name;
@@ -32,6 +26,9 @@ public class Cargo extends AbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @Column(name = "number")
+    private String number;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

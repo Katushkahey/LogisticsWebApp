@@ -79,9 +79,6 @@
                                                                                data-toggle="modal"
                                                                                data-target="#edit_waypoint"
                                                                                data-waypoint-id="${waypoint.id}"> Edit </button>
-                                        <%--<td scope="row" align="center"><button type="button" class="btn btn-danger"--%>
-                                                                               <%--data-toggle="modal" data-target="#delete_waypoint"--%>
-                                                                               <%--data-waypoint-id="${waypoint.id}"> Delete </button>--%>
                                         <td scope="row" align="center"><a class="btn btn-danger"
                                                                           href="/order/delete_waypoint/${order.id}/${waypoint.id}"> Delete </a></td>
                                     </c:otherwise>
@@ -196,7 +193,7 @@
             var error2 = document.createElement('div')
             error2.className = 'error'
             error2.style.color = 'red'
-            error2.innerHTML = 'This weight bigger than capacity of the biges`t truck'
+            error2.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'
             weight.parentElement.insertBefore(error2, weight)
         }
 

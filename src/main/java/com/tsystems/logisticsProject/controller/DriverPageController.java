@@ -2,7 +2,6 @@ package com.tsystems.logisticsProject.controller;
 
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.service.DriverService;
-import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,22 +17,20 @@ import java.security.Principal;
 @RequestMapping("/driver")
 public class DriverPageController {
 
-    @Autowired
     private DriverService driverService;
-
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
     private WaypointService waypointService;
+
+    @Autowired
+    public void setDependencies(DriverService driverService, WaypointService waypointService) {
+        this.driverService = driverService;
+        this.waypointService = waypointService;
+    }
 
     @GetMapping("")
     public String driverPage(Principal principal, Model model) {
         String username = principal.getName();
-        model.addAttribute("waypoints", driverService.getListOfWaypointsFromPrincipal(username));
-        model.addAttribute("driver", driverService.getDriverByPrincipalName(username));
-        model.addAttribute("partners", driverService.getPartnersFromPrincipal(username));
         model.addAttribute("driverState", DriverState.values());
+        model.addAttribute("driver", driverService.getDriverByPrincipalName(username));
 
         return "driver_menu";
     }
@@ -44,20 +41,18 @@ public class DriverPageController {
             return "error"; //водитель с таким номером телефона уже существует
         }
         driverService.update(id, telephoneNumber);
-
         return "redirect:/driver";
     }
 
     @GetMapping("/edit_state/{id}")
     public String editState(@PathVariable("id") Long id, @RequestParam("state") DriverState state) {
         driverService.editState(id, state);
-
         return "redirect:/driver";
     }
 
     @GetMapping("/start_order/{id}")
     public String deleteOrder(@PathVariable("id") Long id) {
-        orderService.startOrder(id);
+        driverService.startOrder(id);
         return "redirect:/driver";
     }
 

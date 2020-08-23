@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/drivers")
 public class DriverController {
 
-    @Autowired
     private DriverService driverService;
+    private CityService cityService;
 
     @Autowired
-    private CityService cityService;
+    public void setDependencies(DriverService driverService, CityService cityService) {
+        this.driverService = driverService;
+        this.cityService = cityService;
+    }
 
     @GetMapping("/info")
     public String driversInfo(Model model) {
@@ -31,7 +34,7 @@ public class DriverController {
     @GetMapping("/delete_driver/{id}")
     public String deleteDriver(@PathVariable("id") Long id, Model model) {
         driverService.deleteById(id);
-        model.addAttribute("listOfDrivers", driverService.getListOfDrivers());
+//        model.addAttribute("listOfDrivers", driverService.getListOfDrivers());
 
         return "redirect:/drivers/info";
     }
@@ -39,7 +42,7 @@ public class DriverController {
     @GetMapping("/create_driver")
     public String createDriver(@RequestParam("name") String name, @RequestParam("surname") String surname,
                                @RequestParam("telephone") String telephoneNumber, @RequestParam("city") String cityName,
-                               @RequestParam("userName") String userName) {
+                               @RequestParam("username") String userName) {
         if (driverService.findDriverByTelephoneNumber(telephoneNumber)) {
             return "error"; //водитель с таким номером телефона уже существует
         }

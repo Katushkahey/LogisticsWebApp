@@ -16,11 +16,6 @@ import java.util.List;
 @Table(name = "authorities")
 public class Role extends AbstractEntity implements GrantedAuthority {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @Column(name = "authority")
     private String authority;
 
@@ -32,10 +27,6 @@ public class Role extends AbstractEntity implements GrantedAuthority {
     public Role(Long id, String authority) {
         this.id = id;
         this.authority = authority;
-    }
-
-    public Role(Long id) {
-        this.id = id;
     }
 
     @Override

@@ -17,11 +17,6 @@ import java.util.List;
 @Table(name = "users")
 public class User extends AbstractEntity implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @NonNull
     @NotEmpty
     @Column(name = "username")
@@ -48,16 +43,6 @@ public class User extends AbstractEntity implements UserDetails {
         this.username = username;
         this.password = password;
         this.authority = authority;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     @Override

@@ -15,14 +15,6 @@ import java.time.YearMonth;
 public class Driver extends AbstractEntity {
 
     public static final int MAX_HOURS_IN_MONTH = 176;
-    private static LocalDate firstDayOfCurrentMounth = YearMonth.now().atDay(1);
-
-
-    @ToString.Exclude
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
 
     @NonNull
     @Column(name = "name")
@@ -32,22 +24,18 @@ public class Driver extends AbstractEntity {
     @Column(name = "surname")
     private String surname;
 
-    @ToString.Exclude
     @NonNull
     @Column(name = "telephone_number")
     private String telephoneNumber;
 
-    @ToString.Exclude
     @Column(name = "hours_this_month")
     private int hoursThisMonth;
 
-    @ToString.Exclude
     @NonNull
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
     private DriverState driverState;
 
-    @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne
