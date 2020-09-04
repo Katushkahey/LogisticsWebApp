@@ -6,11 +6,10 @@ import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
-import com.tsystems.logisticsProject.service.CargoService;
-import com.tsystems.logisticsProject.service.CityService;
-import com.tsystems.logisticsProject.service.OrderService;
-import com.tsystems.logisticsProject.service.WaypointService;
+import com.tsystems.logisticsProject.event.UpdateEvent;
+import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,14 +22,19 @@ public class WaypointServiceImpl implements WaypointService {
     private CityService cityService;
     private OrderService orderService;
     private CargoService cargoService;
+    private InfoboardService infoboardService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     public void setDependencies(WaypointDao waypointDao, CityService cityService, OrderService orderService,
-                               CargoService cargoService) {
+                               CargoService cargoService, ApplicationEventPublisher applicationEventPublisher,
+                                InfoboardService infoboardService) {
         this.waypointDao = waypointDao;
         this.cityService = cityService;
         this.cargoService = cargoService;
         this.orderService = orderService;
+        this.infoboardService = infoboardService;
+        this.applicationEventPublisher  =applicationEventPublisher;
     }
 
     @Transactional
@@ -70,6 +74,8 @@ public class WaypointServiceImpl implements WaypointService {
         List<Waypoint> listOfWaypoint = orderService.findWaypointsForCurrentOrderById(orderId);
         if (listOfWaypoint.size() == 2) {
             orderService.deleteById(orderId);
+            applicationEventPublisher.publishEvent(new UpdateEvent());
+            infoboardService.updateInfoboard();
             return true;
         }
         Waypoint waypointToDelete = findById(waypointId);
@@ -77,6 +83,8 @@ public class WaypointServiceImpl implements WaypointService {
         orderToUpdate.getCargoes().remove(cargo);
         orderService.update(orderToUpdate);
         cargoService.delete(cargo);
+        applicationEventPublisher.publishEvent(new UpdateEvent());
+        infoboardService.updateInfoboard();
         return false;
     }
 }

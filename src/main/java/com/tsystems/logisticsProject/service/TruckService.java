@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.service;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.TruckState;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface TruckService {
@@ -28,5 +29,7 @@ public interface TruckService {
     double getMaxCapacity();
 
     List<Truck> findTrucksForOrder(double maxOneTimeWeight);
+
+    LinkedHashMap<String, Integer> getTrucksInfo();
 
 }

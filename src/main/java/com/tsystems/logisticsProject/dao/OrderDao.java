@@ -20,4 +20,6 @@ public interface OrderDao extends GenericDao<Order> {
 
     Order findByTruckId(Long truckId);
 
+    List<Order> getTopOrders(int number);
+
 }

@@ -20,14 +20,13 @@ public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
     private RoleDao roleDao;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public void setDependencies(UserDao userDao, RoleDao roleDao) {
+    public void setDependencies(UserDao userDao, RoleDao roleDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.roleDao = roleDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -76,9 +75,6 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public boolean checkUserNameToCreateDriver(String userName) {
-        if (findByUsername(userName) == null) {
-            return false;
-        }
-        return true;
+        return (findByUsername(userName) != null);
     }
 }

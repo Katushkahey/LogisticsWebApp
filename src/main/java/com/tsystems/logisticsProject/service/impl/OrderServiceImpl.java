@@ -1,13 +1,18 @@
 package com.tsystems.logisticsProject.service.impl;
 
 import com.tsystems.logisticsProject.dao.OrderDao;
+import com.tsystems.logisticsProject.dto.OrderClientDto;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
+import com.tsystems.logisticsProject.event.UpdateEvent;
+import com.tsystems.logisticsProject.mapper.OrderClientMapper;
 import com.tsystems.logisticsProject.service.DriverService;
+import com.tsystems.logisticsProject.service.InfoboardService;
 import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +21,25 @@ import java.util.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
+    private final int REQUIRED_NUMBER = 10;
+
     private OrderDao orderDao;
+    private OrderClientMapper orderClientMapper;
     private DriverService driverService;
     private WaypointService waypointService;
+    private InfoboardService infoboardService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public void setDependencies(OrderDao orderDao, DriverService driverService, WaypointService waypointService) {
+    public void setDependencies(OrderDao orderDao, DriverService driverService, WaypointService waypointService,
+                                ApplicationEventPublisher applicationEventPublisher, OrderClientMapper orderClientMapper,
+                                InfoboardService infoboardService) {
         this.orderDao = orderDao;
         this.driverService = driverService;
         this.waypointService = waypointService;
+        this.applicationEventPublisher  =applicationEventPublisher;
+        this.infoboardService = infoboardService;
+        this.orderClientMapper = orderClientMapper;
     }
 
     @Transactional
@@ -132,6 +147,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void deleteById(Long id) {
         orderDao.delete(orderDao.findById(id));
+        infoboardService.updateInfoboard();
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
 //    @Transactional
@@ -182,6 +199,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void update(Order order) {
         orderDao.update(order);
+        infoboardService.updateInfoboard();
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
@@ -194,6 +213,8 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void add(Order order) {
         orderDao.add(order);
+        infoboardService.updateInfoboard();
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
@@ -226,6 +247,16 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public boolean deleteWaypoint(Long orderId, Long waypointId) {
         return waypointService.deleteWaypoint(orderId, waypointId);
+    }
+
+    @Transactional
+    public List<OrderClientDto> getTopOrders() {
+        List<Order> listOfTopOrders = orderDao.getTopOrders(REQUIRED_NUMBER);
+        List<OrderClientDto> listOfTopOrdersDto = new ArrayList<>();
+        for (Order order: listOfTopOrders) {
+            listOfTopOrdersDto.add(orderClientMapper.toDto(order));
+        }
+        return listOfTopOrdersDto;
     }
 
 }

@@ -81,7 +81,7 @@ public class OrderForDriverPageMapper {
             for (Cargo cargo : listOfCargoes) {
                 List<Waypoint> listOfWaypoints = new ArrayList<>();
 
-                for (WaypointDto waypointDto: waypointsDto) {
+                for (WaypointDto waypointDto : waypointsDto) {
                     Waypoint waypoint = waypointMapper.toEntity(waypointDto);
                     if (waypoint.getCargo().equals(cargo)) {
                         listOfWaypoints.add(waypoint);
@@ -89,7 +89,6 @@ public class OrderForDriverPageMapper {
                 }
                 cargo.setWaypoints(listOfWaypoints);
             }
-
         }
     }
 

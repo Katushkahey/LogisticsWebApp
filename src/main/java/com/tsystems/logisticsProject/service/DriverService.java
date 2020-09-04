@@ -6,6 +6,7 @@ import com.tsystems.logisticsProject.dto.DriverDtoForDriverPage;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface DriverService {
@@ -41,4 +42,6 @@ public interface DriverService {
     void update(Driver driver);
 
     void startOrder(Long id);
+
+    LinkedHashMap<String, Integer> getDriversInfo();
 }

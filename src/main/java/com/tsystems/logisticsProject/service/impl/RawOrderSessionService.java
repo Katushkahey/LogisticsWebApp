@@ -1,17 +1,16 @@
 package com.tsystems.logisticsProject.service.impl;
 
-import com.tsystems.logisticsProject.entity.Cargo;
-import com.tsystems.logisticsProject.entity.City;
-import com.tsystems.logisticsProject.entity.Order;
-import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
+import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.TruckService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -25,8 +24,10 @@ import java.util.*;
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class RawOrderSessionService {
 
-    @Autowired
+    private CityService cityService;
+    private OrderService orderService;
     private TruckService truckService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private Cargo cargo;
     Map<Cargo, Integer> mapOfCargoes;
@@ -35,10 +36,13 @@ public class RawOrderSessionService {
     private List<Waypoint> listOfWaypoints;
 
     @Autowired
-    private CityService cityService;
-
-    @Autowired
-    private OrderService orderService;
+    public RawOrderSessionService (CityService cityService, OrderService orderService, TruckService truckService,
+                                   ApplicationEventPublisher applicationEventPublisher) {
+        this.cityService = cityService;
+        this.orderService = orderService;
+        this.truckService = truckService;
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 
     @PostConstruct
     public void init() {
@@ -209,6 +213,7 @@ public class RawOrderSessionService {
         }
         orderService.add(order);
         clearAll();
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     public void clearAll() {

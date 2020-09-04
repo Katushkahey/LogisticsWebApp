@@ -17,7 +17,7 @@ public class OrderDto extends AbstractDto {
     private String number;
     private String truckNumber;
     private OrderStatus status;
-    List<DriverDto> drivers;
+    private List<DriverDto> drivers;
     private List<WaypointDto> waypointsDto;
     private Long completionDate;
 }

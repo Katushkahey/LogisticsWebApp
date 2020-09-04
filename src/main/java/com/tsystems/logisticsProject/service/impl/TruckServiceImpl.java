@@ -3,20 +3,24 @@ package com.tsystems.logisticsProject.service.impl;
 import com.tsystems.logisticsProject.dao.TruckDao;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.TruckState;
-import com.tsystems.logisticsProject.event.EntityUpdateEvent;
+import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.service.CityService;
+import com.tsystems.logisticsProject.service.InfoboardService;
 import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
 public class TruckServiceImpl implements TruckService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
+    private InfoboardService infoboardService;
     private CityService cityService;
     private TruckDao truckDao;
 
@@ -26,8 +30,9 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Autowired
-    public void setDependencies(CityService cityService, TruckDao truckDao) {
+    public void setDependencies(CityService cityService, InfoboardService infoboardService, TruckDao truckDao) {
         this.truckDao = truckDao;
+        this.infoboardService = infoboardService;
         this.cityService = cityService;
     }
 
@@ -39,7 +44,8 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public void deleteById(Long id) {
         truckDao.delete(truckDao.findById(id));
-        applicationEventPublisher.publishEvent(new EntityUpdateEvent());
+        infoboardService.updateInfoboard();
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
@@ -75,6 +81,8 @@ public class TruckServiceImpl implements TruckService {
         newTruck.setTruckState(state);
         newTruck.setCurrentCity(cityService.findByCityName(cityName));
         truckDao.add(newTruck);
+        infoboardService.updateInfoboard();
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
@@ -91,6 +99,8 @@ public class TruckServiceImpl implements TruckService {
         truckToUpdate.setTruckState(truckState);
         truckToUpdate.setCurrentCity(cityService.findByCityName(cityName));
         update(truckToUpdate);
+        infoboardService.updateInfoboard();
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
@@ -109,6 +119,15 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public List<Truck> findTrucksForOrder(double maxOneTimeWeight) {
         return truckDao.findTrucksForOrder(maxOneTimeWeight);
+    }
+
+    @Transactional
+    public LinkedHashMap<String, Integer> getTrucksInfo() {
+        LinkedHashMap<String, Integer> mapOfTrucks = new LinkedHashMap<>();
+        mapOfTrucks.put("Broken", truckDao.getBrokenTrucks().size());
+        mapOfTrucks.put("Available", truckDao.getAvailableTrucks().size());
+        mapOfTrucks.put("Employed", truckDao.getEmployedTrucks().size());
+        return mapOfTrucks;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.service;
 
+import com.tsystems.logisticsProject.dto.OrderClientDto;
 import com.tsystems.logisticsProject.entity.*;
 
 import java.util.HashMap;
@@ -52,4 +53,6 @@ public interface OrderService {
 //    void cancelAssignment(Long orderId);
 
     boolean deleteWaypoint(Long orderId, Long waypointId);
+
+    List<OrderClientDto> getTopOrders();
 }

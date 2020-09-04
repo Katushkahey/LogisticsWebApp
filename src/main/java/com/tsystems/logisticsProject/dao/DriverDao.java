@@ -24,4 +24,10 @@ public interface DriverDao extends GenericDao<Driver> {
 
     List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver);
 
+    List<Driver> getAvailableDrivers(int hours);
+
+    List<Driver> getEmployedDrivers();
+
+    List<Driver> getDriversWorkedEnough(int hours);
+
 }

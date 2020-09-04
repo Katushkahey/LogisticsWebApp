@@ -1,10 +1,8 @@
 package com.tsystems.logisticsProject.dao.impl;
 
 import com.tsystems.logisticsProject.dao.DriverDao;
-import com.tsystems.logisticsProject.entity.City;
-import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.Order;
-import com.tsystems.logisticsProject.entity.User;
+import com.tsystems.logisticsProject.entity.*;
+import com.tsystems.logisticsProject.entity.enums.TruckState;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -78,6 +76,24 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public List<Driver> getAvailableDrivers(int hours) {
+        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.currentOrder is NULL " +
+                "AND d.hoursThisMinth<:hours", Driver.class)
+                .setParameter("hours", hours)
+                .getResultList();
+    }
+
+    public List<Driver> getEmployedDrivers() {
+        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.currentOrder is not NULL", Driver.class)
+                .getResultList();
+    }
+
+    public List<Driver> getDriversWorkedEnough(int hours) {
+        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.hoursThisMinth=:hours", Driver.class)
+                .setParameter("hours", hours)
+                .getResultList();
     }
 
 }
