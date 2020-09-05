@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.
                 authorizeRequests().
                 antMatchers("/login").anonymous().
-                antMatchers("/", "/driver/**", "/admin/**").authenticated().
+                antMatchers("/driver/**", "/admin/**").authenticated().
                 antMatchers("/driver/**").hasRole("DRIVER").
                 antMatchers("/admin/**", "/order/**", "/truck/*", "/drivers/**", "/create_order/**").hasRole("ADMIN").
 

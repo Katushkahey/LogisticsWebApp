@@ -80,7 +80,7 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
 
     public List<Driver> getAvailableDrivers(int hours) {
         return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.currentOrder is NULL " +
-                "AND d.hoursThisMinth<:hours", Driver.class)
+                "AND d.hoursThisMonth<:hours", Driver.class)
                 .setParameter("hours", hours)
                 .getResultList();
     }
@@ -91,7 +91,7 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
     }
 
     public List<Driver> getDriversWorkedEnough(int hours) {
-        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.hoursThisMinth=:hours", Driver.class)
+        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.hoursThisMonth=:hours", Driver.class)
                 .setParameter("hours", hours)
                 .getResultList();
     }

@@ -62,13 +62,13 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
 
     public List<Truck> getBrokenTrucks() {
         return sessionFactory.openSession().createQuery("SELECT t FROM Truck t WHERE t.truckState=:state", Truck.class)
-                .setParameter("state", TruckState.BROKEN.toString())
+                .setParameter("state", TruckState.BROKEN)
                 .getResultList();
     }
 
     public List<Truck> getAvailableTrucks() {
         return sessionFactory.openSession().createQuery("SELECT t FROM Truck t WHERE t.truckState=:state AND t.order is NULL", Truck.class)
-                .setParameter("state", TruckState.OK.toString())
+                .setParameter("state", TruckState.OK)
                 .getResultList();
     }
 

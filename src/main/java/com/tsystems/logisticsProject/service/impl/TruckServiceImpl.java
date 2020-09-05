@@ -127,6 +127,9 @@ public class TruckServiceImpl implements TruckService {
         mapOfTrucks.put("Broken", truckDao.getBrokenTrucks().size());
         mapOfTrucks.put("Available", truckDao.getAvailableTrucks().size());
         mapOfTrucks.put("Employed", truckDao.getEmployedTrucks().size());
+        System.out.println("Broken " + mapOfTrucks.get("Broken"));
+        System.out.println("Available " + mapOfTrucks.get("Available"));
+        System.out.println("Employed " + mapOfTrucks.get("Employed"));
         return mapOfTrucks;
     }
 
