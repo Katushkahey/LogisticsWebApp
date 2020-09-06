@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderClientDto {
 
-    private String orderNumber;
+    private String number;
     private String startedCity;
     private String finishedCity;
     private String status;

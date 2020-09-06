@@ -25,10 +25,6 @@ public class OrderClientMapper {
         this.waypointDao = waypointDao;
     }
 
-    public Order toEntity(OrderClientDto dto) {
-        return Objects.isNull(dto) ? null : mapper.map(dto, Order.class);
-    }
-
     public OrderClientDto toDto(Order entity) {
         return Objects.isNull(entity) ? null : mapper.map(entity, OrderClientDto.class);
     }
