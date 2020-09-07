@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderClientDto {
+public class OrderClientDto extends AbstractDto {
 
     private String number;
     private String startedCity;

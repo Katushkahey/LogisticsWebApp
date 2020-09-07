@@ -213,7 +213,7 @@ public class RawOrderSessionService {
         }
         orderService.add(order);
         clearAll();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
     public void clearAll() {

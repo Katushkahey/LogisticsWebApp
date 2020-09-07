@@ -122,16 +122,16 @@
     </div>
 </div>
 <c:choose>
-    <c:when test="${driver.orderDtoForDriverPage==null}">
+    <c:when test="${driver.orderDriverDto==null}">
         <br/>
         <h6><strong> You are not assigned to any order. </strong></h6>
         <br/>
     </c:when>
     <c:otherwise>
         <c:choose>
-            <c:when test="${driver.orderDtoForDriverPage.status=='WAITING'}">
+            <c:when test="${driver.orderDriverDto.status=='WAITING'}">
                 <a class="nav-item3">
-                    <form action="/driver/start_order/${driver.orderDtoForDriverPage.id}" method="get">
+                    <form action="/driver/start_order/${driver.orderDriverDto.id}" method="get">
                         <input type="submit" class="btn btn-success" value="Start"/>
                     </form>
                 </a>
@@ -151,7 +151,7 @@
                                 </button>
                                 <button type="button" class="btn btn-success"
                                         data-toggle="modal" data-target="#finish_order"
-                                        data-driver-order="${driver.orderDtoForDriverPage.id}"> Finish
+                                        data-driver-order="${driver.orderDriverDto.id}"> Finish
                                 </button>
                             </div>
                         </div>
@@ -183,18 +183,18 @@
             </c:otherwise>
         </c:choose>
         <c:choose>
-            <c:when test="${driver.orderDtoForDriverPage.truckNumber==null}">
+            <c:when test="${driver.orderDriverDto.truckNumber==null}">
             </c:when>
             <c:otherwise>
                 </br>
-                <div class="info"><h5><strong>Truck:</strong> ${driver.orderDtoForDriverPage.truckNumber}</h5></div>
+                <div class="info"><h5><strong>Truck:</strong> ${driver.orderDriverDto.truckNumber}</h5></div>
                 </div>
             </c:otherwise>
         </c:choose>
         </br>
         <div class="collapse" id="navbarToggleExternalContent">
             <div class="p-4" style="background: rgba(67,41,28,0.99)">
-                <h5 class="text-white h4" align="center">Waypoints of order №${driver.orderDtoForDriverPage.number}</h5>
+                <h5 class="text-white h4" align="center">Waypoints of order №${driver.orderDriverDto.number}</h5>
                 <span class="text-white">
                 <table class="table">
                     <thead class="thead-light" align="center">
@@ -204,21 +204,21 @@
                                 <th scope="col"> Weight </th>
                                 <th scope="col"> Action </th>
                                 <c:choose>
-                                    <c:when test="${driver.orderDtoForDriverPage.status=='IN_PROGRESS'}">
+                                    <c:when test="${driver.orderDriverDto.status=='IN_PROGRESS'}">
                                         <th scope="col">Status</th>
                                     </c:when>
                                 </c:choose>
                             </tr>
                     </thead>
                     <tbody align="center">
-                        <c:forEach var="waypoint" items="${driver.orderDtoForDriverPage.waypointsDto}">
+                        <c:forEach var="waypoint" items="${driver.orderDriverDto.waypointsDto}">
                             <tr>
                                 <td scope="row"> ${waypoint.cityName} </td>
                                 <td scope="row"> ${waypoint.cargoName} </td>
                                 <th scope="row"> ${waypoint.cargoWeight}</th>
                                 <td scope="row"> ${waypoint.action.name()} </td>
                                 <c:choose>
-                                    <c:when test="${driver.orderDtoForDriverPage.status == 'IN_PROGRESS'}">
+                                    <c:when test="${driver.orderDriverDto.status == 'IN_PROGRESS'}">
                                         <c:choose>
                                             <c:when test="${waypoint.status.name()=='TODO'}">
                                                 <td scope="row"> <a class="btn btn-secondary"
@@ -243,7 +243,7 @@
                     data-target="#navbarToggleExternalContent"
                     aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-                <span class="text-white">Waypoints of order №${driver.orderDtoForDriverPage.number}</span>
+                <span class="text-white">Waypoints of order №${driver.orderDriverDto.number}</span>
             </button>
         </nav>
         <div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
@@ -288,9 +288,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/driver/finish_order/${driver.orderDtoForDriverPage.id}" method="get"
+                        <form action="/driver/finish_order/${driver.orderDriverDto.id}" method="get"
                               class="formWithValidation3" role="form">
-                            Are you sure, that order №${driver.orderDtoForDriverPage.number} is completed?
+                            Are you sure, that order №${driver.orderDriverDto.number} is completed?
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
                                 <button type="submit" class="btn btn-success"> Yes</button>

@@ -14,8 +14,12 @@ import java.util.List;
 @Repository
 public class WaypointDaoImpl extends AbstractDao<Waypoint> implements WaypointDao {
 
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    public  void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public Waypoint findById(Long id) {
         return sessionFactory.getCurrentSession().get(Waypoint.class, id);

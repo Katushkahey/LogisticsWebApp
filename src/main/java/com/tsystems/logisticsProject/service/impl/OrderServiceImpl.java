@@ -42,113 +42,113 @@ public class OrderServiceImpl implements OrderService {
         this.orderClientMapper = orderClientMapper;
     }
 
-    @Transactional
-    public List<Waypoint> findWaypointsForCurrentOrderById(Long id) {
-        return waypointService.getListOfWaypointsByOrderId(id);
-    }
+//    @Transactional
+//    public List<Waypoint> findWaypointsForCurrentOrderById(Long id) {
+//        return waypointService.getListOfWaypointsByOrderId(id);
+//    }
 
-    @Transactional
-    public HashMap<Order, Double> findCompletedOrders() {
-        HashMap<Order, Double> completedOrderHashMap = new HashMap<>();
-        List<Order> completedOrders = orderDao.findCompetedOrders();
-        for (Order order : completedOrders) {
-            completedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-        }
-        return completedOrderHashMap;
-    }
+//    @Transactional
+//    public HashMap<Order, Double> findCompletedOrders() {
+//        HashMap<Order, Double> completedOrderHashMap = new HashMap<>();
+//        List<Order> completedOrders = orderDao.findCompetedOrders();
+//        for (Order order : completedOrders) {
+//            completedOrderHashMap.put(order, getMaxWeightForOrderById(order.getId()));
+//        }
+//        return completedOrderHashMap;
+//    }
 
-    @Transactional
-    public HashMap<Order, Double> findUnassignedOrders() {
-        HashMap<Order, Double> unassignedOrderHashMap = new HashMap<>();
-        List<Order> unassignedOrders = orderDao.findUnassignedOrders();
-        for (Order order : unassignedOrders) {
-            unassignedOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-        }
-        return unassignedOrderHashMap;
-    }
+//    @Transactional
+//    public HashMap<Order, Double> findUnassignedOrders() {
+//        HashMap<Order, Double> unassignedOrderHashMap = new HashMap<>();
+//        List<Order> unassignedOrders = orderDao.findUnassignedOrders();
+//        for (Order order : unassignedOrders) {
+//            unassignedOrderHashMap.put(order, getMaxWeightForOrderById(order.getId()));
+//        }
+//        return unassignedOrderHashMap;
+//    }
 
-    @Transactional
-    public HashMap<Order, Double> findWaitingOrders() {
-        HashMap<Order, Double> waytingOrderHashMap = new HashMap<>();
-        List<Order> waytingOrders = orderDao.findWaitingOrders();
-        for (Order order : waytingOrders) {
-            waytingOrderHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-        }
-        return waytingOrderHashMap;
+//    @Transactional
+//    public HashMap<Order, Double> findWaitingOrders() {
+//        HashMap<Order, Double> waytingOrderHashMap = new HashMap<>();
+//        List<Order> waytingOrders = orderDao.findWaitingOrders();
+//        for (Order order : waytingOrders) {
+//            waytingOrderHashMap.put(order, getMaxWeightForOrderById(order.getId()));
+//        }
+//        return waytingOrderHashMap;
+//
+//    }
 
-    }
+//    @Transactional
+//    public HashMap<Order, Double> findOrdersInProgress() {
+//        HashMap<Order, Double> ordersInProgressHashMap = new HashMap<>();
+//        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
+//        for (Order order : ordersInProgress) {
+//            ordersInProgressHashMap.put(order, getMaxWeightForOrderById(order.getId()));
+//        }
+//        return ordersInProgressHashMap;
+//    }
 
-    @Transactional
-    public HashMap<Order, Double> findOrdersInProgress() {
-        HashMap<Order, Double> ordersInProgressHashMap = new HashMap<>();
-        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
-        for (Order order : ordersInProgress) {
-            ordersInProgressHashMap.put(order, getMaxWeightDuringTheRouteOfCurrentOrderById(order.getId()));
-        }
-        return ordersInProgressHashMap;
-    }
+//    @Transactional
+//    public HashMap<Order, List<Waypoint>> findListOfWaypointsForCompletedOrders() {
+//        List<Order> completedOrders = orderDao.findCompetedOrders();
+//        return findListOfWaypointsForOrders(completedOrders);
+//    }
 
-    @Transactional
-    public HashMap<Order, List<Waypoint>> findListOfWaypointsForCompletedOrders() {
-        List<Order> completedOrders = orderDao.findCompetedOrders();
-        return findListOfWaypointsForOrders(completedOrders);
-    }
+//    @Transactional
+//    public HashMap<Order, List<Waypoint>> findListOfWaypointsForWaytingOrders() {
+//        List<Order> waitingOrders = orderDao.findWaitingOrders();
+//        return findListOfWaypointsForOrders(waitingOrders);
+//    }
 
-    @Transactional
-    public HashMap<Order, List<Waypoint>> findListOfWaypointsForWaytingOrders() {
-        List<Order> waitingOrders = orderDao.findWaitingOrders();
-        return findListOfWaypointsForOrders(waitingOrders);
-    }
+//    @Transactional
+//    public HashMap<Order, List<Waypoint>> findListOfWaypointsForOrdersInProgress() {
+//        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
+//        return findListOfWaypointsForOrders(ordersInProgress);
+//    }
 
-    @Transactional
-    public HashMap<Order, List<Waypoint>> findListOfWaypointsForOrdersInProgress() {
-        List<Order> ordersInProgress = orderDao.findOrdersInProgress();
-        return findListOfWaypointsForOrders(ordersInProgress);
-    }
+//    @Transactional
+//    public HashMap<Order, List<Waypoint>> findListOfWaypointsForUnassignedOrders() {
+//        List<Order> unassignedOrders = orderDao.findUnassignedOrders();
+//        return findListOfWaypointsForOrders(unassignedOrders);
+//    }
 
-    @Transactional
-    public HashMap<Order, List<Waypoint>> findListOfWaypointsForUnassignedOrders() {
-        List<Order> unassignedOrders = orderDao.findUnassignedOrders();
-        return findListOfWaypointsForOrders(unassignedOrders);
-    }
-
-    @Transactional
-    public HashMap<Order, List<Waypoint>> findListOfWaypointsForOrders(List<Order> listOfOrders) {
-        HashMap<Order, List<Waypoint>> mapOfWaypoints = new HashMap<>();
-        for (Order order : listOfOrders) {
-            mapOfWaypoints.put(order, findWaypointsForCurrentOrderById(order.getId()));
-        }
-        return mapOfWaypoints;
-    }
+//    @Transactional
+//    public HashMap<Order, List<Waypoint>> findListOfWaypointsForOrders(List<Order> listOfOrders) {
+//        HashMap<Order, List<Waypoint>> mapOfWaypoints = new HashMap<>();
+//        for (Order order : listOfOrders) {
+//            mapOfWaypoints.put(order, findWaypointsForCurrentOrderById(order.getId()));
+//        }
+//        return mapOfWaypoints;
+//    }
 
 //    @Transactional
 //    public List<Cargo> getListOfCargoesForCurrentOrderById(Long id) {
 //        return findById(id).getCargoes();
 //    }
 
-    @Transactional
-    public double getMaxWeightDuringTheRouteOfCurrentOrderById(Long id) {
-        double maxWeight = 0;
-        double totalWeight = 0;
-        List<Waypoint> waypoints = findWaypointsForCurrentOrderById(id);
-        for (Waypoint waypoint : waypoints) {
-            if (waypoint.getAction().equals(Action.LOADING)) {
-                totalWeight += waypoint.getCargo().getWeight();
-                if (maxWeight < totalWeight) {
-                    maxWeight = totalWeight;
-                }
-            } else {
-                totalWeight -= waypoint.getCargo().getWeight();
-            }
-        }
-        return maxWeight;
-    }
+//    @Transactional
+//    public double getMaxWeightForOrderById(Long id) {
+//        double maxWeight = 0;
+//        double totalWeight = 0;
+//        List<Waypoint> waypoints = findWaypointsForCurrentOrderById(id);
+//        for (Waypoint waypoint : waypoints) {
+//            if (waypoint.getAction().equals(Action.LOADING)) {
+//                totalWeight += waypoint.getCargo().getWeight();
+//                if (maxWeight < totalWeight) {
+//                    maxWeight = totalWeight;
+//                }
+//            } else {
+//                totalWeight -= waypoint.getCargo().getWeight();
+//            }
+//        }
+//        return maxWeight;
+//    }
 
     @Transactional
     public void deleteById(Long id) {
         orderDao.delete(orderDao.findById(id));
         infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
 //    @Transactional
@@ -200,7 +200,7 @@ public class OrderServiceImpl implements OrderService {
     public void update(Order order) {
         orderDao.update(order);
         infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
     @Transactional
@@ -214,7 +214,7 @@ public class OrderServiceImpl implements OrderService {
     public void add(Order order) {
         orderDao.add(order);
         infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
     @Transactional

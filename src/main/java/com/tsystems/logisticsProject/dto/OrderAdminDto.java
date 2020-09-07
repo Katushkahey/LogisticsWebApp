@@ -1,6 +1,5 @@
 package com.tsystems.logisticsProject.dto;
 
-import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,12 +11,14 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDtoForDriverPage extends AbstractDto {
+public class OrderAdminDto extends AbstractDto {
 
     private String number;
     private String truckNumber;
-    private OrderStatus status;
-    private List<WaypointDto> waypointsDto;
-    private Long completionDate;
-
+    private List<String> drivers;
+    private double maxWeight;
+    private List<String> cargoes;
+    private String cityFrom;
+    private String cityTo;
+    private List<WaypointDto> waypoints;
 }

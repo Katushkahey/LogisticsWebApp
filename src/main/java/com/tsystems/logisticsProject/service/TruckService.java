@@ -30,6 +30,6 @@ public interface TruckService {
 
     List<Truck> findTrucksForOrder(double maxOneTimeWeight);
 
-    LinkedHashMap<String, Integer> getTrucksInfo();
+    LinkedHashMap<String, Long> getTrucksInfo();
 
 }

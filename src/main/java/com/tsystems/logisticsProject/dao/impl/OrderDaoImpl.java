@@ -12,8 +12,12 @@ import java.util.List;
 @Repository
 public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
 
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    public  void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public Order findById(Long id) {
         return sessionFactory.getCurrentSession().get(Order.class, id);

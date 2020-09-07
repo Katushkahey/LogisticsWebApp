@@ -11,8 +11,12 @@ import java.util.List;
 @Repository
 public class CityDaoImpl extends AbstractDao<City>  implements CityDao {
 
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    public  void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public List<City> findAll() {
         return sessionFactory.getCurrentSession().createQuery("SELECT c FROM City c", City.class)

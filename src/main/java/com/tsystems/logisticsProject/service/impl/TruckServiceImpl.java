@@ -45,7 +45,7 @@ public class TruckServiceImpl implements TruckService {
     public void deleteById(Long id) {
         truckDao.delete(truckDao.findById(id));
         infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
     @Transactional
@@ -82,7 +82,7 @@ public class TruckServiceImpl implements TruckService {
         newTruck.setCurrentCity(cityService.findByCityName(cityName));
         truckDao.add(newTruck);
         infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
     @Transactional
@@ -100,7 +100,7 @@ public class TruckServiceImpl implements TruckService {
         truckToUpdate.setCurrentCity(cityService.findByCityName(cityName));
         update(truckToUpdate);
         infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
     @Transactional
@@ -122,11 +122,11 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public LinkedHashMap<String, Integer> getTrucksInfo() {
-        LinkedHashMap<String, Integer> mapOfTrucks = new LinkedHashMap<>();
-        mapOfTrucks.put("Broken", truckDao.getBrokenTrucks().size());
-        mapOfTrucks.put("Available", truckDao.getAvailableTrucks().size());
-        mapOfTrucks.put("Employed", truckDao.getEmployedTrucks().size());
+    public LinkedHashMap<String, Long> getTrucksInfo() {
+        LinkedHashMap<String, Long> mapOfTrucks = new LinkedHashMap<>();
+        mapOfTrucks.put("Broken", truckDao.getBrokenTrucks());
+        mapOfTrucks.put("Available", truckDao.getAvailableTrucks());
+        mapOfTrucks.put("Employed", truckDao.getEmployedTrucks());
         return mapOfTrucks;
     }
 

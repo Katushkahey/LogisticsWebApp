@@ -4,6 +4,8 @@ import com.tsystems.logisticsProject.dao.CargoDao;
 import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +42,14 @@ public class WaypointMapper {
                 .addMappings(m -> m.skip(WaypointDto::setCargoName)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(WaypointDto::setCargoWeight)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(WaypointDto::setCargoNumber)).setPostConverter(toDtoConverter())
-                .addMappings(m -> m.skip(WaypointDto::setCityName)).setPostConverter(toDtoConverter());
+                .addMappings(m -> m.skip(WaypointDto::setCityName)).setPostConverter(toDtoConverter())
+                .addMappings(m -> m.skip(WaypointDto::setAction)).setPostConverter(toDtoConverter())
+                .addMappings(m -> m.skip(WaypointDto::setStatus)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(WaypointDto.class, Waypoint.class)
                 .addMappings(m -> m.skip(Waypoint::setCargo)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Waypoint::setCity)).setPostConverter(toEntityConverter());
+                .addMappings(m -> m.skip(Waypoint::setCity)).setPostConverter(toEntityConverter())
+                .addMappings(m -> m.skip(Waypoint::setAction)).setPostConverter(toEntityConverter())
+                .addMappings(m -> m.skip(Waypoint::setStatus)).setPostConverter(toEntityConverter());
     }
 
     public Converter<WaypointDto, Waypoint> toEntityConverter() {
@@ -56,19 +62,14 @@ public class WaypointMapper {
     }
 
     public void mapSpecificFieldsForEntity(WaypointDto source, Waypoint destination) {
-        if (source != null) {
-            if (source.getCargoName() == null) {
-                destination.setCargo(null);
-            } else {
-                destination.setCargo(cargoDao.findByNumber(source.getCargoNumber()));
-            }
-
-            if (source.getCityName() == null) {
-                destination.setCity(null);
-            } else {
-                destination.setCity(cityDao.findByName(source.getCityName()));
-            }
-        }
+        destination.setCargo(Objects.isNull(source) || Objects.isNull(source.getCargoNumber())
+                ? null : cargoDao.findByNumber(source.getCargoNumber()));
+        destination.setCity(Objects.isNull(source) || Objects.isNull(source.getCityName())
+                ? null : cityDao.findByName(source.getCityName()));
+        destination.setAction(Objects.isNull(source) || Objects.isNull(source.getAction())
+                ? null : Action.valueOf(source.getAction()));
+        destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getStatus())
+                ? null : WaypointStatus.valueOf(source.getStatus()));
     }
 
     public Converter<Waypoint, WaypointDto> toDtoConverter() {
@@ -81,13 +82,17 @@ public class WaypointMapper {
     }
 
     public void mapSpecificFieldsForDto(Waypoint source, WaypointDto destination) {
-        destination.setCargoName(Objects.isNull(source) || Objects.isNull(source.getCargo()) ? null :
-                source.getCargo().getName());
-        destination.setCargoWeight(Objects.isNull(source) || Objects.isNull(source.getCargo()) ? null :
-                source.getCargo().getWeight());
-        destination.setCargoNumber(Objects.isNull(source) || Objects.isNull(source.getCargo()) ? null :
-                source.getCargo().getNumber());
-        destination.setCityName(Objects.isNull(source) || Objects.isNull(source.getCity()) ? null :
-                source.getCity().getName());
+        destination.setCargoName(Objects.isNull(source) || Objects.isNull(source.getCargo())
+                || Objects.isNull(source.getCargo().getName()) ? null : source.getCargo().getName());
+        destination.setCargoWeight(Objects.isNull(source) || Objects.isNull(source.getCargo())
+                || Objects.isNull(source.getCargo().getWeight()) ? null : source.getCargo().getWeight());
+        destination.setCargoNumber(Objects.isNull(source) || Objects.isNull(source.getCargo())
+                || Objects.isNull(source.getCargo().getNumber()) ? null : source.getCargo().getNumber());
+        destination.setCityName(Objects.isNull(source) || Objects.isNull(source.getCity())
+                || Objects.isNull(source.getCity().getName()) ? null : source.getCity().getName());
+        destination.setAction(Objects.isNull(source) || Objects.isNull(source.getAction()) ? null :
+                source.getAction().toString());
+        destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getStatus()) ? null :
+                source.getStatus().toString());
     }
 }

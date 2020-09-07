@@ -1,8 +1,8 @@
 package com.tsystems.logisticsProject.service;
 
 
+import com.tsystems.logisticsProject.dto.DriverAdminDto;
 import com.tsystems.logisticsProject.dto.DriverDto;
-import com.tsystems.logisticsProject.dto.DriverDtoForDriverPage;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 
@@ -13,9 +13,9 @@ public interface DriverService {
 
     Driver findById(Long id);
 
-    DriverDtoForDriverPage getDriverByPrincipalName(String name);
+    DriverDto getDriverByPrincipalName(String name);
 
-    List<DriverDto> getListOfDrivers();
+    List<DriverAdminDto> getListOfDrivers();
 
     void deleteById(Long id);
 
@@ -43,5 +43,5 @@ public interface DriverService {
 
     void startOrder(Long id);
 
-    LinkedHashMap<String, Integer> getDriversInfo();
+    LinkedHashMap<String, Long> getDriversInfo();
 }

@@ -1,15 +1,15 @@
 package com.tsystems.logisticsProject.service.impl;
 
 import com.tsystems.logisticsProject.dao.DriverDao;
+import com.tsystems.logisticsProject.dto.DriverAdminDto;
 import com.tsystems.logisticsProject.dto.DriverDto;
-import com.tsystems.logisticsProject.dto.DriverDtoForDriverPage;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.UpdateEvent;
-import com.tsystems.logisticsProject.mapper.DriverForDriverPageMapper;
 import com.tsystems.logisticsProject.mapper.DriverMapper;
+import com.tsystems.logisticsProject.mapper.DriverAdminMapper;
 import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,9 +26,9 @@ import java.util.List;
 public class DriverServiceImpl implements DriverService {
 
     private DriverDao driverDao;
-    private DriverForDriverPageMapper mapper;
+    private DriverMapper mapper;
     private ApplicationEventPublisher applicationEventPublisher;
-    private DriverMapper driverMapper;
+    private DriverAdminMapper driverAdminMapper;
     private UserService userService;
     private OrderService orderService;
     private CityService cityService;
@@ -36,12 +36,12 @@ public class DriverServiceImpl implements DriverService {
     InfoboardService infoboardService;
 
     @Autowired
-    public void setDependencies(DriverDao driverDao, DriverForDriverPageMapper driverForDriverPageMapper, DriverMapper driverMapper,
-                                UserService userService,OrderService orderService, CityService cityService, WaypointService waypointService,
+    public void setDependencies(DriverDao driverDao, DriverMapper driverMapper, DriverAdminMapper driverAdminMapper,
+                                UserService userService, OrderService orderService, CityService cityService, WaypointService waypointService,
                                 ApplicationEventPublisher applicationEventPublisher, InfoboardService infoboardService) {
         this.driverDao = driverDao;
-        this.mapper = driverForDriverPageMapper;
-        this.driverMapper = driverMapper;
+        this.mapper = driverMapper;
+        this.driverAdminMapper = driverAdminMapper;
         this.userService = userService;
         this.orderService = orderService;
         this.cityService = cityService;
@@ -57,7 +57,7 @@ public class DriverServiceImpl implements DriverService {
             driver.setHoursThisMonth(0);
             driverDao.update(driver);
             infoboardService.updateInfoboard();
-            applicationEventPublisher.publishEvent(new UpdateEvent());
+            applicationEventPublisher.publishEvent(new UpdateEvent(this));
         }
     }
 
@@ -72,17 +72,17 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
-    public List<DriverDto> getListOfDrivers() {
-        List<DriverDto> driversDto = new ArrayList<>();
+    public List<DriverAdminDto> getListOfDrivers() {
+        List<DriverAdminDto> driversDto = new ArrayList<>();
         List<Driver> listOfDrivers = driverDao.findAll();
         for (Driver driver: listOfDrivers) {
-            driversDto.add(driverMapper.toDto(driver));
+            driversDto.add(driverAdminMapper.toDto(driver));
         }
         return driversDto;
     }
 
     @Transactional
-    public DriverDtoForDriverPage getDriverByPrincipalName(String name) {
+    public DriverDto getDriverByPrincipalName(String name) {
         User userPrincipal = userService.findByUsername(name);
         return mapper.toDto(findByUser(userPrincipal));
     }
@@ -97,7 +97,7 @@ public class DriverServiceImpl implements DriverService {
     public void deleteById(Long id) {
         driverDao.delete(driverDao.findById(id));
         infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
     @Transactional
@@ -142,7 +142,7 @@ public class DriverServiceImpl implements DriverService {
         driver.setUser(user);
         driverDao.add(driver);
         infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
 
@@ -235,7 +235,7 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public void update(Driver driver) {
         driverDao.update(driver);
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
     }
 
     @Transactional
@@ -244,13 +244,27 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
-    public LinkedHashMap<String, Integer> getDriversInfo() {
-        LinkedHashMap<String, Integer> mapOfDrivers = new LinkedHashMap<>();
-        mapOfDrivers.put("Available", driverDao.getAvailableDrivers(Driver.MAX_HOURS_IN_MONTH).size());
-        mapOfDrivers.put("Employed", driverDao.getEmployedDrivers().size());
-        mapOfDrivers.put("WorkedEnough", driverDao.getDriversWorkedEnough(Driver.MAX_HOURS_IN_MONTH).size());
-        return mapOfDrivers;
+    public Long getAvailableDrivers() {
+        return driverDao.getAvailableDrivers(Driver.MAX_HOURS_IN_MONTH);
+    }
 
+    @Transactional
+    public Long getEmployedDrivers() {
+        return driverDao.getEmployedDrivers();
+    }
+
+    @Transactional
+    public Long getDriversWorkedEnough() {
+        return driverDao.getDriversWorkedEnough(Driver.MAX_HOURS_IN_MONTH);
+    }
+
+    @Transactional
+    public LinkedHashMap<String, Long> getDriversInfo() {
+        LinkedHashMap<String, Long> mapOfDrivers = new LinkedHashMap<>();
+        mapOfDrivers.put("Available", getAvailableDrivers());
+        mapOfDrivers.put("Employed", getEmployedDrivers());
+        mapOfDrivers.put("WorkedEnough", getDriversWorkedEnough());
+        return mapOfDrivers;
     }
 
 }

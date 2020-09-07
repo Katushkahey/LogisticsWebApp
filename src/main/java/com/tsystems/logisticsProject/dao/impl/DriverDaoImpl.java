@@ -13,8 +13,12 @@ import java.util.List;
 @Repository
 public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
 
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    public  void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     public Driver findById(Long id) {
         return sessionFactory.getCurrentSession().get(Driver.class, id);
@@ -78,22 +82,22 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
         }
     }
 
-    public List<Driver> getAvailableDrivers(int hours) {
-        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.currentOrder is NULL " +
-                "AND d.hoursThisMonth<:hours", Driver.class)
+    public Long getAvailableDrivers(int hours) {
+        return sessionFactory.getCurrentSession().createQuery("SELECT COUNT(d) FROM Driver d WHERE d.currentOrder is NULL " +
+                "AND d.hoursThisMonth<:hours", Long .class)
                 .setParameter("hours", hours)
-                .getResultList();
+                .getSingleResult();
     }
 
-    public List<Driver> getEmployedDrivers() {
-        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.currentOrder is not NULL", Driver.class)
-                .getResultList();
+    public Long getEmployedDrivers() {
+        return sessionFactory.getCurrentSession().createQuery("SELECT COUNT(d) FROM Driver d WHERE d.currentOrder is not NULL",
+                Long.class)
+                .getSingleResult();
     }
 
-    public List<Driver> getDriversWorkedEnough(int hours) {
-        return sessionFactory.openSession().createQuery("SELECT d FROM Driver d WHERE d.hoursThisMonth=:hours", Driver.class)
-                .setParameter("hours", hours)
-                .getResultList();
+    public Long getDriversWorkedEnough(int hours) {
+        return sessionFactory.getCurrentSession().createQuery("SELECT COUNT(d) FROM Driver d WHERE d.hoursThisMonth=:hours",
+                Long.class).setParameter("hours", hours).getSingleResult();
     }
 
 }

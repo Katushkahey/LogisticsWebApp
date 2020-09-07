@@ -4,7 +4,9 @@ import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.dao.OrderDao;
 import com.tsystems.logisticsProject.dao.TruckDao;
 import com.tsystems.logisticsProject.dto.TruckDto;
+import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Truck;
+import com.tsystems.logisticsProject.entity.enums.TruckState;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,7 @@ public class TruckMapper {
     private OrderDao orderDao;
 
     @Autowired
-    public TruckMapper(ModelMapper modelMapper, CityDao cityDao ,OrderDao orderDao) {
+    public TruckMapper(ModelMapper modelMapper, CityDao cityDao, OrderDao orderDao) {
         this.modelMapper = modelMapper;
         this.cityDao = cityDao;
         this.orderDao = orderDao;
@@ -38,9 +40,11 @@ public class TruckMapper {
     @PostConstruct
     public void setupMapper() {
         modelMapper.createTypeMap(Truck.class, TruckDto.class)
-                .addMappings(m -> m.skip(TruckDto::setCurrentCity)).setPostConverter(toDtoConverter())
-                .addMappings(m -> m.skip(TruckDto::setOrderNumber)).setPostConverter(toDtoConverter());
+                .addMappings(m -> m.skip(TruckDto::setState)).setPostConverter(toDtoConverter())
+                .addMappings(m -> m.skip(TruckDto::setAvailable)).setPostConverter(toDtoConverter())
+                .addMappings(m -> m.skip(TruckDto::setCityName)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(TruckDto.class, Truck.class)
+                .addMappings(m -> m.skip(Truck::setTruckState)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Truck::setCurrentCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Truck::setOrder)).setPostConverter(toEntityConverter());
     }
@@ -55,18 +59,16 @@ public class TruckMapper {
     }
 
     public void mapSpecificFieldsForEntity(TruckDto source, Truck destination) {
-        if (source.getCurrentCity() == null) {
-            destination.setCurrentCity(null);
-        } else {
-            destination.setCurrentCity(cityDao.findByName(source.getCurrentCity()));
-        }
-
-        if (source.getOrderNumber() == null) {
+        destination.setTruckState(Objects.isNull(source) || Objects.isNull(source.getState()) ? null :
+                TruckState.valueOf(source.getState()));
+        destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getCityName()) ? null :
+                cityDao.findByName(source.getCityName()));
+        if (source.isAvailable() && source.getId() != null) {
             destination.setOrder(null);
         } else {
-            destination.setOrder(orderDao.findByNumber(source.getOrderNumber()));
+            Order order = orderDao.findByTruckId(source.getId());
+            destination.setOrder(order);
         }
-
     }
 
     public Converter<Truck, TruckDto> toDtoConverter() {
@@ -79,8 +81,10 @@ public class TruckMapper {
     }
 
     public void mapSpecificFieldsForDto(Truck source, TruckDto destination) {
-        destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
+        destination.setState(Objects.isNull(source) || Objects.isNull(source.getTruckState()) ? null :
+                source.getTruckState().toString());
+        destination.setAvailable(Objects.isNull(source) ? null : (Objects.isNull(source.getOrder())));
+        destination.setCityName(Objects.isNull(source) || Objects.isNull(source.getCurrentCity()) ? null :
                 source.getCurrentCity().getName());
-        destination.setOrderNumber(Objects.isNull(source) || Objects.isNull(source.getOrder()) ? null : source.getOrder().getNumber());
     }
 }

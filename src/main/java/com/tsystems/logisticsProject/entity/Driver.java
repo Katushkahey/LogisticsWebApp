@@ -9,6 +9,7 @@ import java.time.YearMonth;
 
 @Data
 @Entity
+@ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @Table(name = "drivers")
@@ -37,6 +38,7 @@ public class Driver extends AbstractEntity {
     private DriverState driverState;
 
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @NonNull
     @ManyToOne
     @JoinColumn(name = "current_city_id")
@@ -57,10 +59,5 @@ public class Driver extends AbstractEntity {
 
     @Column(name = "start_working_time")
     private Long startWorkingTime;
-
-    @Override
-    public String toString() {
-        return "" + name + " " + surname;
-    }
 
 }

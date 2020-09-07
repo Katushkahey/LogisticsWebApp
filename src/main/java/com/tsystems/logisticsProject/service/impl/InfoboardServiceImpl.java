@@ -1,6 +1,6 @@
 package com.tsystems.logisticsProject.service.impl;
 
-import com.tsystems.logisticsProject.event.MessageSender;
+import com.tsystems.logisticsProject.messageSender.MessageSender;
 import com.tsystems.logisticsProject.service.InfoboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ public class InfoboardServiceImpl implements InfoboardService {
     }
 
     public void updateInfoboard() {
-        messageSender.sendMessage("updated");
+        messageSender.send("updated");
     }
 
 }

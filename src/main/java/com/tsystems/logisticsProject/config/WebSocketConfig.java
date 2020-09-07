@@ -11,14 +11,14 @@
 //public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //
 //    @Override
-//    public void configureMessageBroker(MessageBrokerRegistry registry) {
-//        registry.enableSimpleBroker("/LogisticsWebApp/updates");
-//        registry.setApplicationDestinationPrefixes("/msg");
-//        registry.setPreservePublishOrder(true);
+//    public void configureMessageBroker(MessageBrokerRegistry config) {
+//        config.enableSimpleBroker("LogisticsWebApp.update");
+//        config.setApplicationDestinationPrefixes("/app");
 //    }
 //
 //    @Override
 //    public void registerStompEndpoints(StompEndpointRegistry registry) {
-//        registry.addEndpoint("/websocket").withSockJS();
+//        registry.addEndpoint("websocket").withSockJS();
 //    }
+//
 //}

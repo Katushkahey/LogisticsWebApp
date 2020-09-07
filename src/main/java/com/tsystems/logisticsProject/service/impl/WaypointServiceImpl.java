@@ -71,10 +71,10 @@ public class WaypointServiceImpl implements WaypointService {
     @Transactional
     public boolean deleteWaypoint(Long orderId, Long waypointId) {
         Order orderToUpdate = orderService.findById(orderId);
-        List<Waypoint> listOfWaypoint = orderService.findWaypointsForCurrentOrderById(orderId);
+        List<Waypoint> listOfWaypoint = getListOfWaypointsByOrderId(orderId);
         if (listOfWaypoint.size() == 2) {
             orderService.deleteById(orderId);
-            applicationEventPublisher.publishEvent(new UpdateEvent());
+            applicationEventPublisher.publishEvent(new UpdateEvent(this));
             infoboardService.updateInfoboard();
             return true;
         }
@@ -83,7 +83,7 @@ public class WaypointServiceImpl implements WaypointService {
         orderToUpdate.getCargoes().remove(cargo);
         orderService.update(orderToUpdate);
         cargoService.delete(cargo);
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent(this));
         infoboardService.updateInfoboard();
         return false;
     }

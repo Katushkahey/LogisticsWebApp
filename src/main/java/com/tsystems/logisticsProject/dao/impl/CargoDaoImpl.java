@@ -9,11 +9,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CargoDaoImpl extends AbstractDao<Cargo>  implements CargoDao {
 
-    @Autowired
     private SessionFactory sessionFactory;
 
+    @Autowired
+    public  void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
     public Cargo findByNumber(String number) {
-        return sessionFactory.openSession().createQuery("SELECT c FROM Cargo c WHERE c.number=:number", Cargo.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT c FROM Cargo c WHERE c.number=:number", Cargo.class)
                 .setParameter("number", number)
                 .getSingleResult();
     }

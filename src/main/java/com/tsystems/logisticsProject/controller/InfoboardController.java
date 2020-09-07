@@ -32,21 +32,18 @@ public class InfoboardController {
     @GetMapping(value = "/orders", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
     public List<OrderClientDto> getTopOrders() {
-        System.out.println(" Я получаю ордеры");
         return orderService.getTopOrders();
     }
 
     @GetMapping(value = "/info/drivers", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
-    public LinkedHashMap<String, Integer> getDriverStats() {
-        System.out.println(" Я получаю водителей");
+    public LinkedHashMap<String, Long> getDriverStats() {
         return driverService.getDriversInfo();
     }
 
     @GetMapping(value = "/info/trucks", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseBody
-    public LinkedHashMap<String, Integer> getTruckStats() {
-        System.out.println(" Я получаю фуры");
+    public LinkedHashMap<String, Long> getTruckStats() {
         return truckService.getTrucksInfo();
     }
 }

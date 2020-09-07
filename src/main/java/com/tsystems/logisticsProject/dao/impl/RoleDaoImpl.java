@@ -9,8 +9,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RoleDaoImpl extends AbstractDao<Role> implements RoleDao {
 
-    @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    public  void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public Role findByAuthority(String authority) {

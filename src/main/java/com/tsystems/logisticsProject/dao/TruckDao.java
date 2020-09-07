@@ -16,10 +16,10 @@ public interface TruckDao extends GenericDao<Truck> {
 
     List<Truck> findTrucksForOrder(double maxOneTimeWeight);
 
-    List<Truck> getBrokenTrucks();
+    Long getBrokenTrucks();
 
-    List<Truck> getAvailableTrucks();
+    Long getAvailableTrucks();
 
-    List<Truck> getEmployedTrucks();
+    Long getEmployedTrucks();
 
 }

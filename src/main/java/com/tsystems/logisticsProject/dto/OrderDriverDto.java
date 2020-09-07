@@ -12,12 +12,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderDto extends AbstractDto {
+public class OrderDriverDto extends AbstractDto {
 
     private String number;
     private String truckNumber;
-    private OrderStatus status;
-    private List<DriverDto> drivers;
-    private List<WaypointDto> waypointsDto;
-    private Long completionDate;
+    private String status;
+    private List<WaypointDto> waypoints;
+
 }
