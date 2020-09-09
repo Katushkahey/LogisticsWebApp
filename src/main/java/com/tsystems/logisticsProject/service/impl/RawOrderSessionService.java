@@ -91,7 +91,7 @@ public class RawOrderSessionService {
     public void addWaypoint(Long cargoId, String cityName) {
 
         Waypoint newWaypoint = new Waypoint();
-        newWaypoint.setCity(cityService.findByCityName(cityName));
+        newWaypoint.setCity(cityService.findByName(cityName));
         if (listOfWaypoints.size() == 0) {
             newWaypoint.setId(1L);
         } else {
@@ -133,7 +133,7 @@ public class RawOrderSessionService {
     }
 
     public void editWaypoint(Long id, String cityName) {
-        City newCityForWaypoint = cityService.findByCityName(cityName);
+        City newCityForWaypoint = cityService.findByName(cityName);
 
         editWaypointInListOfWaypoints(id, newCityForWaypoint);
         editWaypointInListOfCargoes(id, newCityForWaypoint);
@@ -213,7 +213,7 @@ public class RawOrderSessionService {
         }
         orderService.add(order);
         clearAll();
-        applicationEventPublisher.publishEvent(new UpdateEvent(this));
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     public void clearAll() {
@@ -234,21 +234,7 @@ public class RawOrderSessionService {
     }
 
     public boolean checkMaxWeightOfOrder() {
-        double maxWeight = 0;
-        double totalWeight = 0;
-        for (Waypoint waypoint : listOfWaypoints) {
-            if (waypoint.getAction().equals(Action.LOADING)) {
-                totalWeight += waypoint.getCargo().getWeight();
-                if (maxWeight < totalWeight) {
-                    maxWeight = totalWeight;
-                }
-            } else {
-                totalWeight -= waypoint.getCargo().getWeight();
-            }
-        }
-        if (maxWeight / 1000 > truckService.getMaxCapacity()) {
-            return false;
-        }
-        return true;
+        double maxWeight = orderService.getMaxWeightForOrderById(listOfWaypoints);
+        return (maxWeight / 1000 <= truckService.getMaxCapacity());
     }
 }

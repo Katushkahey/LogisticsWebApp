@@ -1,15 +1,13 @@
 package com.tsystems.logisticsProject.service.impl;
 
 import com.tsystems.logisticsProject.dao.DriverDao;
-import com.tsystems.logisticsProject.dto.DriverAdminDto;
-import com.tsystems.logisticsProject.dto.DriverDto;
+import com.tsystems.logisticsProject.dto.*;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.UpdateEvent;
-import com.tsystems.logisticsProject.mapper.DriverMapper;
-import com.tsystems.logisticsProject.mapper.DriverAdminMapper;
+import com.tsystems.logisticsProject.mapper.*;
 import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,36 +15,36 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class DriverServiceImpl implements DriverService {
 
-    private DriverDao driverDao;
-    private DriverMapper mapper;
-    private ApplicationEventPublisher applicationEventPublisher;
+    private DriverMapper driverMapper;
     private DriverAdminMapper driverAdminMapper;
+    private DriverShortMapper driverShortMapper;
+    private OrderDriverMapper orderDriverMapper;
+    private WaypointMapper waypointMapper;
+    private ApplicationEventPublisher applicationEventPublisher;
     private UserService userService;
     private OrderService orderService;
-    private CityService cityService;
     private WaypointService waypointService;
-    InfoboardService infoboardService;
+    private DriverDao driverDao;
 
     @Autowired
     public void setDependencies(DriverDao driverDao, DriverMapper driverMapper, DriverAdminMapper driverAdminMapper,
-                                UserService userService, OrderService orderService, CityService cityService, WaypointService waypointService,
-                                ApplicationEventPublisher applicationEventPublisher, InfoboardService infoboardService) {
+                                UserService userService, OrderService orderService, WaypointService waypointService,
+                                ApplicationEventPublisher applicationEventPublisher, DriverShortMapper driverShortMapper,
+                                OrderDriverMapper orderDriverMapper, WaypointMapper waypointMapper) {
         this.driverDao = driverDao;
-        this.mapper = driverMapper;
+        this.driverMapper = driverMapper;
         this.driverAdminMapper = driverAdminMapper;
+        this.driverShortMapper = driverShortMapper;
+        this.orderDriverMapper = orderDriverMapper;
         this.userService = userService;
         this.orderService = orderService;
-        this.cityService = cityService;
         this.waypointService = waypointService;
-        this.infoboardService = infoboardService;
+        this.waypointMapper = waypointMapper;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -56,19 +54,8 @@ public class DriverServiceImpl implements DriverService {
         for(Driver driver: listOfAllDrivers) {
             driver.setHoursThisMonth(0);
             driverDao.update(driver);
-            infoboardService.updateInfoboard();
-            applicationEventPublisher.publishEvent(new UpdateEvent(this));
+            applicationEventPublisher.publishEvent(new UpdateEvent());
         }
-    }
-
-    @Transactional
-    public Driver findById(Long id) {
-        return driverDao.findById(id);
-    }
-
-    @Transactional
-    public Driver findByUser(User user) {
-        return driverDao.findByUser(user);
     }
 
     @Transactional
@@ -83,21 +70,14 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     public DriverDto getDriverByPrincipalName(String name) {
-        User userPrincipal = userService.findByUsername(name);
-        return mapper.toDto(findByUser(userPrincipal));
-    }
-
-    @Transactional
-    public List<Driver> getParnersForCurrentOrder(Long orderId) {
-        Order order = orderService.findById(orderId);
-        return driverDao.findAllDriversForCurrentOrder(order);
+        User user = userService.findByUsername(name);
+        return driverMapper.toDto(driverDao.findByUser(user));
     }
 
     @Transactional
     public void deleteById(Long id) {
         driverDao.delete(driverDao.findById(id));
-        infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent(this));
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
@@ -118,12 +98,13 @@ public class DriverServiceImpl implements DriverService {
     public User returnUserToCreateDriver(String userName) {
         User userToReturn = userService.returnUserToCreateDriver(userName);
         if (checkUserNameToCreateDriver(userName)) {
-            if (findByUser(userToReturn) == null) {
+            if (driverDao.findByUser(userToReturn) == null) {
                 return userToReturn;
             }
             return null;
         }
         return userToReturn;
+
     }
 
     @Transactional
@@ -132,19 +113,16 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
-    public void add(String name, String surname, String telephoneNumber, String cityName, User user) {
-        Driver driver = new Driver();
-        driver.setName(name);
-        driver.setSurname(surname);
-        driver.setTelephoneNumber(telephoneNumber);
-        driver.setCurrentCity(cityService.findByCityName(cityName));
-        driver.setDriverState(DriverState.REST);
-        driver.setUser(user);
-        driverDao.add(driver);
-        infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent(this));
+    public void update(Driver driver) {
+        driverDao.update(driver);
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
+    @Transactional
+    public void add(DriverAdminDto driverAdminDto) {
+        driverDao.add(driverAdminMapper.toEntity(driverAdminDto));
+        applicationEventPublisher.publishEvent(new UpdateEvent());
+    }
 
     @Transactional
     public boolean findDriverByTelephoneNumber(String telephoneNumber) {
@@ -152,79 +130,60 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
-    public void update(Long id, String name, String surname, String telephoneNumber, String cityName) {
-        Driver driverToUpdate = findById(id);
-        driverToUpdate.setName(name);
-        driverToUpdate.setSurname(surname);
-        driverToUpdate.setTelephoneNumber(telephoneNumber);
-        driverToUpdate.setCurrentCity(cityService.findByCityName(cityName));
-        update(driverToUpdate);
+    public void update(DriverAdminDto driverAdminDto) {
+        update(driverAdminMapper.toEntity(driverAdminDto));
     }
 
     @Transactional
-    public void update(Long id, String telephoneNumber) {
-        Driver driverToUpdate = findById(id);
-        driverToUpdate.setTelephoneNumber(telephoneNumber);
-        update(driverToUpdate);
+    public void update(DriverDto driverDto) {
+        driverDao.update(driverMapper.toEntity(driverDto));
     }
 
     @Transactional
     public void editState(Long id, DriverState state) {
-        Driver driverToUpdate = findById(id);
-        DriverState lastState = driverToUpdate.getDriverState();
-        if (state == DriverState.REST || state == DriverState.SECOND_DRIVER) {
-            if (lastState == DriverState.DRIVING || lastState == DriverState.LOADING_UNLOADING) {
+        DriverDto driverToUpdate = driverMapper.toDto(driverDao.findById(id));
+        String lastState = driverToUpdate.getDriverState();
+        if ((state == DriverState.REST) || state == DriverState.SECOND_DRIVER) {
+            if (lastState.equals(DriverState.DRIVING.toString()) || lastState.equals(DriverState.LOADING_UNLOADING.toString())) {
                 Date endWorkingTime = new Date();
                 Date startWorkingTime = new Date(driverToUpdate.getStartWorkingTime());
                 Long totalWorkingTimePerInterval = endWorkingTime.getTime() - startWorkingTime.getTime();
                 int totalWorkingHoursPerInterval = (int) Math.ceil(totalWorkingTimePerInterval / 1000 / 60 / 60);
                 driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingHoursPerInterval);
-                driverToUpdate.setDriverState(state);
+                driverToUpdate.setDriverState(state.toString());
                 update(driverToUpdate);
             }
-            driverToUpdate.setDriverState(state);
+            driverToUpdate.setDriverState(state.toString());
             update(driverToUpdate);
         } else {
-            if (lastState == DriverState.REST || lastState == DriverState.SECOND_DRIVER) {
+            if (lastState.equals(DriverState.REST.toString()) || lastState.equals(DriverState.SECOND_DRIVER.toString())) {
                 Date startWorkingTime = new Date();
                 driverToUpdate.setStartWorkingTime(startWorkingTime.getTime());
-                driverToUpdate.setDriverState(state);
+                driverToUpdate.setDriverState(state.toString());
                 update(driverToUpdate);
             }
-            driverToUpdate.setDriverState(state);
+            driverToUpdate.setDriverState(state.toString());
             update(driverToUpdate);
         }
     }
 
     @Transactional
-    public void finishOrder(Long id) {
-        List<Waypoint> listOfWaypointsForCompletedOrder = new ArrayList<>();
-        Order completedOrder = orderService.findById(id);
-        if (completedOrder == null) {
-            return;
+    public void finishOrder(OrderDriverDto orderDriverDto) {
+        if (orderDriverDto != null) {
+            for (WaypointDto waypointDto : orderDriverDto.getWaypoints()) {
+                waypointDto.setStatus(WaypointStatus.DONE.toString());
+                waypointService.update(waypointMapper.toEntity(waypointDto));
+            }
+            for (DriverShortDto driverDto : orderDriverDto.getDrivers()) {
+                driverDto.setOrderNumber(null);
+                driverDao.update(driverShortMapper.toEntity(driverDto));
+                editState(driverDto.getId(), DriverState.REST);
+            }
+            orderDriverDto.setTruckNumber(null);
+            orderDriverDto.setStatus(OrderStatus.COMPLETED.toString());
+            orderDriverDto.setCompletionDate(new Date().getTime());
+            orderService.update(orderDriverMapper.toEntity(orderDriverDto));
         }
-        List<Cargo> listOfCargoesForCompletedOrder = completedOrder.getCargoes();
-        List<Driver> listOfDriversForCompletedOrder = getParnersForCurrentOrder(completedOrder.getId());
-        if (listOfCargoesForCompletedOrder == null && listOfCargoesForCompletedOrder == null) {
-            return;
-        }
-        for (Cargo cargo : listOfCargoesForCompletedOrder) {
-            listOfWaypointsForCompletedOrder.add(cargo.getWaypoints().get(0));
-            listOfWaypointsForCompletedOrder.add(cargo.getWaypoints().get(1));
-        }
-        for (Waypoint waypoint : listOfWaypointsForCompletedOrder) {
-            waypoint.setStatus(WaypointStatus.DONE);
-            waypointService.update(waypoint);
-        }
-        for (Driver driver : listOfDriversForCompletedOrder) {
-            driver.setCurrentOrder(null);
-            update(driver);
-            editState(driver.getId(), DriverState.REST);
-        }
-        completedOrder.setOrderTruck(null);
-        completedOrder.setStatus(OrderStatus.COMPLETED);
-        completedOrder.setCompletionDate(new Date().getTime());
-        orderService.update(completedOrder);
     }
 
     @Transactional
@@ -233,37 +192,16 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
-    public void update(Driver driver) {
-        driverDao.update(driver);
-        applicationEventPublisher.publishEvent(new UpdateEvent(this));
-    }
-
-    @Transactional
     public void startOrder(Long orderId) {
         orderService.startOrder(orderId);
     }
 
     @Transactional
-    public Long getAvailableDrivers() {
-        return driverDao.getAvailableDrivers(Driver.MAX_HOURS_IN_MONTH);
-    }
-
-    @Transactional
-    public Long getEmployedDrivers() {
-        return driverDao.getEmployedDrivers();
-    }
-
-    @Transactional
-    public Long getDriversWorkedEnough() {
-        return driverDao.getDriversWorkedEnough(Driver.MAX_HOURS_IN_MONTH);
-    }
-
-    @Transactional
     public LinkedHashMap<String, Long> getDriversInfo() {
         LinkedHashMap<String, Long> mapOfDrivers = new LinkedHashMap<>();
-        mapOfDrivers.put("Available", getAvailableDrivers());
-        mapOfDrivers.put("Employed", getEmployedDrivers());
-        mapOfDrivers.put("WorkedEnough", getDriversWorkedEnough());
+        mapOfDrivers.put("Available", driverDao.getAvailableDrivers(Driver.MAX_HOURS_IN_MONTH));
+        mapOfDrivers.put("Employed", driverDao.getEmployedDrivers());
+        mapOfDrivers.put("WorkedEnough", driverDao.getDriversWorkedEnough(Driver.MAX_HOURS_IN_MONTH));
         return mapOfDrivers;
     }
 

@@ -1,6 +1,5 @@
 package com.tsystems.logisticsProject.dto;
 
-import com.tsystems.logisticsProject.entity.enums.DriverState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class DriverDto extends AbstractDto {
@@ -21,7 +20,7 @@ public class DriverDto extends AbstractDto {
     private List<String> partners;
     private String driverState;
     private OrderDriverDto order;
-    private Long StartWorkingTime;
+    private Long startWorkingTime;
 
 
 }

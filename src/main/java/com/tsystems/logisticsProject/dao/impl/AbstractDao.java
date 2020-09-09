@@ -9,12 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AbstractDao<T extends AbstractEntity> implements GenericDao<T> {
 
-    private SessionFactory sessionFactory;
-
     @Autowired
-    public  void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    private SessionFactory sessionFactory;
 
     @Override
     public void add(T entity) {
@@ -23,7 +19,7 @@ public class AbstractDao<T extends AbstractEntity> implements GenericDao<T> {
 
     @Override
     public void update(T entity) {
-        sessionFactory.getCurrentSession().update(entity);
+        sessionFactory.getCurrentSession().merge(entity);
     }
 
     @Override

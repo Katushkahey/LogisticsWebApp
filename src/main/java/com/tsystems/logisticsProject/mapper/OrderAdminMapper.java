@@ -7,6 +7,7 @@ import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.service.OrderService;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ public class OrderAdminMapper {
 
     private ModelMapper modelMapper;
     private WaypointMapper waypointMapper;
+    private DriverShortMapper driverShortMapper;
+    private OrderService orderService;
     private TruckDao truckDao;
     private OrderDao orderDao;
     private WaypointDao waypointDao;
@@ -27,13 +30,16 @@ public class OrderAdminMapper {
 
     @Autowired
     public OrderAdminMapper(ModelMapper modelMapper, WaypointMapper waypointMapper, TruckDao truckDao, OrderDao orderDao,
-                            WaypointDao waypointDao, DriverDao driverDao) {
+                            WaypointDao waypointDao, DriverDao driverDao, OrderService orderService,
+                            DriverShortMapper driverShortMapper) {
         this.modelMapper = modelMapper;
         this.waypointMapper = waypointMapper;
+        this.driverShortMapper = driverShortMapper;
         this.truckDao = truckDao;
         this.orderDao = orderDao;
         this.waypointDao = waypointDao;
         this.driverDao = driverDao;
+        this.orderService = orderService;
     }
 
     public Order toEntity(OrderAdminDto dto) {
@@ -50,6 +56,7 @@ public class OrderAdminMapper {
                 .addMappings(m -> m.skip(OrderAdminDto::setDrivers)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderAdminDto::setTruckNumber)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderAdminDto::setMaxWeight)).setPostConverter(toDtoConverter())
+                .addMappings(m -> m.skip(OrderAdminDto::setStatus)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderAdminDto::setCargoes)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderAdminDto::setCityFrom)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderAdminDto::setCityTo)).setPostConverter(toDtoConverter());
@@ -99,37 +106,26 @@ public class OrderAdminMapper {
                 getCargoesForOrderAdminDto(source.getCargoes()));
         destination.setCityFrom(Objects.isNull(source) || Objects.isNull(source.getCargoes()) ||
                 Objects.isNull(source.getId()) ? null : getCityFrom(source.getId()));
-        destination.setCityFrom(Objects.isNull(source) || Objects.isNull(source.getCargoes()) ||
+        destination.setCityTo(Objects.isNull(source) || Objects.isNull(source.getCargoes()) ||
                 Objects.isNull(source.getId()) ? null : getCityTo(source.getId()));
         destination.setWaypoints(Objects.isNull(source) || Objects.isNull(source.getCargoes()) ||
                 Objects.isNull(source.getId()) ? null : getWaypointsForOrderAdminDto(source.getId()));
+        destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getStatus()) ? null
+                : source.getStatus().toString());
     }
 
-    private List<String> getDriversForOrderAdminDto(Order order) {
-        List<String> driversDto = new ArrayList<>();
+    private List<DriverShortDto> getDriversForOrderAdminDto(Order order) {
+        List<DriverShortDto> driversDto = new ArrayList<>();
         List<Driver> drivers = driverDao.findAllDriversForCurrentOrder(order);
         for (Driver driver: drivers) {
-            String driverDto = driver.getName() + " " + driver.getSurname();
-            driversDto.add(driverDto);
+            driversDto.add(driverShortMapper.toDto(driver));
         }
         return driversDto;
     }
 
     private double getMaxWeightDuringTheRouteByOrderId(Long id) {
-        double maxWeight = 0;
-        double totalWeight = 0;
         List<Waypoint> waypoints = waypointDao.getListOfWaypointsByOrderId(id);
-        for (Waypoint waypoint : waypoints) {
-            if (waypoint.getAction().equals(Action.LOADING)) {
-                totalWeight += waypoint.getCargo().getWeight();
-                if (maxWeight < totalWeight) {
-                    maxWeight = totalWeight;
-                }
-            } else {
-                totalWeight -= waypoint.getCargo().getWeight();
-            }
-        }
-        return maxWeight;
+        return orderService.getMaxWeightForOrderById(waypoints);
     }
 
     private List<String> getCargoesForOrderAdminDto(List<Cargo> cargoes) {
@@ -143,12 +139,12 @@ public class OrderAdminMapper {
 
     private String getCityFrom(Long orderId) {
         List<Waypoint> waypoints = waypointDao.getListOfWaypointsByOrderId(orderId);
-        return waypoints.get(0).getCity().toString();
+        return waypoints.get(0).getCity().getName();
     }
 
     private String getCityTo(Long orderId) {
         List<Waypoint> waypoints = waypointDao.getListOfWaypointsByOrderId(orderId);
-        return waypoints.get(waypoints.size() - 1).getCity().toString();
+        return waypoints.get(waypoints.size() - 1).getCity().getName();
     }
 
     private List<WaypointDto> getWaypointsForOrderAdminDto(Long orderId) {

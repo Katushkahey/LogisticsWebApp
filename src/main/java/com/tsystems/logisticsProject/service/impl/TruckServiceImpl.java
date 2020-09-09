@@ -1,18 +1,16 @@
 package com.tsystems.logisticsProject.service.impl;
 
 import com.tsystems.logisticsProject.dao.TruckDao;
+import com.tsystems.logisticsProject.dto.TruckDto;
 import com.tsystems.logisticsProject.entity.Truck;
-import com.tsystems.logisticsProject.entity.enums.TruckState;
 import com.tsystems.logisticsProject.event.UpdateEvent;
-import com.tsystems.logisticsProject.service.CityService;
-import com.tsystems.logisticsProject.service.InfoboardService;
+import com.tsystems.logisticsProject.mapper.TruckMapper;
 import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -20,8 +18,7 @@ import java.util.List;
 public class TruckServiceImpl implements TruckService {
 
     private final ApplicationEventPublisher applicationEventPublisher;
-    private InfoboardService infoboardService;
-    private CityService cityService;
+    private TruckMapper truckMapper;
     private TruckDao truckDao;
 
     @Autowired
@@ -30,10 +27,9 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Autowired
-    public void setDependencies(CityService cityService, InfoboardService infoboardService, TruckDao truckDao) {
+    public void setDependencies(TruckDao truckDao, TruckMapper truckMapper) {
         this.truckDao = truckDao;
-        this.infoboardService = infoboardService;
-        this.cityService = cityService;
+        this.truckMapper = truckMapper;
     }
 
     @Transactional
@@ -44,18 +40,7 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public void deleteById(Long id) {
         truckDao.delete(truckDao.findById(id));
-        infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent(this));
-    }
-
-    @Transactional
-    public void update(Truck truck) {
-        truckDao.update(truck);
-    }
-
-    @Transactional
-    public Truck findById(Long id) {
-        return truckDao.findById(id);
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
@@ -68,21 +53,9 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public List<Truck> findAll() {
-        return truckDao.findAll();
-    }
-
-    @Transactional
-    public void add(String number, int crew_cize, double capacity, TruckState state, String cityName) {
-        Truck newTruck = new Truck();
-        newTruck.setNumber(number);
-        newTruck.setCrewSize(crew_cize);
-        newTruck.setCapacity(capacity);
-        newTruck.setTruckState(state);
-        newTruck.setCurrentCity(cityService.findByCityName(cityName));
-        truckDao.add(newTruck);
-        infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent(this));
+    public void add(TruckDto truckDto) {
+        truckDao.add(truckMapper.toEntity(truckDto));
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
@@ -91,21 +64,14 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public void update(Long id, String number, double capacity, int crew, TruckState truckState, String cityName) {
-        Truck truckToUpdate = findById(id);
-        truckToUpdate.setNumber(number);
-        truckToUpdate.setCapacity(capacity);
-        truckToUpdate.setCrewSize(crew);
-        truckToUpdate.setTruckState(truckState);
-        truckToUpdate.setCurrentCity(cityService.findByCityName(cityName));
-        update(truckToUpdate);
-        infoboardService.updateInfoboard();
-        applicationEventPublisher.publishEvent(new UpdateEvent(this));
+    public void update(TruckDto truckDto) {
+        truckDao.update(truckMapper.toEntity(truckDto));
+        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
     public double getMaxCapacity() {
-        List<Truck> listOfTruck = findAll();
+        List<Truck> listOfTruck = getListOfTrucks();
         double maxCapacity = 0;
         for (Truck truck : listOfTruck) {
             double capacity = truck.getCapacity();

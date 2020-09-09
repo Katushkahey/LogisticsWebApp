@@ -1,12 +1,15 @@
 package com.tsystems.logisticsProject.service.impl;
 
+import com.tsystems.logisticsProject.dao.OrderDao;
 import com.tsystems.logisticsProject.dao.WaypointDao;
+import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.UpdateEvent;
+import com.tsystems.logisticsProject.mapper.WaypointMapper;
 import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,27 +22,22 @@ import java.util.List;
 public class WaypointServiceImpl implements WaypointService {
 
     private WaypointDao waypointDao;
-    private CityService cityService;
+    private WaypointMapper waypointMapper;
+    private OrderDao orderDao;
     private OrderService orderService;
     private CargoService cargoService;
-    private InfoboardService infoboardService;
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public void setDependencies(WaypointDao waypointDao, CityService cityService, OrderService orderService,
-                               CargoService cargoService, ApplicationEventPublisher applicationEventPublisher,
-                                InfoboardService infoboardService) {
+    public void setDependencies(WaypointDao waypointDao,OrderService orderService, CargoService cargoService,
+                                ApplicationEventPublisher applicationEventPublisher, OrderDao orderDao,
+                                WaypointMapper waypointMapper) {
         this.waypointDao = waypointDao;
-        this.cityService = cityService;
         this.cargoService = cargoService;
         this.orderService = orderService;
-        this.infoboardService = infoboardService;
-        this.applicationEventPublisher  =applicationEventPublisher;
-    }
-
-    @Transactional
-    public Waypoint findById(Long id) {
-        return waypointDao.findById(id);
+        this.orderDao = orderDao;
+        this.waypointMapper = waypointMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
@@ -49,9 +47,9 @@ public class WaypointServiceImpl implements WaypointService {
 
     @Transactional
     public void makeCompletedById(Long id) {
-        Waypoint completedWaypoint = findById(id);
-        completedWaypoint.setStatus(WaypointStatus.DONE);
-        update(completedWaypoint);
+        WaypointDto completedWaypointDto = waypointMapper.toDto(waypointDao.findById(id));
+        completedWaypointDto.setStatus(WaypointStatus.DONE.toString());
+        update(waypointMapper.toEntity(completedWaypointDto));
     }
 
     @Transactional
@@ -60,31 +58,25 @@ public class WaypointServiceImpl implements WaypointService {
     }
 
     @Transactional
-    public void editWaypoint(Long waypointId, String cargoName, double cargoWeight, String cityName) {
-        Waypoint waypointToUpdate = findById(waypointId);
-        waypointToUpdate.getCargo().setName(cargoName);
-        waypointToUpdate.getCargo().setWeight(cargoWeight);
-        waypointToUpdate.setCity(cityService.findByCityName(cityName));
-        update(waypointToUpdate);
+    public void editWaypoint(WaypointDto waypointDto) {
+        update(waypointMapper.toEntity(waypointDto));
     }
 
     @Transactional
     public boolean deleteWaypoint(Long orderId, Long waypointId) {
-        Order orderToUpdate = orderService.findById(orderId);
-        List<Waypoint> listOfWaypoint = getListOfWaypointsByOrderId(orderId);
+        Order orderToUpdate = orderDao.findById(orderId);
+        List<Waypoint> listOfWaypoint = waypointDao.getListOfWaypointsByOrderId(orderId);
         if (listOfWaypoint.size() == 2) {
             orderService.deleteById(orderId);
-            applicationEventPublisher.publishEvent(new UpdateEvent(this));
-            infoboardService.updateInfoboard();
+            applicationEventPublisher.publishEvent(new UpdateEvent());
             return true;
         }
-        Waypoint waypointToDelete = findById(waypointId);
+        Waypoint waypointToDelete = waypointDao.findById(waypointId);
         Cargo cargo = waypointToDelete.getCargo();
         orderToUpdate.getCargoes().remove(cargo);
         orderService.update(orderToUpdate);
         cargoService.delete(cargo);
-        applicationEventPublisher.publishEvent(new UpdateEvent(this));
-        infoboardService.updateInfoboard();
+        applicationEventPublisher.publishEvent(new UpdateEvent());
         return false;
     }
 }

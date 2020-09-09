@@ -34,9 +34,4 @@ public class Cargo extends AbstractEntity {
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "cargo", cascade = CascadeType.ALL)
     List<Waypoint> waypoints;
-
-    @Override
-    public String toString() {
-        return "" + name + ": " + weight;
-    }
 }

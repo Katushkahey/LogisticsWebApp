@@ -1,6 +1,5 @@
 package com.tsystems.logisticsProject.dto;
 
-import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,5 +17,7 @@ public class OrderDriverDto extends AbstractDto {
     private String truckNumber;
     private String status;
     private List<WaypointDto> waypoints;
+    private List<DriverShortDto> drivers;
+    private Long completionDate;
 
 }

@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.service;
 
+import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Waypoint;
 
 import java.util.List;
@@ -10,11 +11,9 @@ public interface WaypointService {
 
     void makeCompletedById(Long id);
 
-    Waypoint findById(Long id);
-
     List<Waypoint> getListOfWaypointsByOrderId(Long orderId);
 
-    void editWaypoint(Long waypointId, String cargoName, double cargoWeight, String cityName);
+    void editWaypoint(WaypointDto waypointDto);
 
     boolean deleteWaypoint(Long orderId, Long waypointId);
 }

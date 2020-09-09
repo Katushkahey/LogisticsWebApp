@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.service;
 
 import com.tsystems.logisticsProject.dto.DriverAdminDto;
 import com.tsystems.logisticsProject.dto.DriverDto;
+import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 
@@ -10,8 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface DriverService {
-
-    Driver findById(Long id);
 
     DriverDto getDriverByPrincipalName(String name);
 
@@ -25,17 +24,17 @@ public interface DriverService {
 
     User returnUserToCreateDriver(String userName);
 
-    void add(String name, String surname, String telephoneNumber, String cityName, User user);
+    void add(DriverAdminDto driverAdminDto);
 
     boolean findDriverByTelephoneNumber(String telephineNumber);
 
-    void update(Long id, String name, String surname, String telephoneNumber, String cityName);
+    void update(DriverAdminDto driverAdminDto);
 
-    void update(Long id, String telephoneNumber);
+    void update(DriverDto driverDto);
 
     void editState(Long id, DriverState state);
 
-    void finishOrder(Long id);
+    void finishOrder(OrderDriverDto orderDriverDto);
 
     List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver);
 

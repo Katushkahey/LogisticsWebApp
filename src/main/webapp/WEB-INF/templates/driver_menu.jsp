@@ -103,8 +103,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/driver/edit_telephoneNumber/${driver.id}" method="get" class="formWithValidation"
-                      role="form">
+                <form action="/driver/edit_telephoneNumber" class="formWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="phoneInput">Phone Number</label>
                         <div class="col-sm-9">
@@ -122,16 +121,16 @@
     </div>
 </div>
 <c:choose>
-    <c:when test="${driver.orderDriverDto==null}">
+    <c:when test="${driver.order==null}">
         <br/>
         <h6><strong> You are not assigned to any order. </strong></h6>
         <br/>
     </c:when>
     <c:otherwise>
         <c:choose>
-            <c:when test="${driver.orderDriverDto.status=='WAITING'}">
+            <c:when test="${driver.order.status=='WAITING'}">
                 <a class="nav-item3">
-                    <form action="/driver/start_order/${driver.orderDriverDto.id}" method="get">
+                    <form action="/driver/start_order/${driver.order.id}" method="get">
                         <input type="submit" class="btn btn-success" value="Start"/>
                     </form>
                 </a>
@@ -151,7 +150,7 @@
                                 </button>
                                 <button type="button" class="btn btn-success"
                                         data-toggle="modal" data-target="#finish_order"
-                                        data-driver-order="${driver.orderDriverDto.id}"> Finish
+                                        data-driver-order="${driver.order.id}"> Finish
                                 </button>
                             </div>
                         </div>
@@ -183,18 +182,17 @@
             </c:otherwise>
         </c:choose>
         <c:choose>
-            <c:when test="${driver.orderDriverDto.truckNumber==null}">
+            <c:when test="${driver.order.truckNumber==null}">
             </c:when>
             <c:otherwise>
                 </br>
-                <div class="info"><h5><strong>Truck:</strong> ${driver.orderDriverDto.truckNumber}</h5></div>
-                </div>
+                <div class="info"><h5><strong>Truck:</strong> ${driver.order.truckNumber}</h5></div>
             </c:otherwise>
         </c:choose>
         </br>
         <div class="collapse" id="navbarToggleExternalContent">
             <div class="p-4" style="background: rgba(67,41,28,0.99)">
-                <h5 class="text-white h4" align="center">Waypoints of order №${driver.orderDriverDto.number}</h5>
+                <h5 class="text-white h4" align="center">Waypoints of order №${driver.order.number}</h5>
                 <span class="text-white">
                 <table class="table">
                     <thead class="thead-light" align="center">
@@ -204,29 +202,29 @@
                                 <th scope="col"> Weight </th>
                                 <th scope="col"> Action </th>
                                 <c:choose>
-                                    <c:when test="${driver.orderDriverDto.status=='IN_PROGRESS'}">
+                                    <c:when test="${driver.order.status=='IN_PROGRESS'}">
                                         <th scope="col">Status</th>
                                     </c:when>
                                 </c:choose>
                             </tr>
                     </thead>
                     <tbody align="center">
-                        <c:forEach var="waypoint" items="${driver.orderDriverDto.waypointsDto}">
+                        <c:forEach var="waypoint" items="${driver.order.waypoints}">
                             <tr>
                                 <td scope="row"> ${waypoint.cityName} </td>
                                 <td scope="row"> ${waypoint.cargoName} </td>
                                 <th scope="row"> ${waypoint.cargoWeight}</th>
-                                <td scope="row"> ${waypoint.action.name()} </td>
+                                <td scope="row"> ${waypoint.action} </td>
                                 <c:choose>
-                                    <c:when test="${driver.orderDriverDto.status == 'IN_PROGRESS'}">
+                                    <c:when test="${driver.order.status == 'IN_PROGRESS'}">
                                         <c:choose>
-                                            <c:when test="${waypoint.status.name()=='TODO'}">
+                                            <c:when test="${waypoint.status=='TODO'}">
                                                 <td scope="row"> <a class="btn btn-secondary"
-                                                                    href="/driver/complete_waypoint/${waypoint}"> Done </a>
+                                                                    href="/driver/complete_waypoint/${waypoint.id}"> Done </a>
                                                 </td>
                                             </c:when>
                                             <c:otherwise>
-                                                <td scope="row"> ${waypoint.status.name()} </td>
+                                                <td scope="row"> ${waypoint.status} </td>
                                             </c:otherwise>
                                         </c:choose>
                                     </c:when>
@@ -243,7 +241,7 @@
                     data-target="#navbarToggleExternalContent"
                     aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-                <span class="text-white">Waypoints of order №${driver.orderDriverDto.number}</span>
+                <span class="text-white">Waypoints of order №${driver.order.number}</span>
             </button>
         </nav>
         <div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
@@ -288,9 +286,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/driver/finish_order/${driver.orderDriverDto.id}" method="get"
+                        <form action="/driver/finish_order/${driver.order.id}" method="get"
                               class="formWithValidation3" role="form">
-                            Are you sure, that order №${driver.orderDriverDto.number} is completed?
+                            Are you sure, that order №${driver.order.number} is completed?
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
                                 <button type="submit" class="btn btn-success"> Yes</button>
@@ -312,6 +310,7 @@
         var form = $(this).find('form');
         form[0].reset();
     });
+
     var form = document.querySelector('.formWithValidation')
     var telephone = form.querySelector('.telephone')
 
@@ -337,17 +336,38 @@
 
         if (!telephone.value.match("^\\d{1}[-]\\d{3}[-]\\d{3}[-]\\d{2}[-]\\d{2}$")) {
             errors_counter += 1
-            var error = document.createElement('div')
-            error.className = 'error'
-            error.style.color = 'red'
-            error.innerHTML = 'Invalid format of telephone number'
-            telephone.parentElement.insertBefore(error, telephone)
+            var error2 = document.createElement('div')
+            error2.className = 'error'
+            error2.style.color = 'red'
+            error2.innerHTML = 'Invalid format of telephone number'
+            telephone.parentElement.insertBefore(error2, telephone)
         }
 
         if (errors_counter < 1) {
+            ajax({
+                url: '/driver/edit_telephoneNumber',
+                type: "POST",
+                contentType: "application/json",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    id: ${driver.id},
+                    name: ${driver.name},
+                    surname: ${driver.surname},
+                    telephoneNumber: telephone,
+                    hoursThisMonth: ${driver.hoursThisMonth},
+                    partners: ${driver.partners},
+                    driverState: ${driver.driverState},
+                    order: ${driver.driverState},
+                    startWorkingTime: ${driver.startWorkingTime}
+                }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
             form.submit()
         }
-    })
+    });
 </script>
 <script>
     $("#edit_state").on('show.bs.modal', function (e) {

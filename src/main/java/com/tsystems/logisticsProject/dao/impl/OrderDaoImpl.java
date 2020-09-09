@@ -2,11 +2,13 @@ package com.tsystems.logisticsProject.dao.impl;
 
 import com.tsystems.logisticsProject.dao.OrderDao;
 import com.tsystems.logisticsProject.entity.Order;
+import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 
 @Repository
@@ -53,10 +55,14 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
                 .getSingleResult();
     }
 
-    public Order findByTruckId(Long truckId) {
-        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.orderTruck=:truckId", Order.class)
-                .setParameter("truckId", truckId)
-                .getSingleResult();
+    public Order findByTruck(Truck truck) {
+        try {
+            return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.orderTruck=:truck", Order.class)
+                    .setParameter("truck", truck)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public List<Order> getTopOrders(int number) {

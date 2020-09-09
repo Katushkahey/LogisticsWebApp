@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.dao;
 
 import com.tsystems.logisticsProject.entity.Order;
+import com.tsystems.logisticsProject.entity.Truck;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface OrderDao extends GenericDao<Order> {
 
     Order findByNumber(String number);
 
-    Order findByTruckId(Long truckId);
+    Order findByTruck(Truck truck);
 
     List<Order> getTopOrders(int number);
 

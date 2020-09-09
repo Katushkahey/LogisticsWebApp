@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class MessagingConfig {
 
     private static final String DEFAULT_BROKER_URL = "tcp://localhost:61616";
-    private static final String TOPIC = "LogisticsWebApp.update";
+    private static final String TOPIC = "ActiveMQ.Advisory.Producer.Topic.LogisticsWebApp.update";
 
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {

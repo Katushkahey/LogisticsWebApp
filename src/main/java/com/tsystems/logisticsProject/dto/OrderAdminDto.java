@@ -15,10 +15,12 @@ public class OrderAdminDto extends AbstractDto {
 
     private String number;
     private String truckNumber;
-    private List<String> drivers;
+    private String Status;
+    private List<WaypointDto> waypoints;
+    private List<DriverShortDto> drivers;
     private double maxWeight;
     private List<String> cargoes;
     private String cityFrom;
     private String cityTo;
-    private List<WaypointDto> waypoints;
+
 }

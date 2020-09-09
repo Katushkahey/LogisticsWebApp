@@ -30,12 +30,12 @@ public class MessageSenderImpl implements MessageSender {
         });
     }
 
-    public void send(final String message) {
-        jmsTemplate.send(new MessageCreator() {
-            public Message createMessage(Session session) throws JMSException {
-                return session.createTextMessage(message);
-            }
-        });
-    }
+//    public void send(final String message) {
+//        jmsTemplate.send(new MessageCreator() {
+//            public Message createMessage(Session session) throws JMSException {
+//                return session.createTextMessage(message);
+//            }
+//        });
+//    }
 
 }

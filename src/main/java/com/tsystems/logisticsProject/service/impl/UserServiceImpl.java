@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 @Service
 @NoArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -69,7 +68,7 @@ public class UserServiceImpl implements UserService {
             add(newDriver, "ROLE_DRIVER");
             return newDriver;
         } else {
-            return userToReturn;
+            return null;
         }
     }
 

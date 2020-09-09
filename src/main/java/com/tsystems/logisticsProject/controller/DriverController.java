@@ -1,64 +1,80 @@
 package com.tsystems.logisticsProject.controller;
 
-import com.tsystems.logisticsProject.service.CityService;
+import com.tsystems.logisticsProject.dto.DriverDto;
+import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.service.DriverService;
+import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @Controller
-@RequestMapping("/drivers")
+@RequestMapping("/driver")
 public class DriverController {
 
     private DriverService driverService;
-    private CityService cityService;
+    private WaypointService waypointService;
 
     @Autowired
-    public void setDependencies(DriverService driverService, CityService cityService) {
+    public void setDependencies(DriverService driverService, WaypointService waypointService) {
         this.driverService = driverService;
-        this.cityService = cityService;
+        this.waypointService = waypointService;
     }
 
-    @GetMapping("/info")
-    public String driversInfo(Model model) {
-        model.addAttribute("listOfDrivers", driverService.getListOfDrivers());
-        model.addAttribute("listOfCities", cityService.getListOfCities());
+    @GetMapping("")
+    public String driverPage(Principal principal, Model model) {
+        String username = principal.getName();
+        model.addAttribute("driverState", DriverState.values());
+        model.addAttribute("driver", driverService.getDriverByPrincipalName(username));
 
-        return "drivers_page";
+        return "driver_menu";
     }
 
-    @GetMapping("/delete_driver/{id}")
-    public String deleteDriver(@PathVariable("id") Long id, Model model) {
-        driverService.deleteById(id);
-//        model.addAttribute("listOfDrivers", driverService.getListOfDrivers());
+//    @GetMapping("/edit_telephoneNumber/{id}")
+//    public String editTelephone(@PathVariable("id") Long id, @RequestParam("telephone") String telephoneNumber) {
+//        if (driverService.checkEditedTelephoneNumber(telephoneNumber, id)) {
+//            return "error"; //водитель с таким номером телефона уже существует
+//        }
+//        DriverDto driverDto = new DriverDto();
+//        driverDto.setId(id);
+//        driverDto.setTelephoneNumber(telephoneNumber);
+//        driverService.update(driverDto);
+//        return "redirect:/driver";
+//    }
 
-        return "redirect:/drivers/info";
+    @PostMapping(value = "/edit_telephoneNumber" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String editTruck(@RequestBody MultiValueMap<String, String> formData) {
+        System.out.println(formData);
+        return "redirect:/driver";
     }
 
-    @GetMapping("/create_driver")
-    public String createDriver(@RequestParam("name") String name, @RequestParam("surname") String surname,
-                               @RequestParam("telephone") String telephoneNumber, @RequestParam("city") String cityName,
-                               @RequestParam("username") String userName) {
-        if (driverService.findDriverByTelephoneNumber(telephoneNumber)) {
-            return "error"; //водитель с таким номером телефона уже существует
-        }
-        driverService.add(name, surname, telephoneNumber, cityName, driverService.returnUserToCreateDriver(userName));
-
-        return "redirect:/drivers/info";
+    @GetMapping("/edit_state/{id}")
+    public String editState(@PathVariable("id") Long id, @RequestParam("state") DriverState state) {
+        driverService.editState(id, state);
+        return "redirect:/driver";
     }
 
-    @GetMapping("/edit_driver")
-    public String editDriver(@RequestParam("id") Long id, @RequestParam("name") String name, @RequestParam("surname") String surname,
-                             @RequestParam("telephoneNumber") String telephoneNumber, @RequestParam("city") String cityName) {
-        if (driverService.checkEditedTelephoneNumber(telephoneNumber, id)) {
-            return "error"; //водитель с таким номером телефона уже существует
-        }
-        driverService.update(id, name, surname, telephoneNumber, cityName);
-
-        return "redirect:/drivers/info";
+    @GetMapping("/start_order/{id}")
+    public String startOrder(@PathVariable("id") Long id) {
+        driverService.startOrder(id);
+        return "redirect:/driver";
     }
+
+    @GetMapping("/complete_waypoint/{id}")
+    public String completeWaypoint(@PathVariable("id") Long id) {
+        waypointService.makeCompletedById(id);
+        return "redirect:/driver";
+    }
+
+    @GetMapping("/finish_order/{id}")
+    public String finishOrder(@PathVariable("id") Long id) {
+//        driverService.finishOrder(id);
+        return "redirect:/driver";
+    }
+
 }

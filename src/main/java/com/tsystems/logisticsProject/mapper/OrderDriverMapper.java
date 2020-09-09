@@ -1,13 +1,12 @@
 package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dao.*;
+import com.tsystems.logisticsProject.dto.DriverShortDto;
 import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
-import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
-import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -23,19 +22,24 @@ import java.util.Objects;
 public class OrderDriverMapper {
 
     private ModelMapper modelMapper;
+    private DriverShortMapper driverShortMapper;
     private WaypointMapper waypointMapper;
     private OrderDao orderDao;
+    private DriverDao driverDao;
     private WaypointDao waypointDao;
     private TruckDao truckDao;
 
     @Autowired
     public void setDependencies(ModelMapper modelMapper, WaypointMapper waypointMapper, OrderDao orderDao,
-                               WaypointDao waypointDao, TruckDao truckDao) {
+                               WaypointDao waypointDao, TruckDao truckDao, DriverShortMapper driverShortMapper,
+                                DriverDao driverDao) {
         this.modelMapper = modelMapper;
         this.waypointMapper = waypointMapper;
-        this. orderDao = orderDao;
+        this.driverShortMapper = driverShortMapper;
+        this.orderDao = orderDao;
         this.waypointDao = waypointDao;
         this.truckDao = truckDao;
+        this.driverDao = driverDao;
     }
 
     public Order toEntity(OrderDriverDto dto) {
@@ -51,13 +55,13 @@ public class OrderDriverMapper {
         modelMapper.createTypeMap(Order.class, OrderDriverDto.class)
                 .addMappings(m -> m.skip(OrderDriverDto::setTruckNumber)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderDriverDto::setStatus)).setPostConverter(toDtoConverter())
+                .addMappings(m -> m.skip(OrderDriverDto::setWaypoints)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderDriverDto::setWaypoints)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(OrderDriverDto.class, Order.class)
                 .addMappings(m -> m.skip(Order::setOrderTruck)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Order::setCargoes)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Order::setDrivers)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Order::setStatus)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Order::setCompletionDate)).setPostConverter(toEntityConverter());
+                .addMappings(m -> m.skip(Order::setStatus)).setPostConverter(toEntityConverter());
     }
 
     public Converter<OrderDriverDto, Order> toEntityConverter() {
@@ -74,8 +78,6 @@ public class OrderDriverMapper {
                 truckDao.findByNumber(source.getTruckNumber()));
         destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getStatus()) ? null :
                 OrderStatus.valueOf(source.getStatus()));
-        destination.setCompletionDate(Objects.isNull(source) || Objects.isNull(source.getNumber())? null :
-                orderDao.findByNumber(source.getNumber()).getCompletionDate());
     }
 
     public Converter<Order, OrderDriverDto> toDtoConverter() {
@@ -94,6 +96,8 @@ public class OrderDriverMapper {
                 source.getStatus().toString());
         destination.setWaypoints(Objects.isNull(source) || Objects.isNull(source.getId()) ||
                 Objects.isNull(source.getCargoes()) ? null : getListOfWaypointsDto(source.getId()));
+        destination.setDrivers(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
+                getListOfDriverShortDtoForOrder(source));
     }
 
     private List<WaypointDto> getListOfWaypointsDto(Long orderId) {
@@ -103,6 +107,15 @@ public class OrderDriverMapper {
             waypointsDto.add(waypointMapper.toDto(waypoint));
         }
         return  waypointsDto;
+    }
+
+    private List<DriverShortDto> getListOfDriverShortDtoForOrder(Order order) {
+        List<DriverShortDto> drivers = new ArrayList<>();
+        List<Driver> listOfDrivers = driverDao.findAllDriversForCurrentOrder(order);
+        for (Driver driver: listOfDrivers) {
+            drivers.add(driverShortMapper.toDto(driver));
+        }
+        return drivers;
     }
 
 }

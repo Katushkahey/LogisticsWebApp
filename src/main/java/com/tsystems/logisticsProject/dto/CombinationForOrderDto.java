@@ -1,19 +1,22 @@
-package com.tsystems.logisticsProject.entity;
+package com.tsystems.logisticsProject.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class CombinationForOrder {
+public class CombinationForOrderDto {
 
-    private Long id;
-    private Truck truck;
-    private List<Driver> listOfDrivers;
+    Long id;
+    List<DriverShortDto> drivers;
+    String TruckNumber;
     private int totalHours;
     private int totalBillableHours;
 }
+

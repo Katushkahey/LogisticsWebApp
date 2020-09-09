@@ -98,7 +98,7 @@
                                 <td scope="row" align="center">${driver.hoursThisMonth}</td>
                                 <td scope="row" align="center">${driver.cityName}</td>
                                 <c:choose>
-                                    <c:when test="${driver.orderNumber==null}">
+                                    <c:when test="${driver.available}">
                                         <td scope="row" align="center"> Yes </td>
                                     </c:when>
                                     <c:otherwise>
@@ -106,12 +106,12 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
-                                        <c:if test="${driver.orderNumber!=null}"><c:out
+                                        <c:if test="${driver.available == false}"><c:out
                                                 value="disabled='disabled'"/></c:if>
                                                                        data-toggle="modal" data-target="#edit_driver"
                                                                        data-driver-id="${driver.id}"> Edit </button>
                                 <c:choose>
-                                <c:when test="${driver.orderNumber != null}">
+                                <c:when test="${driver.available == false}">
                                         <td scope="row" align="center"><button type="button" class="btn btn-secondary"
                                                                                value="disabled='disabled'"> Delete </button></td>
                                     </c:when>

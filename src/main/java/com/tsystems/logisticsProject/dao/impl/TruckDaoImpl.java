@@ -15,12 +15,8 @@ import java.util.List;
 @Repository
 public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
 
-    private SessionFactory sessionFactory;
-
     @Autowired
-    public  void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    private SessionFactory sessionFactory;
 
     public Truck findById(Long id) {
         return sessionFactory.getCurrentSession().get(Truck.class, id);

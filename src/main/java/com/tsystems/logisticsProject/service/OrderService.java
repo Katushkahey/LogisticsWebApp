@@ -1,5 +1,7 @@
 package com.tsystems.logisticsProject.service;
 
+import com.tsystems.logisticsProject.dto.CombinationForOrderDto;
+import com.tsystems.logisticsProject.dto.OrderAdminDto;
 import com.tsystems.logisticsProject.dto.OrderClientDto;
 import com.tsystems.logisticsProject.entity.*;
 
@@ -10,29 +12,21 @@ import java.util.Set;
 
 public interface OrderService {
 
-//    List<Waypoint> findWaypointsForCurrentOrderById(Long id);
+    List<Waypoint> findWaypointsForCurrentOrderById(Long id);
 
-//    HashMap<Order, Double> findCompletedOrders();
-//
-//    HashMap<Order, Double> findUnassignedOrders();
-//
-//    HashMap<Order, Double> findWaitingOrders();
-//
-//    HashMap<Order, Double> findOrdersInProgress();
+    OrderAdminDto findById(Long id);
 
-    Order findById(Long id);
-
-//    double getMaxWeightForOrderById(Long id);
+    double getMaxWeightForOrderById(List<Waypoint> listOfWaypoint);
 
     void deleteById(Long id);
 
-//    Map<Order, List<Driver>> getMapOfDriversForWaitingOrders();
-//
-//    Map<Order, List<Driver>> getMapOfDriversForUnassignedOrders();
-//
-//    Map<Order, List<Driver>> getMapOfDriversForCompletedOrders();
-//
-//    Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress();
+    List<OrderAdminDto> getListOfWaitingOrders();
+
+    List<OrderAdminDto> getListOfUnassignedOrders();
+
+    List<OrderAdminDto> getListOfCompletedOrders();
+
+    List<OrderAdminDto> getListOfOrdersInProgress();
 
     void add(Order order);
 
@@ -40,17 +34,9 @@ public interface OrderService {
 
     void startOrder(Long id);
 
-//    HashMap<Order, List<Waypoint>> findListOfWaypointsForCompletedOrders();
-//
-//    HashMap<Order, List<Waypoint>> findListOfWaypointsForWaytingOrders();
-//
-//    HashMap<Order, List<Waypoint>> findListOfWaypointsForOrdersInProgress();
-//
-//    HashMap<Order, List<Waypoint>> findListOfWaypointsForUnassignedOrders();
+    void assign(OrderAdminDto orderDto, CombinationForOrderDto cf);
 
-    void assign(Long orderId, Truck truck, List<Driver> listOfDrivers);
-
-//    void cancelAssignment(Long orderId);
+    void cancelAssignment(OrderAdminDto orderAdminDto);
 
     boolean deleteWaypoint(Long orderId, Long waypointId);
 

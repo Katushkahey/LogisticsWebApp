@@ -21,20 +21,22 @@ public class TruckMapper {
     private ModelMapper modelMapper;
     private CityDao cityDao;
     private OrderDao orderDao;
+    private TruckDao truckDao;
 
     @Autowired
-    public TruckMapper(ModelMapper modelMapper, CityDao cityDao, OrderDao orderDao) {
+    public TruckMapper(ModelMapper modelMapper, CityDao cityDao, OrderDao orderDao, TruckDao truckDao) {
         this.modelMapper = modelMapper;
         this.cityDao = cityDao;
         this.orderDao = orderDao;
+        this.truckDao = truckDao;
     }
 
-    public Truck toEntity(TruckDao dto) {
+    public Truck toEntity(TruckDto dto) {
         return Objects.isNull(dto) ? null : modelMapper.map(dto, Truck.class);
     }
 
-    public TruckDao toDto(Truck entity) {
-        return Objects.isNull(entity) ? null : modelMapper.map(entity, TruckDao.class);
+    public TruckDto toDto(Truck entity) {
+        return Objects.isNull(entity) ? null : modelMapper.map(entity, TruckDto.class);
     }
 
     @PostConstruct
@@ -66,7 +68,11 @@ public class TruckMapper {
         if (source.isAvailable() && source.getId() != null) {
             destination.setOrder(null);
         } else {
-            Order order = orderDao.findByTruckId(source.getId());
+            Truck truck = truckDao.findById(source.getId());
+            Order order = orderDao.findByTruck(truck);
+            if (truck == null || order == null) {
+                destination.setOrder(null);
+            }
             destination.setOrder(order);
         }
     }

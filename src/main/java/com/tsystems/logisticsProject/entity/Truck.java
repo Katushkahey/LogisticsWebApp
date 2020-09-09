@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @ToString
 @NoArgsConstructor
 @Table(name = "trucks")
@@ -30,8 +30,6 @@ public class Truck extends AbstractEntity {
     @Enumerated(EnumType.STRING)
     private TruckState truckState;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @NonNull
     @ManyToOne
     @JoinColumn(name = "current_city_id")

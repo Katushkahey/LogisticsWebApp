@@ -8,5 +8,5 @@ public interface CityService {
 
     List<City> getListOfCities();
 
-    City findByCityName(String name);
+    City findByName(String name);
 }

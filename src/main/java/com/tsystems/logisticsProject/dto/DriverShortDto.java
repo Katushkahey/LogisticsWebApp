@@ -9,13 +9,11 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TruckDto extends AbstractDto {
+public class DriverShortDto extends AbstractDto {
 
-    private String number;
-    private double capacity;
-    private int crewSize;
-    private String state;
-    private boolean isAvailable;
-    private String cityName;
-
+    String name;
+    String surname;
+    String state;
+    int hoursThisMonth;
+    String orderNumber;
 }
