@@ -16,8 +16,6 @@ public interface TruckService {
 
     void add(TruckDto truckDto);
 
-    boolean checkEditedNumber(String number, Long id);
-
     void update(TruckDto truckDto);
 
     double getMaxCapacity();

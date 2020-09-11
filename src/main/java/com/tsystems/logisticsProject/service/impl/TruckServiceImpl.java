@@ -59,11 +59,6 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public boolean checkEditedNumber(String number, Long id) {
-        return truckDao.checkEditedNumber(number, id);
-    }
-
-    @Transactional
     public void update(TruckDto truckDto) {
         truckDao.update(truckMapper.toEntity(truckDto));
         applicationEventPublisher.publishEvent(new UpdateEvent());

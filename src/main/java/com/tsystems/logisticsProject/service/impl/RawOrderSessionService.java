@@ -30,8 +30,8 @@ public class RawOrderSessionService {
     private ApplicationEventPublisher applicationEventPublisher;
 
     private Cargo cargo;
-    Map<Cargo, Integer> mapOfCargoes;
-    List<Cargo> listOfCargoes;
+    private Map<Cargo, Integer> mapOfCargoes;
+    private List<Cargo> listOfCargoes;
     private Waypoint waypoint;
     private List<Waypoint> listOfWaypoints;
 

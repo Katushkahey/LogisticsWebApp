@@ -5,10 +5,8 @@ import com.tsystems.logisticsProject.dto.*;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
-import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.mapper.*;
-import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,14 +88,6 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void update (OrderDriverDto orderDriverDto) {
         update(orderDriverMapper.toEntity(orderDriverDto));
-    }
-
-    @Transactional
-    public void startOrder(Long id) {
-        Order order = orderDao.findById(id);
-        OrderDriverDto orderDto = orderDriverMapper.toDto(order);
-        orderDto.setStatus(OrderStatus.IN_PROGRESS.toString());
-        update(orderDriverMapper.toEntity(orderDto));
     }
 
     @Transactional

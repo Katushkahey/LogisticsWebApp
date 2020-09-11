@@ -36,18 +36,6 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
         }
     }
 
-    public boolean checkEditedNumber(String number, Long id) {
-        try {
-            sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t WHERE t.number=:number AND " +
-                    "t.id<>:id", Truck.class).setParameter("number", number)
-                    .setParameter("id", id)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return false;
-        }
-        return true;
-    }
-
     public List<Truck> findTrucksForOrder(double maxOneTimeWeight) {
         try {
             return sessionFactory.getCurrentSession()

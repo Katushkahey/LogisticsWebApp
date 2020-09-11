@@ -52,7 +52,7 @@ public class AdminOrdersController {
     }
 
     @GetMapping("/info")
-    public String OrdersInfo(Model model) {
+    public String getAnassignedOrders(Model model) {
         model.addAttribute("listOfOrders", orderService.getListOfUnassignedOrders());
         return "orders_no_assigned_page";
     }

@@ -7,7 +7,6 @@ import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;
 
-import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.mapper.WaypointMapper;
 import com.tsystems.logisticsProject.service.*;

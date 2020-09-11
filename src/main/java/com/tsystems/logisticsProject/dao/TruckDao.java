@@ -12,8 +12,6 @@ public interface TruckDao extends GenericDao<Truck> {
 
     Truck findById(Long id);
 
-    boolean checkEditedNumber(String number, Long id);
-
     List<Truck> findTrucksForOrder(double maxOneTimeWeight);
 
     Long getBrokenTrucks();

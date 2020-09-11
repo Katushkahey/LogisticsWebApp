@@ -5,6 +5,7 @@ import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.WaypointService;
@@ -31,7 +32,7 @@ public class DriverController {
     }
 
     @GetMapping
-    public String driverPage(Principal principal, Model model) {
+    public String showDriverPage(Principal principal, Model model) {
         DriverDto driverDto = driverService.getDriverByPrincipalName(principal.getName());
         model.addAttribute("driverState", DriverState.values());
         model.addAttribute("driver", driverDto);
@@ -69,7 +70,10 @@ public class DriverController {
 
     @GetMapping("/start_order/{id}")
     public String startOrder(@PathVariable("id") Long id) {
-        orderService.startOrder(id);
+        OrderDriverDto orderDriverDto = new OrderDriverDto();
+        orderDriverDto.setId(id);
+        orderDriverDto.setStatus(OrderStatus.IN_PROGRESS.toString());
+        orderService.update(orderDriverDto);
         return "redirect:/driver";
     }
 
