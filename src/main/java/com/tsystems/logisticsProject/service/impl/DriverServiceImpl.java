@@ -25,7 +25,6 @@ public class DriverServiceImpl implements DriverService {
     private DriverAdminMapper driverAdminMapper;
     private DriverShortMapper driverShortMapper;
     private OrderDriverMapper orderDriverMapper;
-    private WaypointMapper waypointMapper;
 
     private UserService userService;
     private OrderService orderService;
@@ -36,7 +35,7 @@ public class DriverServiceImpl implements DriverService {
     public void setDependencies(DriverDao driverDao, DriverMapper driverMapper, DriverAdminMapper driverAdminMapper,
                                 UserService userService, OrderService orderService, WaypointService waypointService,
                                 ApplicationEventPublisher applicationEventPublisher, DriverShortMapper driverShortMapper,
-                                OrderDriverMapper orderDriverMapper, WaypointMapper waypointMapper) {
+                                OrderDriverMapper orderDriverMapper) {
         this.driverDao = driverDao;
         this.driverMapper = driverMapper;
         this.driverAdminMapper = driverAdminMapper;
@@ -45,7 +44,6 @@ public class DriverServiceImpl implements DriverService {
         this.userService = userService;
         this.orderService = orderService;
         this.waypointService = waypointService;
-        this.waypointMapper = waypointMapper;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -114,60 +112,8 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
-    public void editState(Long id, DriverState state) {
-        DriverDto driverToUpdate = driverMapper.toDto(driverDao.findById(id));
-        String lastState = driverToUpdate.getDriverState();
-        if ((state == DriverState.REST) || state == DriverState.SECOND_DRIVER) {
-            if (lastState.equals(DriverState.DRIVING.toString()) || lastState.equals(DriverState.LOADING_UNLOADING.toString())) {
-                Date endWorkingTime = new Date();
-                Date startWorkingTime = new Date(driverToUpdate.getStartWorkingTime());
-                Long totalWorkingTimePerInterval = endWorkingTime.getTime() - startWorkingTime.getTime();
-                int totalWorkingHoursPerInterval = (int) Math.ceil(totalWorkingTimePerInterval / 1000 / 60 / 60);
-                driverToUpdate.setHoursThisMonth(driverToUpdate.getHoursThisMonth() + totalWorkingHoursPerInterval);
-                driverToUpdate.setDriverState(state.toString());
-                update(driverToUpdate);
-            }
-            driverToUpdate.setDriverState(state.toString());
-            update(driverToUpdate);
-        } else {
-            if (lastState.equals(DriverState.REST.toString()) || lastState.equals(DriverState.SECOND_DRIVER.toString())) {
-                Date startWorkingTime = new Date();
-                driverToUpdate.setStartWorkingTime(startWorkingTime.getTime());
-                driverToUpdate.setDriverState(state.toString());
-                update(driverToUpdate);
-            }
-            driverToUpdate.setDriverState(state.toString());
-            update(driverToUpdate);
-        }
-    }
-
-    @Transactional
-    public void finishOrder(OrderDriverDto orderDriverDto) {
-        if (orderDriverDto != null) {
-            for (WaypointDto waypointDto : orderDriverDto.getWaypoints()) {
-                waypointDto.setStatus(WaypointStatus.DONE.toString());
-                waypointService.update(waypointDto);
-            }
-            for (DriverShortDto driverDto : orderDriverDto.getDrivers()) {
-                driverDto.setOrderNumber(null);
-                driverDao.update(driverShortMapper.toEntity(driverDto));
-                editState(driverDto.getId(), DriverState.REST);
-            }
-            orderDriverDto.setTruckNumber(null);
-            orderDriverDto.setStatus(OrderStatus.COMPLETED.toString());
-            orderDriverDto.setCompletionDate(new Date().getTime());
-            orderService.update(orderDriverMapper.toEntity(orderDriverDto));
-        }
-    }
-
-    @Transactional
     public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
         return driverDao.findDriversForTruck(city, maxSpentTimeForDriver);
-    }
-
-    @Transactional
-    public void startOrder(Long orderId) {
-        orderService.startOrder(orderId);
     }
 
     @Transactional

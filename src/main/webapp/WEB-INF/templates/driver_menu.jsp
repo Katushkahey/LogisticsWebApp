@@ -127,16 +127,16 @@
     </div>
 </div>
 <c:choose>
-    <c:when test="${driver.order==null}">
+    <c:when test="${order==null}">
         <br/>
         <h6><strong> You are not assigned to any order. </strong></h6>
         <br/>
     </c:when>
     <c:otherwise>
         <c:choose>
-            <c:when test="${driver.order.status=='WAITING'}">
+            <c:when test="${order.status=='WAITING'}">
                 <a class="nav-item3">
-                    <form action="/driver/start_order/${driver.order.id}" method="get">
+                    <form action="/driver/start_order/${order.id}" method="get">
                         <input type="submit" class="btn btn-success" value="Start"/>
                     </form>
                 </a>
@@ -156,7 +156,7 @@
                                 </button>
                                 <button type="button" class="btn btn-success"
                                         data-toggle="modal" data-target="#finish_order"
-                                        data-driver-order="${driver.order.id}"> Finish
+                                        data-order-id="${order.id}"> Finish
                                 </button>
                             </div>
                         </div>
@@ -188,17 +188,17 @@
             </c:otherwise>
         </c:choose>
         <c:choose>
-            <c:when test="${driver.order.truckNumber==null}">
+            <c:when test="${order.truckNumber==null}">
             </c:when>
             <c:otherwise>
                 </br>
-                <div class="info"><h5><strong>Truck:</strong> ${driver.order.truckNumber}</h5></div>
+                <div class="info"><h5><strong>Truck:</strong> ${order.truckNumber}</h5></div>
             </c:otherwise>
         </c:choose>
         </br>
         <div class="collapse" id="navbarToggleExternalContent">
             <div class="p-4" style="background: rgba(67,41,28,0.99)">
-                <h5 class="text-white h4" align="center">Waypoints of order №${driver.order.number}</h5>
+                <h5 class="text-white h4" align="center">Waypoints of order №${order.number}</h5>
                 <span class="text-white">
                 <table class="table">
                     <thead class="thead-light" align="center">
@@ -208,21 +208,21 @@
                                 <th scope="col"> Weight </th>
                                 <th scope="col"> Action </th>
                                 <c:choose>
-                                    <c:when test="${driver.order.status=='IN_PROGRESS'}">
+                                    <c:when test="${order.status=='IN_PROGRESS'}">
                                         <th scope="col">Status</th>
                                     </c:when>
                                 </c:choose>
                             </tr>
                     </thead>
                     <tbody align="center">
-                        <c:forEach var="waypoint" items="${driver.order.waypoints}">
+                        <c:forEach var="waypoint" items="${order.waypoints}">
                             <tr>
                                 <td scope="row"> ${waypoint.cityName} </td>
                                 <td scope="row"> ${waypoint.cargoName} </td>
                                 <th scope="row"> ${waypoint.cargoWeight}</th>
                                 <td scope="row"> ${waypoint.action} </td>
                                 <c:choose>
-                                    <c:when test="${driver.order.status == 'IN_PROGRESS'}">
+                                    <c:when test="${order.status == 'IN_PROGRESS'}">
                                         <c:choose>
                                             <c:when test="${waypoint.status=='TODO'}">
                                                 <td scope="row"> <a class="btn btn-secondary"
@@ -247,7 +247,7 @@
                     data-target="#navbarToggleExternalContent"
                     aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
-                <span class="text-white">Waypoints of order №${driver.order.number}</span>
+                <span class="text-white">Waypoints of order №${order.number}</span>
             </button>
         </nav>
         <div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
@@ -292,9 +292,9 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/driver/finish_order/${driver.order.id}" method="get"
+                        <form action="/driver/finish_order/${order.id}" method="get"
                               class="formWithValidation3" role="form">
-                            Are you sure, that order №${driver.order.number} is completed?
+                            Are you sure, that order №${order.number} is completed?
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
                                 <button type="submit" class="btn btn-success"> Yes</button>

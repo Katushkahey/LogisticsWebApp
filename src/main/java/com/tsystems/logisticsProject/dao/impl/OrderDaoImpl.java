@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.dao.impl;
 
 import com.tsystems.logisticsProject.dao.OrderDao;
+import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
@@ -77,4 +78,8 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
                 Truck.class).setParameter("id", id).getSingleResult();
     }
 
+    public List<Cargo>  getListOfCargoesForOrder(Long orderId) {
+        return sessionFactory.getCurrentSession().createQuery("SELECT c FROM Cargo c WHERE c.order.id=:id",
+                Cargo.class).setParameter("id", orderId).getResultList();
+    }
 }

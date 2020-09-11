@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.dao;
 
+import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Truck;
 
@@ -24,5 +25,7 @@ public interface OrderDao extends GenericDao<Order> {
     List<Order> getTopOrders(int number);
 
     Truck findTruckOfOrder(Long id);
+
+    List<Cargo>  getListOfCargoesForOrder(Long orderId);
 
 }

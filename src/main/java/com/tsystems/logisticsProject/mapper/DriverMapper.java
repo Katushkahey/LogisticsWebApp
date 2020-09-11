@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dao.DriverDao;
+import com.tsystems.logisticsProject.dao.OrderDao;
 import com.tsystems.logisticsProject.dto.DriverDto;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,13 +21,13 @@ import java.util.Objects;
 public class DriverMapper {
 
     private ModelMapper modelMapper;
-    private OrderDriverMapper orderDriverMapper;
     private DriverDao driverDao;
+    private OrderDao orderDao;
 
     @Autowired
-    public void setDependencies(ModelMapper modelMapper, OrderDriverMapper orderDriverMapper, DriverDao driverDao) {
+    public void setDependencies(ModelMapper modelMapper, OrderDao orderDao, DriverDao driverDao) {
         this.modelMapper = modelMapper;
-        this.orderDriverMapper = orderDriverMapper;
+        this.orderDao = orderDao;
         this.driverDao = driverDao;
     }
 
@@ -47,7 +49,9 @@ public class DriverMapper {
                 .addMappings(m -> m.skip(Driver::setDriverState)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentOrder)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Driver::setUser)).setPostConverter(toEntityConverter());
+                .addMappings(m -> m.skip(Driver::setUser)).setPostConverter(toEntityConverter())
+                .addMappings(m -> m.skip(Driver::setHoursThisMonth)).setPostConverter(toEntityConverter())
+                .addMappings(m -> m.skip(Driver::setStartWorkingTime)).setPostConverter(toEntityConverter());
     }
 
     public Converter<DriverDto, Driver> toEntityConverter() {
@@ -60,14 +64,53 @@ public class DriverMapper {
     }
 
     public void mapSpecificFieldsForEntity(DriverDto source, Driver destination) {
-        destination.setDriverState(Objects.isNull(source) || Objects.isNull(source.getDriverState()) ? null :
-                DriverState.valueOf(source.getDriverState()));
         destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
                 driverDao.findById(source.getId()).getCurrentCity());
-//        destination.setCurrentOrder(Objects.isNull(source) || Objects.isNull(source.getOrderNumber()) ? null :
-//                orderDriverMapper.toEntity(source.getOrderNumber()));
+        destination.setCurrentOrder(Objects.isNull(source) || Objects.isNull(source.getOrderNumber()) ? null :
+                orderDao.findByNumber(source.getOrderNumber()));
         destination.setUser(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
                 driverDao.findById(source.getId()).getUser());
+        if (source != null && source.getId() != null && source.getDriverState() != null) {
+            editDriverState(source, destination);
+        }
+    }
+
+    private void editDriverState(DriverDto driverDto, Driver destination) {
+        DriverDto lastInstance = toDto(driverDao.findById(driverDto.getId()));
+        String lastState = lastInstance.getDriverState();
+        String currentState = driverDto.getDriverState();
+        if (lastState.equals(currentState)) {
+            copyFieldsFromLastInstance(lastInstance, destination);
+        } else {
+            changeDriverState(lastState, currentState, lastInstance, destination);
+        }
+    }
+
+    private void changeDriverState(String lastState, String currentState, DriverDto lastInstance, Driver destination) {
+        if ((currentState.equals(DriverState.REST.toString())) || currentState.equals(DriverState.SECOND_DRIVER.toString())) {
+            if (lastState.equals(DriverState.DRIVING.toString()) || lastState.equals(DriverState.LOADING_UNLOADING.toString())) {
+                Date endWorkingTime = new Date();
+                Date startWorkingTime = new Date(lastInstance.getStartWorkingTime());
+                Long totalWorkingTimePerInterval = endWorkingTime.getTime() - startWorkingTime.getTime();
+                int totalWorkingHoursPerInterval = (int) Math.ceil(totalWorkingTimePerInterval / 1000 / 60 / 60);
+                destination.setHoursThisMonth(lastInstance.getHoursThisMonth() + totalWorkingHoursPerInterval);
+                destination.setDriverState(DriverState.valueOf(currentState));
+            }
+            destination.setDriverState(DriverState.valueOf(currentState));
+        } else {
+            if (lastState.equals(DriverState.REST.toString()) || lastState.equals(DriverState.SECOND_DRIVER.toString())) {
+                Date startWorkingTime = new Date();
+                destination.setStartWorkingTime(startWorkingTime.getTime());
+                destination.setDriverState(DriverState.valueOf(currentState));
+            }
+            destination.setDriverState(DriverState.valueOf(currentState));
+        }
+    }
+
+    private void copyFieldsFromLastInstance(DriverDto lastInstance, Driver destination) {
+        destination.setDriverState(DriverState.valueOf(lastInstance.getDriverState()));
+        destination.setHoursThisMonth(lastInstance.getHoursThisMonth());
+        destination.setStartWorkingTime(lastInstance.getStartWorkingTime());
     }
 
     public Converter<Driver, DriverDto> toDtoConverter() {

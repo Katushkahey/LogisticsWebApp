@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.service;
 import com.tsystems.logisticsProject.dto.CombinationForOrderDto;
 import com.tsystems.logisticsProject.dto.OrderAdminDto;
 import com.tsystems.logisticsProject.dto.OrderClientDto;
+import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.entity.*;
 
 import java.util.HashMap;
@@ -33,6 +34,8 @@ public interface OrderService {
     void add(Order order);
 
     void update(Order order);
+
+    void update (OrderDriverDto orderDriverDto);
 
     void startOrder(Long id);
 

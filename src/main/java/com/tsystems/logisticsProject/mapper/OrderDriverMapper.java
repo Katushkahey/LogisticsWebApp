@@ -6,7 +6,9 @@ import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
+import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,13 +58,13 @@ public class OrderDriverMapper {
         modelMapper.createTypeMap(Order.class, OrderDriverDto.class)
                 .addMappings(m -> m.skip(OrderDriverDto::setTruckNumber)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderDriverDto::setStatus)).setPostConverter(toDtoConverter())
-                .addMappings(m -> m.skip(OrderDriverDto::setWaypoints)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(OrderDriverDto::setWaypoints)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(OrderDriverDto.class, Order.class)
                 .addMappings(m -> m.skip(Order::setOrderTruck)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Order::setCargoes)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Order::setDrivers)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Order::setStatus)).setPostConverter(toEntityConverter());
+                .addMappings(m -> m.skip(Order::setStatus)).setPostConverter(toEntityConverter())
+                .addMappings(m -> m.skip(Order::setCompletionDate)).setPostConverter(toEntityConverter());
     }
 
     public Converter<OrderDriverDto, Order> toEntityConverter() {
@@ -74,10 +77,31 @@ public class OrderDriverMapper {
     }
 
     public void mapSpecificFieldsForEntity(OrderDriverDto source, Order destination) {
-        destination.setOrderTruck(Objects.isNull(source) || Objects.isNull(source.getTruckNumber()) ? null :
-                truckDao.findByNumber(source.getTruckNumber()));
-        destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getStatus()) ? null :
-                OrderStatus.valueOf(source.getStatus()));
+        destination.setCargoes(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
+                orderDao.getListOfCargoesForOrder(source.getId()));
+        if (source != null && source.getStatus() != null) {
+            if (source.getStatus().equals(OrderStatus.IN_PROGRESS.toString())) {
+                destination.setOrderTruck(truckDao.findByNumber(source.getTruckNumber()));
+                destination.setStatus(OrderStatus.valueOf(source.getStatus()));
+                destination.setCompletionDate(null);
+            } else {
+                finishOrder(source, destination);
+            }
+        }
+    }
+
+    private void finishOrder(OrderDriverDto source, Order destination) {
+        List<DriverShortDto> listOfDriver = source.getDrivers();
+        for (DriverShortDto driverDto: listOfDriver) {
+            driverDto.setOrderNumber(null);
+            driverDao.update(driverShortMapper.toEntity(driverDto));
+        }
+        Truck truck = truckDao.findByNumber(source.getTruckNumber());
+        truck.setOrder(null);
+        truckDao.update(truck);
+        destination.setOrderTruck(null);
+        destination.setStatus(OrderStatus.valueOf(source.getStatus()));
+        destination.setCompletionDate(new Date().getTime());
     }
 
     public Converter<Order, OrderDriverDto> toDtoConverter() {

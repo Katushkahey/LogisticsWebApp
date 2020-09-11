@@ -1,15 +1,16 @@
 package com.tsystems.logisticsProject.controller;
 
 import com.tsystems.logisticsProject.dto.DriverDto;
+import com.tsystems.logisticsProject.dto.OrderDriverDto;
+import com.tsystems.logisticsProject.dto.WaypointDto;
+import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -58,27 +59,33 @@ public class DriverController {
 //    }
 
     @GetMapping("/edit_state/{id}")
-    public String editState(@PathVariable("id") Long id, @RequestParam("state") DriverState state) {
-        driverService.editState(id, state);
+    public String editState(@PathVariable("id") Long id, @RequestParam("state") String  state) {
+        DriverDto driverDto = new DriverDto();
+        driverDto.setId(id);
+        driverDto.setDriverState(state);
+        driverService.update(driverDto);
         return "redirect:/driver";
     }
 
     @GetMapping("/start_order/{id}")
     public String startOrder(@PathVariable("id") Long id) {
-        driverService.startOrder(id);
+        orderService.startOrder(id);
         return "redirect:/driver";
     }
 
-//    @GetMapping("/complete_waypoint/{id}")
-//    public String completeWaypoint(@PathVariable("id") Long id) {
-//        waypointService.makeCompletedById(id);
-//        return "redirect:/driver";
-//    }
+    @GetMapping("/complete_waypoint/{id}")
+    public String completeWaypoint(@PathVariable("id") Long id) {
+        WaypointDto waypointDto = new WaypointDto();
+        waypointDto.setId(id);
+        waypointService.update(waypointDto);
+        return "redirect:/driver";
+    }
 
     @GetMapping("/finish_order/{id}")
     public String finishOrder(@PathVariable("id") Long id) {
-//        driverService.finishOrder(id);
+        OrderDriverDto orderDto = new OrderDriverDto();
+        orderDto.setId(id);
+        orderService.update(orderDto);
         return "redirect:/driver";
     }
-
 }

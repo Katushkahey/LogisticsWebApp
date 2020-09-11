@@ -9,11 +9,7 @@ public interface WaypointService {
 
     void update(WaypointDto waypointDto);
 
-//    void makeCompletedById(Long id);
-
     List<Waypoint> getListOfWaypointsByOrderId(Long orderId);
-
-//    void editWaypoint(WaypointDto waypointDto);
 
     boolean deleteWaypoint(Long orderId, Long waypointId);
 }
