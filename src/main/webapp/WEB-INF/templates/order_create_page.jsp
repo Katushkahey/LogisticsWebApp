@@ -72,31 +72,41 @@
 </br>
 <c:choose>
     <c:when test="${mapOfCargoes.size() == 0 && listOfWaypoints.size() == 0}">
-        <a class="btn btn-success" data-toggle="modal" data-target="#create_raw_cargo"> Add Cargo </a>
+        <a class="btn btn-success" data-toggle="modal" data-target="#create_raw_cargo"> Add LoadingPoint </a>
         </br>
-        <h6 class="info"><strong> Here will be your order. First of all add all cargoes.</strong></h6>
-        <div class="modal fade" id="create_raw_cargo" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+        <div class="modal fade" id="create_waypoint" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createEditLabel"> Add Cargo </h5>
+                        <h5 class="modal-title" id="createEditLabel"> Add Loading Point </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/create_order/add_cargo" method="get" class="formCreateWithValidation"
+                        <form action="/create_order/add_waypoint" method="get" class="formCreateWithValidation"
                               role="form">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label" for="createNameInput"> Name </label>
+                                <label class="col-sm-3 control-label" for="createNameInput"> CargoName </label>
                                 <div class="col-sm-9">
                                     <input type="text" class="name field" name="name" id="createNameInput"/>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-3 control-label" for="createWeightInput"> Weight, kg </label>
+                                <label class="col-sm-3 control-label" for="createWeightInput"> CargoWeight, kg </label>
                                 <div class="col-sm-9">
                                     <input type="number" class="weight field" name="weight" id="createWeightInput"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="cityInput">City</label>
+                                <div>
+                                    <select class="col-sm-6 field" name="cityName" id="cityInput">
+                                        <option></option>
+                                        <c:forEach var="city" items="${listOfCities}">
+                                            <option value=${city.name}>${city.name}</option>
+                                        </c:forEach>
+                                    </select>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -109,91 +119,7 @@
                 </div>
             </div>
         </div>
-        <c:choose>
-            <c:when test="${mapOfCargoes.size() == 0 && listOfCargoes.size() !=0}">
-                <div>
-                    <div class="mainDiv2">
-                        <div class="tableTab">
-                            <table class="table">
-                                <h5 class="text-black h4" style="background: rgba(136,144,229,0.74)" align="center">
-                                    List of cargoes </h5>
-                                <span class="text-black">
-                                    <thead style="background: rgba(136,144,229,0.74)" align="center">
-                                        <tr>
-                                            <th scope="col"> № </th>
-                                            <th scope="col"> Cargo </th>
-                                            <th scope="col"> Weight, kg </th>
-                                            <th scope="col"> Edit </th>
-                                            <th scope="col"> Delete </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="cargo" items="${listOfCargoes}" varStatus="loop">
-                                            <tr id="cargo-${cargo.id}">
-                                                <td scope="row" align="center">${loop.count}</td>
-                                                <td scope="row" align="center">${cargo.name}</td>
-                                                <td scope="row" align="center">${cargo.weight}</td>
-                                                <td scope="row" align="center"><button type="button"
-                                                                                       class="btn btn-secondary"
-                                                                                       data-toggle="modal"
-                                                                                       data-target="#edit_raw_cargo"
-                                                                                       data-cargo-id="${cargo.id}"> Edit </button></td>
-                                                <td scope="row" align="center"><a class="btn btn-danger"
-                                                                                  href="/create_order/delete_cargo/${cargo.id}"> Delete </a></td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </span>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <a class="btn btn-success" href="/create_order/save_cargoes">Save</a>
-                </div>
-                <div class="modal fade" id="edit_raw_cargo" tabindex="-1" aria-labelledby="editLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="editLabel"> Edit cargo </h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="/create_order/edit_cargo" method="get" class="formEditWithValidation"
-                                      role="form">
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label" visibility: hidden
-                                               for="idInput">ID</label>
-                                        <div class="col-sm-9">
-                                            <input type="number" readonly visibility: hidden
-                                                   class="id field" name="id" id="idInput"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="nameInput">Name</label>
-                                        <div class="col-sm-9">
-                                            <input type="text" class="name field" name="name" id="nameInput"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label" for="weightInput">Weight, kg</label>
-                                        <div class="col-sm-9">
-                                            <input type="number" class="weight field" name="weight" id="weightInput"/>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="col-sm-offset-3 col-sm-10">
-                                            <button type="submit" class="btn btn-success">Save</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
                 <button type="button" class="btn btn-danger"
                         data-toggle="modal" data-target="#clear_all"> Clear all
                 </button>
@@ -222,32 +148,6 @@
                         </div>
                     </div>
                 </div>
-            </c:when>
-        </c:choose>
-    </c:when>
-    <c:otherwise>
-        <c:choose>
-            <c:when test="${listOfWaypoints.size() != 0 && mapOfCargoes.size() == 0}">
-
-            </c:when>
-            <c:otherwise>
-                <div>
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#create_waypoint">
-                        Create waypoint
-                    </button>
-                </div>
-                <div>
-                    <h6 class="info"><strong> For each cargo you`ll have 2 waypoints : first for LOADING and second for
-                        UNLOADING. </strong></h6>
-                </div>
-            </c:otherwise>
-        </c:choose>
-        <c:choose>
-            <c:when test="${listOfWaypoints.size() == 0}">
-                </br>
-            </c:when>
-            <c:otherwise>
-                </br>
                 <div>
                     <div class="mainDiv">
                         <div class="tableTab">
@@ -330,13 +230,13 @@
                         </div>
                     </div>
                 </div>
-            </c:otherwise>
-        </c:choose>
+
+
         <div class="modal fade" id="create_waypoint" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createWaypointEditLabel"> Add Waypoint </h5>
+                        <h5 class="modal-title" id="createWaypointEditLabel"> Add UnloadingPoint </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -486,128 +386,128 @@
     </c:otherwise>
 </c:choose>
 </body>
-<script>
-    $("#edit_raw_cargo").on('show.bs.modal', function (e) {
-        var cargoId = $(e.relatedTarget).data('cargo-id');
-        var cols = $('#cargo-' + cargoId + ' td');
-        var id = $(cols[0]).text();
-        var name = $(cols[1]).text();
-        var weight = $(cols[2]).text();
-        $('#idInput').val(id);
-        $('#nameInput').val(name);
-        $('#weightInput').val(weight);
-    });
-    $("#edit_raw_cargo").on('hidden.bs.modal', function () {
-        var form = $(this).find('form');
-        form[0].reset();
-    });
+<%--<script>--%>
+    <%--$("#edit_raw_cargo").on('show.bs.modal', function (e) {--%>
+        <%--var cargoId = $(e.relatedTarget).data('cargo-id');--%>
+        <%--var cols = $('#cargo-' + cargoId + ' td');--%>
+        <%--var id = $(cols[0]).text();--%>
+        <%--var name = $(cols[1]).text();--%>
+        <%--var weight = $(cols[2]).text();--%>
+        <%--$('#idInput').val(id);--%>
+        <%--$('#nameInput').val(name);--%>
+        <%--$('#weightInput').val(weight);--%>
+    <%--});--%>
+    <%--$("#edit_raw_cargo").on('hidden.bs.modal', function () {--%>
+        <%--var form = $(this).find('form');--%>
+        <%--form[0].reset();--%>
+    <%--});--%>
 
-    var form2 = document.querySelector('.formEditWithValidation')
-    var weight2 = form2.querySelector('.weight')
-    var fields2 = form2.querySelectorAll('.field')
+    <%--var form2 = document.querySelector('.formEditWithValidation')--%>
+    <%--var weight2 = form2.querySelector('.weight')--%>
+    <%--var fields2 = form2.querySelectorAll('.field')--%>
 
-    form2.addEventListener("submit", function (event) {
-        event.preventDefault()
+    <%--form2.addEventListener("submit", function (event) {--%>
+        <%--event.preventDefault()--%>
 
-        var errors = form2.querySelectorAll('.error')
+        <%--var errors = form2.querySelectorAll('.error')--%>
 
-        for (var i = 0; i < errors.length; i++) {
-            errors[i].remove()
-        }
+        <%--for (var i = 0; i < errors.length; i++) {--%>
+            <%--errors[i].remove()--%>
+        <%--}--%>
 
-        var errors_counter2 = 0
-        for (var i = 0; i < fields2.length; i++) {
-            if (!fields2[i].value) {
-                errors_counter2 += 1
-                var error3 = document.createElement('div')
-                error3.className = 'error'
-                error3.style.color = 'red'
-                error3.innerHTML = 'Can`t be empty'
-                form2[i].parentElement.insertBefore(error3, fields2[i])
-            }
-        }
+        <%--var errors_counter2 = 0--%>
+        <%--for (var i = 0; i < fields2.length; i++) {--%>
+            <%--if (!fields2[i].value) {--%>
+                <%--errors_counter2 += 1--%>
+                <%--var error3 = document.createElement('div')--%>
+                <%--error3.className = 'error'--%>
+                <%--error3.style.color = 'red'--%>
+                <%--error3.innerHTML = 'Can`t be empty'--%>
+                <%--form2[i].parentElement.insertBefore(error3, fields2[i])--%>
+            <%--}--%>
+        <%--}--%>
 
-        if (weight2.value > ${maxWeight} * 1000) {
-            errors_counter2 += 1
-            var error4 = document.createElement('div')
-            error4.className = 'error'
-            error4.style.color = 'red'
-            error4.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'
-            weight2.parentElement.insertBefore(error4, weight2)
-        }
+        <%--if (weight2.value > ${maxWeight} * 1000) {--%>
+            <%--errors_counter2 += 1--%>
+            <%--var error4 = document.createElement('div')--%>
+            <%--error4.className = 'error'--%>
+            <%--error4.style.color = 'red'--%>
+            <%--error4.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'--%>
+            <%--weight2.parentElement.insertBefore(error4, weight2)--%>
+        <%--}--%>
 
-        if (weight2.value <= 0) {
-            errors_counter2 += 1
-            var error8 = document.createElement('div')
-            error8.className = 'error'
-            error8.style.color = 'red'
-            error8.innerHTML = 'Can`t be < 0'
-            weight2.parentElement.insertBefore(error8, weight2)
-        }
+        <%--if (weight2.value <= 0) {--%>
+            <%--errors_counter2 += 1--%>
+            <%--var error8 = document.createElement('div')--%>
+            <%--error8.className = 'error'--%>
+            <%--error8.style.color = 'red'--%>
+            <%--error8.innerHTML = 'Can`t be < 0'--%>
+            <%--weight2.parentElement.insertBefore(error8, weight2)--%>
+        <%--}--%>
 
-        if (errors_counter2 < 1) {
-            form2.submit()
-        }
-    })
-</script>
-<script>
-    $("#create_raw_cargo").on('show.bs.modal', function (e) {
-        $('#createNameInput').val(null);
-        $('#createWeightInput').val(null);
-    });
-    $("#create_raw_cargo").on('hidden.bs.modal', function () {
-        var form = $(this).find('form');
-        form[0].reset();
-    });
+        <%--if (errors_counter2 < 1) {--%>
+            <%--form2.submit()--%>
+        <%--}--%>
+    <%--})--%>
+<%--</script>--%>
+<%--<script>--%>
+    <%--$("#create_raw_cargo").on('show.bs.modal', function (e) {--%>
+        <%--$('#createNameInput').val(null);--%>
+        <%--$('#createWeightInput').val(null);--%>
+    <%--});--%>
+    <%--$("#create_raw_cargo").on('hidden.bs.modal', function () {--%>
+        <%--var form = $(this).find('form');--%>
+        <%--form[0].reset();--%>
+    <%--});--%>
 
-    var form = document.querySelector('.formCreateWithValidation')
-    var weight = form.querySelector('.weight')
-    var fields = form.querySelectorAll('.field')
+    <%--var form = document.querySelector('.formCreateWithValidation')--%>
+    <%--var weight = form.querySelector('.weight')--%>
+    <%--var fields = form.querySelectorAll('.field')--%>
 
-    form.addEventListener("submit", function (event) {
-        event.preventDefault()
+    <%--form.addEventListener("submit", function (event) {--%>
+        <%--event.preventDefault()--%>
 
-        var errors = form.querySelectorAll('.error')
+        <%--var errors = form.querySelectorAll('.error')--%>
 
-        for (var i = 0; i < errors.length; i++) {
-            errors[i].remove()
-        }
+        <%--for (var i = 0; i < errors.length; i++) {--%>
+            <%--errors[i].remove()--%>
+        <%--}--%>
 
-        var errors_counter = 0
-        for (var i = 0; i < fields.length; i++) {
-            if (!fields[i].value) {
-                errors_counter += 1
-                var error = document.createElement('div')
-                error.className = 'error'
-                error.style.color = 'red'
-                error.innerHTML = 'Can`t be empty'
-                form[i].parentElement.insertBefore(error, fields[i])
-            }
-        }
+        <%--var errors_counter = 0--%>
+        <%--for (var i = 0; i < fields.length; i++) {--%>
+            <%--if (!fields[i].value) {--%>
+                <%--errors_counter += 1--%>
+                <%--var error = document.createElement('div')--%>
+                <%--error.className = 'error'--%>
+                <%--error.style.color = 'red'--%>
+                <%--error.innerHTML = 'Can`t be empty'--%>
+                <%--form[i].parentElement.insertBefore(error, fields[i])--%>
+            <%--}--%>
+        <%--}--%>
 
-        if (weight.value > ${maxWeight} * 1000) {
-            errors_counter += 1
-            var error2 = document.createElement('div')
-            error2.className = 'error'
-            error2.style.color = 'red'
-            error2.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'
-            weight.parentElement.insertBefore(error2, weight)
-        }
+        <%--if (weight.value > ${maxWeight} * 1000) {--%>
+            <%--errors_counter += 1--%>
+            <%--var error2 = document.createElement('div')--%>
+            <%--error2.className = 'error'--%>
+            <%--error2.style.color = 'red'--%>
+            <%--error2.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'--%>
+            <%--weight.parentElement.insertBefore(error2, weight)--%>
+        <%--}--%>
 
-        if (weight.value <= 0) {
-            errors_counter += 1
-            var error3 = document.createElement('div')
-            error3.className = 'error'
-            error3.style.color = 'red'
-            error3.innerHTML = 'Can`t be < 0'
-            weight.parentElement.insertBefore(error3, weight)
-        }
+        <%--if (weight.value <= 0) {--%>
+            <%--errors_counter += 1--%>
+            <%--var error3 = document.createElement('div')--%>
+            <%--error3.className = 'error'--%>
+            <%--error3.style.color = 'red'--%>
+            <%--error3.innerHTML = 'Can`t be < 0'--%>
+            <%--weight.parentElement.insertBefore(error3, weight)--%>
+        <%--}--%>
 
-        if (errors_counter < 1) {
-            form.submit()
-        }
-    })
-</script>
+        <%--if (errors_counter < 1) {--%>
+            <%--form.submit()--%>
+        <%--}--%>
+    <%--})--%>
+<%--</script>--%>
 <script>
     $("#create_waypoint").on('show.bs.modal', function (e) {
         $('#cargoInput').val(null);

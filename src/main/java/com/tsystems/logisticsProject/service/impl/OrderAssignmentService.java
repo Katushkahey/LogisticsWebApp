@@ -393,9 +393,6 @@ public class OrderAssignmentService {
         City endCity = listOfWaypoints.get(listOfWaypoints.size() - 1).getCity();
         double distanceToFirstWaypoint = calculateDistanceBetweenTwoCities(city, startCity);
         double distanceFromLastWaypointToHome = calculateDistanceBetweenTwoCities(endCity, city);
-        System.out.println("Расстояние от дома " + distanceToFirstWaypoint);
-        System.out.println("Расстояние маршрута " + calculateDistanceBetweenWaypointsForOrderById(orderId));
-        System.out.println("Расстояние до дома " + distanceFromLastWaypointToHome);
         return distanceToFirstWaypoint + calculateDistanceBetweenWaypointsForOrderById(orderId) + distanceFromLastWaypointToHome;
     }
 

@@ -22,7 +22,6 @@ public class Cargo extends AbstractEntity {
     private Double weight;
 
     @ToString.Exclude
-    @NonNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order order;

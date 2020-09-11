@@ -19,7 +19,6 @@ public class OrderAdminMapper {
     private ModelMapper modelMapper;
     private WaypointMapper waypointMapper;
     private DriverShortMapper driverShortMapper;
-    private TruckMapper truckMapper;
     private OrderService orderService;
     private TruckDao truckDao;
     private OrderDao orderDao;
@@ -29,7 +28,7 @@ public class OrderAdminMapper {
     @Autowired
     public OrderAdminMapper(ModelMapper modelMapper, WaypointMapper waypointMapper, TruckDao truckDao, OrderDao orderDao,
                             WaypointDao waypointDao, DriverDao driverDao, OrderService orderService,
-                            DriverShortMapper driverShortMapper, TruckMapper truckMapper) {
+                            DriverShortMapper driverShortMapper) {
         this.modelMapper = modelMapper;
         this.waypointMapper = waypointMapper;
         this.driverShortMapper = driverShortMapper;
@@ -38,7 +37,6 @@ public class OrderAdminMapper {
         this.waypointDao = waypointDao;
         this.driverDao = driverDao;
         this.orderService = orderService;
-        this.truckMapper = truckMapper;
     }
 
     public Order toEntity(OrderAdminDto dto) {
