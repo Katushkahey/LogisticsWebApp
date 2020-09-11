@@ -26,22 +26,18 @@ public class OrderServiceImpl implements OrderService {
     private OrderClientMapper orderClientMapper;
     private OrderAdminMapper orderAdminMapper;
     private OrderDriverMapper orderDriverMapper;
-    private DriverShortMapper driverShortMapper;
-    private DriverService driverService;
+
     private WaypointService waypointService;
     private OrderDao orderDao;
 
     @Autowired
-    public void setDependencies(OrderDao orderDao, DriverService driverService, WaypointService waypointService,
-                                ApplicationEventPublisher applicationEventPublisher, OrderClientMapper orderClientMapper,
-                                OrderAdminMapper orderAdminMApper, OrderDriverMapper orderDriverMapper,
-                                DriverShortMapper driverShortMapper) {
+    public void setDependencies(OrderDao orderDao, WaypointService waypointService, OrderClientMapper orderClientMapper,
+                                ApplicationEventPublisher applicationEventPublisher,OrderAdminMapper orderAdminMApper,
+                                OrderDriverMapper orderDriverMapper) {
         this.applicationEventPublisher = applicationEventPublisher;
         this.orderClientMapper = orderClientMapper;
         this.orderAdminMapper = orderAdminMApper;
         this.orderDriverMapper = orderDriverMapper;
-        this.driverShortMapper = driverShortMapper;
-        this.driverService = driverService;
         this.waypointService = waypointService;
         this.orderDao = orderDao;
     }
@@ -49,6 +45,11 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public List<Waypoint> findWaypointsForCurrentOrderById(Long id) {
         return waypointService.getListOfWaypointsByOrderId(id);
+    }
+
+    @Transactional
+    public OrderAdminDto findByNumber(String number) {
+        return orderAdminMapper.toDto(orderDao.findByNumber(number));
     }
 
     @Transactional
@@ -104,10 +105,6 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setTruckNumber(cf.getTruckNumber());
         orderDto.setDrivers(cf.getDrivers());
         orderDto.setStatus(OrderStatus.WAITING.toString());
-        for (DriverShortDto driver : cf.getDrivers()) {
-            driver.setOrderNumber(orderDto.getNumber());
-            driverService.update(driverShortMapper.toEntity(driver));
-        }
         update(orderAdminMapper.toEntity(orderDto));
     }
 
@@ -116,10 +113,6 @@ public class OrderServiceImpl implements OrderService {
         orderAdminDto.setTruckNumber(null);
         orderAdminDto.setStatus(OrderStatus.NOT_ASSIGNED.toString());
         orderAdminDto.setDrivers(null);
-        for (DriverShortDto driverDto : orderAdminDto.getDrivers()) {
-            driverDto.setOrderNumber(null);
-            driverService.update(driverShortMapper.toEntity(driverDto));
-        }
         update(orderAdminMapper.toEntity(orderAdminDto));
     }
 

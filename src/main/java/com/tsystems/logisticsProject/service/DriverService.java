@@ -20,10 +20,6 @@ public interface DriverService {
 
     boolean checkEditedTelephoneNumber(String telephoneNumber, Long id);
 
-    boolean checkUserNameToCreateDriver(String userName);
-
-    User returnUserToCreateDriver(String userName);
-
     void add(DriverAdminDto driverAdminDto);
 
     boolean findDriverByTelephoneNumber(String telephineNumber);

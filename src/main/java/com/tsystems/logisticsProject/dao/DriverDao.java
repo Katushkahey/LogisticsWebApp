@@ -30,4 +30,6 @@ public interface DriverDao extends GenericDao<Driver> {
 
     Long getDriversWorkedEnough(int hours);
 
+    User findUserByDriverId(Long Id);
+
 }

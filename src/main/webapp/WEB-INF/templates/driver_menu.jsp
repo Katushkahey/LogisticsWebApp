@@ -103,7 +103,13 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/driver/edit_telephoneNumber" class="formWithValidation" role="form">
+                <form action="/driver/edit_telephoneNumber" method="get" class="formWithValidation" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="id" visibility: hidden name="id" id="idInput"/>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="phoneInput">Phone Number</label>
                         <div class="col-sm-9">
@@ -304,6 +310,7 @@
 <script>
     $("#edit_phone").on('show.bs.modal', function (e) {
         var telephone = $(e.relatedTarget).data('driver-telephone');
+        $('#idInput').val(${driver.id})
         $('#phoneInput').val(telephone);
     });
     $("#edit_phone").on('hidden.bs.modal', function () {
@@ -344,27 +351,6 @@
         }
 
         if (errors_counter < 1) {
-            ajax({
-                url: '/driver/edit_telephoneNumber',
-                type: "POST",
-                contentType: "application/json",
-                dataType: 'JSON',
-                data: JSON.stringify({
-                    id: ${driver.id},
-                    name: ${driver.name},
-                    surname: ${driver.surname},
-                    telephoneNumber: telephone,
-                    hoursThisMonth: ${driver.hoursThisMonth},
-                    partners: ${driver.partners},
-                    driverState: ${driver.driverState},
-                    order: ${driver.driverState},
-                    startWorkingTime: ${driver.startWorkingTime}
-                }),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
             form.submit()
         }
     });

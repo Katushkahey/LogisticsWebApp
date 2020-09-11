@@ -41,7 +41,8 @@ public class CombinationForOrderMapper {
     public void setupMapper() {
         modelMapper.createTypeMap(CombinationForOrder.class, CombinationForOrderDto.class)
                 .addMappings(m -> m.skip(CombinationForOrderDto::setDrivers)).setPostConverter(toDtoConverter())
-                .addMappings(m -> m.skip(CombinationForOrderDto::setTruckNumber)).setPostConverter(toDtoConverter());
+                .addMappings(m -> m.skip(CombinationForOrderDto::setTruckNumber)).setPostConverter(toDtoConverter())
+                .addMappings(m -> m.skip(CombinationForOrderDto::setCity)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(CombinationForOrderDto.class, CombinationForOrder.class)
                 .addMappings(m -> m.skip(CombinationForOrder::setListOfDrivers)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(CombinationForOrder::setTruck)).setPostConverter(toEntityConverter());
@@ -79,6 +80,10 @@ public class CombinationForOrderMapper {
                 getDriversForCombinationDto(source.getListOfDrivers()));
         destination.setTruckNumber(Objects.isNull(source) || Objects.isNull(source.getTruck())
                 || Objects.isNull(source.getTruck().getNumber()) ? null : source.getTruck().getNumber());
+        destination.setCity(Objects.isNull(source) || Objects.isNull(source.getTruck()) ||
+                Objects.isNull(source.getTruck().getCurrentCity()) ||
+                Objects.isNull(source.getTruck().getCurrentCity().getName()) ? null :
+                source.getTruck().getCurrentCity().getName());
     }
 
     private List<DriverShortDto> getDriversForCombinationDto(List<Driver> drivers) {

@@ -28,10 +28,11 @@ public class WaypointDaoImpl extends AbstractDao<Waypoint> implements WaypointDa
     // select * from waypoints where cargo_id in (select id from cargoes where order_id = orderId)
     public List<Waypoint> getListOfWaypointsByOrderId(Long orderId) {
         try {
-            Query query1 = sessionFactory.getCurrentSession().createQuery("SELECT c FROM Cargo c WHERE c.order.id=:id", Cargo.class)
-                    .setParameter("id", orderId);
-            return sessionFactory.getCurrentSession().createQuery("SELECT w FROM Waypoint w WHERE w.cargo in (:ids) order by w.sequence", Waypoint.class)
-                    .setParameterList("ids", ((org.hibernate.query.Query) query1).list())
+            Query query1 = sessionFactory.getCurrentSession().createQuery("SELECT c FROM Cargo c WHERE c.order.id=:id",
+                    Cargo.class).setParameter("id", orderId);
+            System.out.println(query1.getResultList());
+            return sessionFactory.getCurrentSession().createQuery("SELECT w FROM Waypoint w WHERE w.cargo in (:ids) " +
+                    "order by w.sequence", Waypoint.class).setParameterList("ids", ((org.hibernate.query.Query) query1).list())
                     .getResultList();
         } catch (NoResultException e) {
             return null;

@@ -65,7 +65,7 @@ public class TruckMapper {
                 TruckState.valueOf(source.getState()));
         destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getCityName()) ? null :
                 cityDao.findByName(source.getCityName()));
-        if (source.isAvailable() && source.getId() != null) {
+        if (source.isAvailable() || source.getId() != null) {
             destination.setOrder(null);
         } else {
             Truck truck = truckDao.findById(source.getId());

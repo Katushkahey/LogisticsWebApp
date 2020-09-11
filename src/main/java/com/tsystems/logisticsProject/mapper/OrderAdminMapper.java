@@ -2,11 +2,8 @@ package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dao.*;
 import com.tsystems.logisticsProject.dto.*;
-import com.tsystems.logisticsProject.entity.Cargo;
-import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.Order;
-import com.tsystems.logisticsProject.entity.Waypoint;
-import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.entity.*;
+import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.service.OrderService;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -22,6 +19,7 @@ public class OrderAdminMapper {
     private ModelMapper modelMapper;
     private WaypointMapper waypointMapper;
     private DriverShortMapper driverShortMapper;
+    private TruckMapper truckMapper;
     private OrderService orderService;
     private TruckDao truckDao;
     private OrderDao orderDao;
@@ -31,7 +29,7 @@ public class OrderAdminMapper {
     @Autowired
     public OrderAdminMapper(ModelMapper modelMapper, WaypointMapper waypointMapper, TruckDao truckDao, OrderDao orderDao,
                             WaypointDao waypointDao, DriverDao driverDao, OrderService orderService,
-                            DriverShortMapper driverShortMapper) {
+                            DriverShortMapper driverShortMapper, TruckMapper truckMapper) {
         this.modelMapper = modelMapper;
         this.waypointMapper = waypointMapper;
         this.driverShortMapper = driverShortMapper;
@@ -40,6 +38,7 @@ public class OrderAdminMapper {
         this.waypointDao = waypointDao;
         this.driverDao = driverDao;
         this.orderService = orderService;
+        this.truckMapper = truckMapper;
     }
 
     public Order toEntity(OrderAdminDto dto) {
@@ -78,12 +77,67 @@ public class OrderAdminMapper {
     }
 
     public void mapSpecificFieldsForEntity(OrderAdminDto source, Order destination) {
-        destination.setOrderTruck(Objects.isNull(source) || Objects.isNull(source.getTruckNumber()) ? null :
-                truckDao.findByNumber(source.getNumber()));
+        destination.setDrivers(Objects.isNull(source) || Objects.isNull(source.getNumber()) ? null
+                : setDriversForOrder(source.getDrivers(), source.getNumber()));
+        destination.setOrderTruck(Objects.isNull(source) || Objects.isNull(source.getId())
+                 ? null : setTruckForOrder(source.getTruckNumber(), source.getId()));
         destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
-                orderDao.findById(source.getId()).getStatus());
+                OrderStatus.valueOf(source.getStatus()));
         destination.setCompletionDate(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
                 orderDao.findById(source.getId()).getCompletionDate());
+    }
+
+    private List<Driver> setDriversForOrder(List<DriverShortDto> listOfDrivers, String orderNumber) {
+        if (listOfDrivers == null) {
+            return cancelAssignmentForDrivers(orderNumber);
+        } else {
+            return assignDriversForOrder(listOfDrivers, orderNumber);
+        }
+    }
+
+    private List<Driver> cancelAssignmentForDrivers(String orderNumber) {
+        Order order = orderDao.findByNumber(orderNumber);
+        List<Driver> drivers = driverDao.findAllDriversForCurrentOrder(order);
+        if (drivers != null){
+            for (Driver driver: drivers) {
+                driver.setCurrentOrder(null);
+                driverDao.update(driver);
+            }
+        }
+        return null;
+    }
+
+    private List<Driver> assignDriversForOrder(List<DriverShortDto> drivers, String orderNumber) {
+        List<Driver> listOfDrivers = new ArrayList<>();
+        for (DriverShortDto driverDto: drivers) {
+            driverDto.setOrderNumber(orderNumber);
+            Driver driver = driverShortMapper.toEntity(driverDto);
+            driverDao.update(driver);
+            listOfDrivers.add(driver);
+        }
+        return listOfDrivers;
+    }
+
+    private Truck setTruckForOrder(String truckNumber, Long id) {
+        if (truckNumber == null) {
+            return cancelAssignmentForTruck(id);
+        } else {
+            return assignTruckForOrder(truckNumber, id);
+        }
+    }
+
+    private Truck cancelAssignmentForTruck(Long id) {
+        Truck truck = orderDao.findTruckOfOrder(id);
+        truck.setOrder(null);
+        truckDao.update(truck);
+        return null;
+    }
+
+    private Truck assignTruckForOrder(String truckNumber, Long id) {
+        Truck truck = truckDao.findByNumber(truckNumber);
+        truck.setOrder(orderDao.findById(id));
+        truckDao.update(truck);
+        return truck;
     }
 
     public Converter<Order, OrderAdminDto> toDtoConverter() {
@@ -96,8 +150,8 @@ public class OrderAdminMapper {
     }
 
     public void mapSpecificFieldsForDto(Order source, OrderAdminDto destination) {
-        destination.setDrivers(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
-                getDriversForOrderAdminDto(source));
+        destination.setDrivers(Objects.isNull(source) || Objects.isNull(source.getId()) ||
+                Objects.isNull(driverDao.findAllDriversForCurrentOrder(source)) ? null : getDriversForOrderAdminDto(source));
         destination.setTruckNumber(Objects.isNull(source) || Objects.isNull(source.getOrderTruck())
                 || Objects.isNull(source.getOrderTruck().getNumber()) ? null : source.getOrderTruck().getNumber());
         destination.setMaxWeight(Objects.isNull(source) || Objects.isNull(source.getCargoes())

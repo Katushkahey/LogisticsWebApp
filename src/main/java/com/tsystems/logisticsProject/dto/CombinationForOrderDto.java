@@ -8,15 +8,15 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CombinationForOrderDto {
+public class CombinationForOrderDto extends AbstractDto{
 
-    Long id;
-    List<DriverShortDto> drivers;
-    String TruckNumber;
+    private List<DriverShortDto> drivers;
+    private String TruckNumber;
     private int totalHours;
     private int totalBillableHours;
+    private String city;
 }
 

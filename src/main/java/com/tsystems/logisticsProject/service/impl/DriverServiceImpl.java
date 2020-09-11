@@ -20,12 +20,13 @@ import java.util.*;
 @Service
 public class DriverServiceImpl implements DriverService {
 
+    private ApplicationEventPublisher applicationEventPublisher;
     private DriverMapper driverMapper;
     private DriverAdminMapper driverAdminMapper;
     private DriverShortMapper driverShortMapper;
     private OrderDriverMapper orderDriverMapper;
     private WaypointMapper waypointMapper;
-    private ApplicationEventPublisher applicationEventPublisher;
+
     private UserService userService;
     private OrderService orderService;
     private WaypointService waypointService;
@@ -83,33 +84,6 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public boolean checkEditedTelephoneNumber(String telephoneNumber, Long id) {
         return driverDao.checkEditedTelephoneNumber(telephoneNumber, id);
-    }
-
-    /**
-     * данный метод получает username из формы создания Driver, проверяет есть ли в таблице Uder строка с таким username
-     * если да, то возвращает этого User-а, далее будет осуществлена проверка, имеется ли водитель, привязанный к этому User-у,
-     * если да - вернется null, который будет расценен как ошибка в контроллере,
-     * если нет - вернется этот User для дальнейшей привязки к новому водителю.
-     * есди нет, то будет создан новый User с таким UserName, с дефолтным паролем "driver"(Driver сможет его поменять
-     * у себя на странице) и ролью водителя.
-     */
-
-    @Transactional
-    public User returnUserToCreateDriver(String userName) {
-        User userToReturn = userService.returnUserToCreateDriver(userName);
-        if (checkUserNameToCreateDriver(userName)) {
-            if (driverDao.findByUser(userToReturn) == null) {
-                return userToReturn;
-            }
-            return null;
-        }
-        return userToReturn;
-
-    }
-
-    @Transactional
-    public boolean checkUserNameToCreateDriver(String userName) {
-        return userService.checkUserNameToCreateDriver(userName);
     }
 
     @Transactional
@@ -172,7 +146,7 @@ public class DriverServiceImpl implements DriverService {
         if (orderDriverDto != null) {
             for (WaypointDto waypointDto : orderDriverDto.getWaypoints()) {
                 waypointDto.setStatus(WaypointStatus.DONE.toString());
-                waypointService.update(waypointMapper.toEntity(waypointDto));
+                waypointService.update(waypointDto);
             }
             for (DriverShortDto driverDto : orderDriverDto.getDrivers()) {
                 driverDto.setOrderNumber(null);

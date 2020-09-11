@@ -53,7 +53,7 @@
                                 <th scope="col"> Action </th>
                                 <th scope="col"> Status </th>
                                 <c:choose>
-                                    <c:when test="${order_status=='IN_PROGRESS' || order_status=='COMPLETED' || order_status=='WAITING'}">
+                                    <c:when test="${order.status=='IN_PROGRESS' || order.status=='COMPLETED' || order.status=='WAITING'}">
                                     </c:when>
                                     <c:otherwise>
                                         <th scope="col"> Edit </th>
@@ -63,16 +63,16 @@
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="waypoint" items="${waypoints}" varStatus="loop">
+                        <c:forEach var="waypoint" items="${order.waypoints}" varStatus="loop">
                             <tr id="waypoint-${waypoint.id}">
                                 <td scope="row" align="center">${loop.count}</td>
-                                <td scope="row" align="center">${waypoint.cargo.name}</td>
-                                <td scope="row" align="center">${waypoint.cargo.weight}</td>
-                                <td scope="row" align="center">${waypoint.city.name}</td>
+                                <td scope="row" align="center">${waypoint.cargoName}</td>
+                                <td scope="row" align="center">${waypoint.cargoWeight}</td>
+                                <td scope="row" align="center">${waypoint.cityName}</td>
                                 <td scope="row" align="center">${waypoint.action}</td>
                                 <td scope="row" align="center">${waypoint.status}</td>
                                 <c:choose>
-                                    <c:when test="${order_status=='IN_PROGRESS' || order_status=='COMPLETED' || order_status=='WAITING'}">
+                                    <c:when test="${order.status=='IN_PROGRESS' || order.status=='COMPLETED' || order.status=='WAITING'}">
                                     </c:when>
                                     <c:otherwise>
                                         <td scope="row" align="center"><button type="button" class="btn btn-secondary"
@@ -105,8 +105,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
                         <div class="col-sm-9">
-                            <input type="number" readonly visibility: hidden
-                                   class="id field" name="id" id="idInput"/>
+                            <input type="number" readonly visibility: hidden class="id field" name="id" id="idInput"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -132,6 +131,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-3 control-label" for="sequenceInput">Weight, kg</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="sequence field" name="sequence" id="sequenceInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-10">
                             <button type="submit" class="btn btn-default">Save</button>
                         </div>
@@ -146,10 +151,11 @@
     $("#edit_waypoint").on('show.bs.modal', function (e) {
         var waypointId = $(e.relatedTarget).data('waypoint-id');
         var cols = $('#waypoint-' + waypointId + ' td');
+        var id = waypointId;
         var cargo = $(cols[1]).text();
         var weight = $(cols[2]).text();
         var city = $(cols[3]).text();
-        $('#idInput').val(waypointId);
+        $('#idInput').val(id);
         $('#cargoInput').val(cargo);
         $('#weightInput').val(weight);
         $('#cityInput').val(city);

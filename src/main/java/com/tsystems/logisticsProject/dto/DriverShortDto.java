@@ -16,4 +16,9 @@ public class DriverShortDto extends AbstractDto {
     String state;
     int hoursThisMonth;
     String orderNumber;
+
+    @Override
+    public String toString() {
+        return name + " " + surname;
+    }
 }

@@ -1,7 +1,6 @@
 package com.tsystems.logisticsProject.controller;
 
 import com.tsystems.logisticsProject.dto.TruckDto;
-import com.tsystems.logisticsProject.entity.enums.TruckState;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;

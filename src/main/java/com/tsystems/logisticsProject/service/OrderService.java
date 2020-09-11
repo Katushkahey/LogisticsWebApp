@@ -16,6 +16,8 @@ public interface OrderService {
 
     OrderAdminDto findById(Long id);
 
+    OrderAdminDto findByNumber(String number);
+
     double getMaxWeightForOrderById(List<Waypoint> listOfWaypoint);
 
     void deleteById(Long id);

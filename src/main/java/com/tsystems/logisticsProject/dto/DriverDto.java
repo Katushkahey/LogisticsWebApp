@@ -19,7 +19,7 @@ public class DriverDto extends AbstractDto {
     private int hoursThisMonth;
     private List<String> partners;
     private String driverState;
-    private OrderDriverDto order;
+    private String orderNumber;
     private Long startWorkingTime;
 
 

@@ -19,17 +19,17 @@ public class AdminOrdersController {
     private OrderService orderService;
     private CityService cityService;
     private WaypointService waypointService;
-    private OrderAdminMapper orderAdminMapper;
+    private TruckService truckService;
     private OrderAssignmentService orderAssignmentService;
 
     @Autowired
     public void setDependencies(OrderService orderService, CityService cityService,
                                 WaypointService waypointService, OrderAssignmentService orderAssignmentService,
-                                OrderAdminMapper orderAdminMapper) {
+                                TruckService truckService) {
         this.orderService = orderService;
         this.cityService = cityService;
         this.waypointService = waypointService;
-        this.orderAdminMapper = orderAdminMapper;
+        this. truckService = truckService;
         this.orderAssignmentService = orderAssignmentService;
     }
 
@@ -51,17 +51,18 @@ public class AdminOrdersController {
         return "orders_in_progress_page";
     }
 
-    @GetMapping("/show_info/{id}")
-    public String showDetails(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("order", orderService.findById(id));
-        model.addAttribute("listOfCities", cityService.getListOfCities());
-        return "order_details_page";
-    }
-
     @GetMapping("/info")
     public String OrdersInfo(Model model) {
         model.addAttribute("listOfOrders", orderService.getListOfUnassignedOrders());
         return "orders_no_assigned_page";
+    }
+
+    @GetMapping("/show_info/{id}")
+    public String showDetails(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("order", orderService.findById(id));
+        model.addAttribute("listOfCities", cityService.getListOfCities());
+        model.addAttribute("maxWeight", truckService.getMaxCapacity());
+        return "order_details_page";
     }
 
     @GetMapping("/delete_order/{id}")
@@ -88,27 +89,24 @@ public class AdminOrdersController {
 
     @GetMapping("/edit_waypoint/{id}")
     public String editWaypoint(@PathVariable("id") Long orderId, @RequestParam("id") Long waypointId,
-                               @RequestParam("cargoName") String cargoName, @RequestParam("cargoWeight") double weight,
+                               @RequestParam("cargoName") String cargoName, @RequestParam("weight") double weight,
                                @RequestParam("city") String city, Model model) {
-        model.addAttribute("id", orderId);
         WaypointDto waypointDto = new WaypointDto();
         waypointDto.setId(waypointId);
         waypointDto.setCargoName(cargoName);
         waypointDto.setCargoWeight(weight);
         waypointDto.setCityName(city);
-        waypointService.editWaypoint(waypointDto);
+        waypointService.update(waypointDto);
 
-        return "redirect:/order/show_info/{id}";
+        return "redirect:/order/show_info/{orderId}";
     }
 
     @GetMapping("/delete_waypoint/{orderId}/{waypointId}")
-    public String deleteWaypoint(@PathVariable("orderId") Long orderId, @PathVariable("waypointId") Long waypointId,
-                                 Model model) {
-        model.addAttribute("id", orderId);
+    public String deleteWaypoint(@PathVariable("orderId") Long orderId, @PathVariable("waypointId") Long waypointId) {
         if (orderService.deleteWaypoint(orderId, waypointId)) {
             return "redirect:/order/info";
         }
-        return "redirect:/order/show_info/{id}";
+        return "redirect:/order/show_info/{orderId}";
     }
 
     @GetMapping("/cancel_assignment/{id}")

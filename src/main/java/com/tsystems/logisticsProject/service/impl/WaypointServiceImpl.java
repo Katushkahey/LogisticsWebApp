@@ -41,26 +41,26 @@ public class WaypointServiceImpl implements WaypointService {
     }
 
     @Transactional
-    public void update(Waypoint waypoint) {
-        waypointDao.update(waypoint);
+    public void update(WaypointDto waypointDto) {
+        waypointDao.update(waypointMapper.toEntity(waypointDto));
     }
 
-    @Transactional
-    public void makeCompletedById(Long id) {
-        WaypointDto completedWaypointDto = waypointMapper.toDto(waypointDao.findById(id));
-        completedWaypointDto.setStatus(WaypointStatus.DONE.toString());
-        update(waypointMapper.toEntity(completedWaypointDto));
-    }
+//    @Transactional
+//    public void makeCompletedById(Long id) {
+//        WaypointDto completedWaypointDto = waypointMapper.toDto(waypointDao.findById(id));
+//        completedWaypointDto.setStatus(WaypointStatus.DONE.toString());
+//        update(waypointMapper.toEntity(completedWaypointDto));
+//    }
 
     @Transactional
     public List<Waypoint> getListOfWaypointsByOrderId(Long orderId) {
         return waypointDao.getListOfWaypointsByOrderId(orderId);
     }
 
-    @Transactional
-    public void editWaypoint(WaypointDto waypointDto) {
-        update(waypointMapper.toEntity(waypointDto));
-    }
+//    @Transactional
+//    public void editWaypoint(WaypointDto waypointDto) {
+//        update(waypointMapper.toEntity(waypointDto));
+//    }
 
     @Transactional
     public boolean deleteWaypoint(Long orderId, Long waypointId) {

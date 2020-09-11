@@ -68,7 +68,7 @@
 </div>
 </br></br>
 <div>
-    <a class="btn btn-success" data-toggle="modal" data-target="#create_truck">Create Driver</a>
+    <a class="btn btn-success" data-toggle="modal" data-target="#create_driver">Create Driver</a>
     </br></br>
     <div class="mainDiv">
         <div class="tableTab">
@@ -117,7 +117,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <td scope="row" align="center"><a class="btn btn-danger"
-                                                                          href="/drivers/delete_driver/${driver}"> Delete </a></td>
+                                                                          href="/drivers/delete_driver/${driver.id}"> Delete </a></td>
                                     </c:otherwise>
                                 </c:choose>
                             </tr>
@@ -184,7 +184,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="create_truck" tabindex="-1" aria-labelledby="createLabel" aria-hidden="true">
+<div class="modal fade" id="create_driver" tabindex="-1" aria-labelledby="createLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -194,7 +194,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/drivers/create_driver/" method="get" class="formCreateWithValidation" role="form">
+                <form action="/drivers/create_driver/" method="post" class="formCreateWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="input1">Name</label>
                         <div class="col-sm-9">
@@ -261,9 +261,11 @@
         form[0].reset();
     });
     var form = document.querySelector('.formWithValidation')
+    var id = form.querySelector('.id')
     var name2 = form.querySelector('.name2')
     var surname = form.querySelector('.surname')
     var telephone = form.querySelector('.telephone')
+    var city = form.querySelector('.city')
     var fields = form.querySelectorAll('.field')
 
     form.addEventListener("submit", function (event) {
@@ -314,7 +316,25 @@
         }
 
         if (errors_counter < 1) {
-            form.submit()
+            $.ajax({
+                url: '/drivers/edit_driver',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    id: id.value,
+                    name: name2.value,
+                    surname: surname.value,
+                    telephoneNumber: telephone.value,
+                    cityName: city.value,
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert(result.responseText);
+                }
+            });
         }
     })
 </script>
@@ -338,6 +358,7 @@
     var telephone2 = form2.querySelector('.telephone')
     var userName = form2.querySelector('.user')
     var fields2 = form2.querySelectorAll('.field')
+    var city = form2.querySelector('.city'
 
     form2.addEventListener("submit", function (event) {
         event.preventDefault()
@@ -396,7 +417,26 @@
         }
 
         if (errors_counter2 < 1) {
-            form2.submit()
+            // form2.submit()
+            $.ajax({
+                url: '/drivers/create_driver',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    name: name3.value,
+                    surname: surname2.value,
+                    telephoneNumber: telephone2.value,
+                    cityName: city.value,
+                    userName: userName.value
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert(result.responseText);
+                }
+            });
         }
     })
 </script>

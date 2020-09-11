@@ -250,7 +250,7 @@
     $("#edit_truck").on('show.bs.modal', function (e) {
         var truckId = $(e.relatedTarget).data('truck-id');
         var cols = $('#truck-' + truckId + ' td');
-        var id = truckId
+        var id = truckId;
         var number = $(cols[1]).text();
         var capacity = $(cols[2]).text();
         var crew = $(cols[3]).text();

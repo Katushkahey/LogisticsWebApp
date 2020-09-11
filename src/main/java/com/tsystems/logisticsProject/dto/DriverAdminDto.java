@@ -1,9 +1,6 @@
 package com.tsystems.logisticsProject.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -18,4 +15,6 @@ public class DriverAdminDto extends AbstractDto {
     private String cityName;
     private boolean isAvailable;
     private String userName;
+
+
 }

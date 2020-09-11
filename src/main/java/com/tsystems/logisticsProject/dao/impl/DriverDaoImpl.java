@@ -100,4 +100,9 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
                 Long.class).setParameter("hours", hours).getSingleResult();
     }
 
+    public User findUserByDriverId(Long id) {
+        return sessionFactory.getCurrentSession().createQuery("SELECT d.user FROM Driver d WHERE d.id=:id",
+                User.class).setParameter("id", id).getSingleResult();
+    }
+
 }

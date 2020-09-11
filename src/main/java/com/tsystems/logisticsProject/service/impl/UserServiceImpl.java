@@ -58,22 +58,4 @@ public class UserServiceImpl implements UserService {
         userDao.add(user);
     }
 
-    @Transactional
-    public User returnUserToCreateDriver(String userName) {
-        User userToReturn = findByUsername(userName);
-        if (userToReturn == null) {
-            User newDriver = new User();
-            newDriver.setUsername(userName);
-            newDriver.setPassword("driver");
-            add(newDriver, "ROLE_DRIVER");
-            return newDriver;
-        } else {
-            return null;
-        }
-    }
-
-    @Transactional
-    public boolean checkUserNameToCreateDriver(String userName) {
-        return (findByUsername(userName) != null);
-    }
 }

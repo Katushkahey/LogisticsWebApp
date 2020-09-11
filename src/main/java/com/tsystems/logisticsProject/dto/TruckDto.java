@@ -1,12 +1,10 @@
 package com.tsystems.logisticsProject.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TruckDto extends AbstractDto {
@@ -15,7 +13,8 @@ public class TruckDto extends AbstractDto {
     private double capacity;
     private int crewSize;
     private String state;
-    private boolean isAvailable;
+    @Builder.Default
+    private boolean isAvailable = true;
     private String cityName;
 
 }

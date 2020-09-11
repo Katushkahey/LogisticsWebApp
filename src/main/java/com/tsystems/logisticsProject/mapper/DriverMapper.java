@@ -42,7 +42,7 @@ public class DriverMapper {
         modelMapper.createTypeMap(Driver.class, DriverDto.class)
                 .addMappings(m -> m.skip(DriverDto::setPartners)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(DriverDto::setDriverState)).setPostConverter(toDtoConverter())
-                .addMappings(m -> m.skip(DriverDto::setOrder)).setPostConverter(toDtoConverter());
+                .addMappings(m -> m.skip(DriverDto::setOrderNumber)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(DriverDto.class, Driver.class)
                 .addMappings(m -> m.skip(Driver::setDriverState)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentCity)).setPostConverter(toEntityConverter())
@@ -64,8 +64,8 @@ public class DriverMapper {
                 DriverState.valueOf(source.getDriverState()));
         destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
                 driverDao.findById(source.getId()).getCurrentCity());
-        destination.setCurrentOrder(Objects.isNull(source) || Objects.isNull(source.getOrder()) ? null :
-                orderDriverMapper.toEntity(source.getOrder()));
+//        destination.setCurrentOrder(Objects.isNull(source) || Objects.isNull(source.getOrderNumber()) ? null :
+//                orderDriverMapper.toEntity(source.getOrderNumber()));
         destination.setUser(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
                 driverDao.findById(source.getId()).getUser());
     }
@@ -84,8 +84,8 @@ public class DriverMapper {
                 || Objects.isNull(source.getId()) ? null : getPartners(source.getCurrentOrder(), source.getId()));
         destination.setDriverState(Objects.isNull(source) || Objects.isNull(source.getDriverState()) ? null :
                 source.getDriverState().toString());
-        destination.setOrder(Objects.isNull(source) || Objects.isNull(source.getCurrentCity()) ? null :
-                orderDriverMapper.toDto(source.getCurrentOrder()));
+        destination.setOrderNumber(Objects.isNull(source) || Objects.isNull(source.getCurrentCity()) ? null :
+                source.getCurrentOrder().getNumber());
     }
 
     private List<String> getPartners(Order order, Long id) {

@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.controller;
 import com.tsystems.logisticsProject.dto.DriverDto;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.service.DriverService;
+import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -19,39 +20,42 @@ public class DriverController {
 
     private DriverService driverService;
     private WaypointService waypointService;
+    private OrderService orderService;
 
     @Autowired
-    public void setDependencies(DriverService driverService, WaypointService waypointService) {
+    public void setDependencies(DriverService driverService, WaypointService waypointService, OrderService orderService) {
         this.driverService = driverService;
         this.waypointService = waypointService;
+        this.orderService = orderService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public String driverPage(Principal principal, Model model) {
-        String username = principal.getName();
+        DriverDto driverDto = driverService.getDriverByPrincipalName(principal.getName());
         model.addAttribute("driverState", DriverState.values());
-        model.addAttribute("driver", driverService.getDriverByPrincipalName(username));
+        model.addAttribute("driver", driverDto);
+        model.addAttribute("order", orderService.findByNumber(driverDto.getOrderNumber()));
 
         return "driver_menu";
     }
 
-//    @GetMapping("/edit_telephoneNumber/{id}")
-//    public String editTelephone(@PathVariable("id") Long id, @RequestParam("telephone") String telephoneNumber) {
-//        if (driverService.checkEditedTelephoneNumber(telephoneNumber, id)) {
-//            return "error"; //водитель с таким номером телефона уже существует
-//        }
-//        DriverDto driverDto = new DriverDto();
-//        driverDto.setId(id);
-//        driverDto.setTelephoneNumber(telephoneNumber);
-//        driverService.update(driverDto);
-//        return "redirect:/driver";
-//    }
-
-    @PostMapping(value = "/edit_telephoneNumber" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String editTruck(@RequestBody MultiValueMap<String, String> formData) {
-        System.out.println(formData);
+    @GetMapping("/edit_telephoneNumber/{id}")
+    public String editTelephone(@PathVariable("id") Long id, @RequestParam("telephone") String telephoneNumber) {
+        if (driverService.checkEditedTelephoneNumber(telephoneNumber, id)) {
+            return "error"; //водитель с таким номером телефона уже существует
+        }
+        DriverDto driverDto = new DriverDto();
+        driverDto.setId(id);
+        driverDto.setTelephoneNumber(telephoneNumber);
+        driverService.update(driverDto);
         return "redirect:/driver";
     }
+
+//    @PostMapping(value = "/edit_telephoneNumber" ,consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public String editTruck(@RequestBody MultiValueMap<String, String> formData) {
+//        System.out.println(formData);
+//        return "redirect:/driver";
+//    }
 
     @GetMapping("/edit_state/{id}")
     public String editState(@PathVariable("id") Long id, @RequestParam("state") DriverState state) {
@@ -65,11 +69,11 @@ public class DriverController {
         return "redirect:/driver";
     }
 
-    @GetMapping("/complete_waypoint/{id}")
-    public String completeWaypoint(@PathVariable("id") Long id) {
-        waypointService.makeCompletedById(id);
-        return "redirect:/driver";
-    }
+//    @GetMapping("/complete_waypoint/{id}")
+//    public String completeWaypoint(@PathVariable("id") Long id) {
+//        waypointService.makeCompletedById(id);
+//        return "redirect:/driver";
+//    }
 
     @GetMapping("/finish_order/{id}")
     public String finishOrder(@PathVariable("id") Long id) {
