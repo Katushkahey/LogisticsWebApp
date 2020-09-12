@@ -5,6 +5,7 @@ import com.tsystems.logisticsProject.entity.City;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.exception.unchecked.EntityNotFoundException;
 import com.tsystems.logisticsProject.mapper.CombinationForOrderMapper;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
@@ -13,6 +14,7 @@ import com.tsystems.logisticsProject.entity.CombinationForOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.NoResultException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -356,7 +358,11 @@ public class OrderAssignmentService {
 
     private List<Truck> getListOfTruckForOrder(Long orderId) {
         double maxWeightForOrder = calculateMaxOneTimeWeightForOrder(orderId) / 1000;
-        return truckService.findTrucksForOrder(maxWeightForOrder);
+        try {
+            return truckService.findTrucksForOrder(maxWeightForOrder);
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException("weight " + maxWeightForOrder, Truck.class);
+        }
     }
 
     private Map<City, Integer> calculateMaxOptionalNumberOfDriversForOrderFromEveryCity(Set<City> listOfCities, Long orderId) {

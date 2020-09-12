@@ -260,7 +260,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/driver/edit_state/${driver.id}" method="get" role="form">
+                        <form action="/driver/edit_state" method="post" class="formWithValidation2" role="form">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="stateInput">State</label>
                                 <div class="col-sm-9">
@@ -400,6 +400,52 @@
     $("#edit_state").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
         form[0].reset();
+
+    });
+    var form = document.querySelector('.formWithValidation2')
+    var state = form.querySelector('.state')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        var partners = null;
+        if (!('${driver.partners}'.length < 1)) {
+            partners = '${driver.partners}';
+        }
+
+        var order = null;
+        if (!('${driver.orderNumber}'.length < 1)) {
+            order = '${driver.orderNumber}';
+        }
+
+        var startWorkingTime = null;
+        if (!('${driver.startWorkingTime}'.length < 1)) {
+            startWorkingTime = '${driver.startWorkingTime}';
+        }
+
+        $.ajax({
+            url: '/driver/edit_state',
+            datatype: 'json',
+            type: "POST",
+            dataType: 'JSON',
+            data: JSON.stringify({
+                id: ${driver.id},
+                name: '${driver.name}',
+                surname: "${driver.surname}",
+                telephoneNumber: '${driver.telephoneNumber}',
+                hoursThisMonth: ${driver.hoursThisMonth},
+                partners: partners,
+                driverState: state.value,
+                orderNumber: order,
+                startWorkingTime: startWorkingTime
+            }),
+            success : function(data) {
+                window.location.reload();
+            },
+            error : function(result) {
+                alert("error" + result.responseText);
+            }
+        });
     });
 </script>
 <script>

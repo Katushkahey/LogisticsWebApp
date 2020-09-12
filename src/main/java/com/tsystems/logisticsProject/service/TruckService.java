@@ -2,6 +2,7 @@ package com.tsystems.logisticsProject.service;
 
 import com.tsystems.logisticsProject.dto.TruckDto;
 import com.tsystems.logisticsProject.entity.Truck;
+import com.tsystems.logisticsProject.exception.checked.NotUniqueTruckNumberException;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,9 +15,9 @@ public interface TruckService {
 
     boolean findByNumber(String number);
 
-    void add(TruckDto truckDto);
+    void add(TruckDto truckDto) throws NotUniqueTruckNumberException;
 
-    void update(TruckDto truckDto);
+    void update(TruckDto truckDto) throws NotUniqueTruckNumberException;
 
     double getMaxCapacity();
 

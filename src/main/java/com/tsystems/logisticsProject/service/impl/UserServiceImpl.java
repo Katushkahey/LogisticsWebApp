@@ -44,15 +44,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void add(User user, String authority) {
-        User newUser = findByUsername(user.getUsername());
-
-        if (newUser != null) {
-            return; // бросить Exception
-        }
-        if(authority == null) {
-            return; // бросить Exception
-        }
+    public void add(String username, String authority) {
+        User user = new User();
+        user.setUsername(username);
         user.setAuthority(roleDao.findByAuthority(authority));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.add(user);

@@ -3,6 +3,8 @@ package com.tsystems.logisticsProject.service;
 import com.tsystems.logisticsProject.dto.DriverAdminDto;
 import com.tsystems.logisticsProject.dto.DriverDto;
 import com.tsystems.logisticsProject.entity.*;
+import com.tsystems.logisticsProject.exception.checked.NotUniqueDriverTelephoneNumberException;
+import com.tsystems.logisticsProject.exception.checked.NotUniqueUserNameException;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,11 +19,9 @@ public interface DriverService {
 
     void deleteById(Long id);
 
-    boolean checkEditedTelephoneNumber(String telephoneNumber, Long id);
+    void add(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException, NotUniqueUserNameException;
 
-    void add(DriverAdminDto driverAdminDto);
-
-    void update(DriverAdminDto driverAdminDto);
+    void update(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException;
 
     void update(DriverDto driverDto);
 

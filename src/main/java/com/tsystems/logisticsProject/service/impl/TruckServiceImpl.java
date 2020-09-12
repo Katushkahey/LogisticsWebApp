@@ -4,6 +4,8 @@ import com.tsystems.logisticsProject.dao.TruckDao;
 import com.tsystems.logisticsProject.dto.TruckDto;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.event.UpdateEvent;
+import com.tsystems.logisticsProject.exception.checked.NotUniqueTruckNumberException;
+import com.tsystems.logisticsProject.exception.unchecked.EntityNotFoundException;
 import com.tsystems.logisticsProject.mapper.TruckMapper;
 import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -53,15 +56,39 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public void add(TruckDto truckDto) {
+    public void add(TruckDto truckDto) throws NotUniqueTruckNumberException {
+        checkEditedNumber(truckDto.getNumber());
         truckDao.add(truckMapper.toEntity(truckDto));
         applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
-    public void update(TruckDto truckDto) {
+    public void checkEditedNumber(String number) throws NotUniqueTruckNumberException  {
+        try {
+            truckDao.findByNumber(number);
+        }catch (NoResultException e){
+            throw new NotUniqueTruckNumberException(number);
+        }
+    }
+
+    @Transactional
+    public void update(TruckDto truckDto) throws NotUniqueTruckNumberException {
+        checkEditedNumber(truckDto.getNumber(), truckDto.getId());
         truckDao.update(truckMapper.toEntity(truckDto));
         applicationEventPublisher.publishEvent(new UpdateEvent());
+    }
+
+    @Transactional
+    public void checkEditedNumber(String number, Long id) throws NotUniqueTruckNumberException {
+        try {
+            Truck truck = truckDao.findByNumber(number);
+            if (truck.getId() != id) {
+                throw new NotUniqueTruckNumberException(number);
+            }
+        } catch (NoResultException e) {
+            // залогировать
+        }
+
     }
 
     @Transactional

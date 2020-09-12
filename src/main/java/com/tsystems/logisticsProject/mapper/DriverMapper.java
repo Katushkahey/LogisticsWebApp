@@ -49,9 +49,7 @@ public class DriverMapper {
                 .addMappings(m -> m.skip(Driver::setDriverState)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentOrder)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Driver::setUser)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Driver::setHoursThisMonth)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Driver::setStartWorkingTime)).setPostConverter(toEntityConverter());
+                .addMappings(m -> m.skip(Driver::setUser)).setPostConverter(toEntityConverter());
     }
 
     public Converter<DriverDto, Driver> toEntityConverter() {

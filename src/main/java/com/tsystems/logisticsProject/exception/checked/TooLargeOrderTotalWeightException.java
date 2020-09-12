@@ -1,4 +1,4 @@
-package com.tsystems.logisticsProject.exception;
+package com.tsystems.logisticsProject.exception.checked;
 
 public class TooLargeOrderTotalWeightException extends Exception {
 

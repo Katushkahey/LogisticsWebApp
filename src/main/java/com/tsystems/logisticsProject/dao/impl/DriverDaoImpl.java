@@ -25,13 +25,9 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
     }
 
     public Driver findByUser(User user) {
-        try {
-            return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.user=:user", Driver.class)
-                    .setParameter("user", user)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.user=:user", Driver.class)
+                .setParameter("user", user)
+                .getSingleResult();
     }
 
     public List<Driver> findAll() {
@@ -45,41 +41,27 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
                 .getResultList();
     }
 
-    public boolean checkEditedTelephoneNumber(String telephoneNumber, Long id) {
-        try {
-            sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE " +
-                    "d.telephoneNumber=:telephoneNumber AND d.id<>:id", Driver.class).
-                    setParameter("telephoneNumber", telephoneNumber)
-                    .setParameter("id", id)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return false;
-        }
-        return true;
-    }
+//    public boolean checkEditedTelephoneNumber(String telephoneNumber, Long id) {
+//        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE " +
+//                "d.telephoneNumber=:telephoneNumber AND d.id<>:id", Driver.class).
+//                setParameter("telephoneNumber", telephoneNumber)
+//                .setParameter("id", id)
+//                .getSingleResult();
+//    }
 
-    public boolean findByTelephoneNubmer(String telephoneNumber) {
-        try {
-            sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE " +
-                    "d.telephoneNumber=:telephoneNumber", Driver.class).
-                    setParameter("telephoneNumber", telephoneNumber)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return false;
-        }
-        return true;
+    public Driver findByTelephoneNubmer(String telephoneNumber) {
+        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE " +
+                "d.telephoneNumber=:telephoneNumber", Driver.class).
+                setParameter("telephoneNumber", telephoneNumber)
+                .getSingleResult();
     }
 
     public List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver) {
-        try {
-            return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.currentCity=:city" +
-                    " AND d.hoursThisMonth<=:hours and d.currentOrder is null", Driver.class)
-                    .setParameter("city", city)
-                    .setParameter("hours", maxSpentTimeForDriver)
-                    .getResultList();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE d.currentCity=:city" +
+                " AND d.hoursThisMonth<=:hours and d.currentOrder is null", Driver.class)
+                .setParameter("city", city)
+                .setParameter("hours", maxSpentTimeForDriver)
+                .getResultList();
     }
 
     public Long getAvailableDrivers(int hours) {

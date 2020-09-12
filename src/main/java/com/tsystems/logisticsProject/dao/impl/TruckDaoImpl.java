@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
@@ -28,24 +29,16 @@ public class TruckDaoImpl extends AbstractDao<Truck> implements TruckDao {
     }
 
     public Truck findByNumber(String number) {
-        try {
-            return sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t WHERE t.number=:number",
-                    Truck.class).setParameter("number", number).getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return sessionFactory.getCurrentSession().createQuery("SELECT t FROM Truck t WHERE t.number=:number",
+                Truck.class).setParameter("number", number).getSingleResult();
     }
 
     public List<Truck> findTrucksForOrder(double maxOneTimeWeight) {
-        try {
-            return sessionFactory.getCurrentSession()
-                    .createQuery("SELECT t FROM Truck t WHERE t.capacity>=:weight AND t.truckState=:state " +
-                            "AND t.id NOT IN (SELECT o.orderTruck FROM Order o where o.orderTruck is not null)",
-                            Truck.class).setParameter("weight", maxOneTimeWeight)
-                    .setParameter("state", TruckState.OK).getResultList();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return sessionFactory.getCurrentSession()
+                .createQuery("SELECT t FROM Truck t WHERE t.capacity>=:weight AND t.truckState=:state " +
+                        "AND t.id NOT IN (SELECT o.orderTruck FROM Order o where o.orderTruck is not null)",
+                        Truck.class).setParameter("weight", maxOneTimeWeight)
+                .setParameter("state", TruckState.OK).getResultList();
     }
 
     public Long getBrokenTrucks() {

@@ -91,10 +91,10 @@ public class OrderDriverMapper {
     }
 
     private void finishOrder(OrderDriverDto source, Order destination) {
-        List<DriverShortDto> listOfDriver = source.getDrivers();
-        for (DriverShortDto driverDto: listOfDriver) {
-            driverDto.setOrderNumber(null);
-            driverDao.update(driverShortMapper.toEntity(driverDto));
+        List<Driver> listOfDriver = driverDao.findAllDriversForCurrentOrder(orderDao.findByNumber(source.getNumber()));
+        for (Driver driver: listOfDriver) {
+            driver.setCurrentOrder(null);
+            driverDao.update(driver);
         }
         Truck truck = truckDao.findByNumber(source.getTruckNumber());
         truck.setOrder(null);

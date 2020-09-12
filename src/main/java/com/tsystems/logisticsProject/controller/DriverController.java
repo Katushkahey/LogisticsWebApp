@@ -63,13 +63,18 @@ public class DriverController {
         }
     }
 
-    @GetMapping("/edit_state/{id}")
-    public String editState(@PathVariable("id") Long id, @RequestParam("state") String  state) {
-        DriverDto driverDto = new DriverDto();
-        driverDto.setId(id);
-        driverDto.setDriverState(state);
-        driverService.update(driverDto);
-        return "redirect:/driver";
+    @PostMapping(value = "/edit_state", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String editState(HttpServletRequest request) {
+        try {
+            DriverDto driverDto = objectMapper.readValue(request.getInputStream(), DriverDto.class);
+            driverService.update(driverDto);
+            return "{\"success\":1}";
+        }
+        catch (Exception e) {
+            return "{\"error\":" + e.getMessage() + "}";
+        }
     }
 
     @GetMapping("/start_order/{id}")

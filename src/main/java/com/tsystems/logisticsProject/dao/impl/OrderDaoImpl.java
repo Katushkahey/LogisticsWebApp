@@ -57,12 +57,9 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     }
 
     public Order findByTruck(Truck truck) {
-        try {
-            return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.orderTruck=:truck",
-                    Order.class).setParameter("truck", truck).getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o WHERE o.orderTruck=:truck",
+                Order.class).setParameter("truck", truck).getSingleResult();
+
     }
 
     public List<Order> getTopOrders(int number) {

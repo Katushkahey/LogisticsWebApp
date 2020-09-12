@@ -63,9 +63,6 @@ public class AdminDriversController {
     public String editDriver(HttpServletRequest request) {
         try {
             DriverAdminDto driverAdminDto = objectMapper.readValue(request.getInputStream(), DriverAdminDto.class);
-            if (driverService.checkEditedTelephoneNumber(driverAdminDto.getTelephoneNumber(), driverAdminDto.getId())) {
-                return "{\"error \": водитель с таким номером телефона уже существует}";
-            }
             driverService.update(driverAdminDto);
             return "{\"success\":1}";
         } catch (Exception e) {

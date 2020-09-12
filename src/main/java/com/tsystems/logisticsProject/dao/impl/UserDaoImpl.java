@@ -19,13 +19,9 @@ public class UserDaoImpl extends AbstractDao<User> implements UserDao {
     }
 
     public User findByUsername(String username) {
-        try {
-            return sessionFactory.getCurrentSession().createQuery("SELECT u FROM User u WHERE u.username=:username", User.class)
-                    .setParameter("username", username)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        return sessionFactory.getCurrentSession().createQuery("SELECT u FROM User u WHERE u.username=:username", User.class)
+                .setParameter("username", username)
+                .getSingleResult();
     }
 
 }

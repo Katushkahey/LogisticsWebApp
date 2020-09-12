@@ -1,4 +1,6 @@
-package com.tsystems.logisticsProject.exception;
+package com.tsystems.logisticsProject.exception.checked;
+
+import com.tsystems.logisticsProject.exception.checked.LogisticsWebAppException;
 
 public class NotUniqueUserNameException extends LogisticsWebAppException {
 
