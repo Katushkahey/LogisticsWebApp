@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
@@ -8,24 +9,26 @@ import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
 import com.tsystems.logisticsProject.service.impl.RawOrderSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/create_order")
 public class RawOrderController {
 
+    private ObjectMapper objectMapper;
     private RawOrderSessionService rawOrderService;
     private TruckService truckService;
     private CityService cityService;
 
     @Autowired
     public void setDependencies(RawOrderSessionService rawOrderService, TruckService truckService,
-                                CityService cityService) {
+                                CityService cityService, ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
         this.rawOrderService = rawOrderService;
         this.truckService = truckService;
         this.cityService = cityService;
@@ -40,39 +43,30 @@ public class RawOrderController {
         return "order_create_page";
     }
 
-    @GetMapping("/add_loading_waypoint")
-    public String addLoadingWaypoint(@RequestParam("cargoName") String cargoName, @RequestParam("cityWeight")
-            Double cargoWeight, @RequestParam("cityName") String cityName) {
-        NewOrderWaypointDto waypointDto = new NewOrderWaypointDto();
-        waypointDto.setCargoName(cargoName);
-        waypointDto.setCargoWeight(cargoWeight);
-        waypointDto.setCityName(cityName);
-        waypointDto.setStatus(WaypointStatus.TODO.toString());
-        waypointDto.setAction(Action.LOADING.toString());
+    @PostMapping(value = "/add_loading_waypoint", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String addLoadingWaypoint(HttpServletRequest request) {
         try {
+            NewOrderWaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), NewOrderWaypointDto.class);
             rawOrderService.addLoadingWaypoint(waypointDto);
-        } catch (TooLargeOrderTotalWeightException e) {
-
+            return "{\"success\":1}";
+        } catch (Exception e) {
+            return "{\"error\":" + e.getMessage() + "}";
         }
-        return "redirect:/create_order";
     }
 
-
-    @GetMapping("/add_unloading_waypoint")
-    public String addUnloadingWaypoint(@RequestParam("cargoNumber") String cargoNumber,
-                                       @RequestParam("cargoName") String cargoName,
-                                       @RequestParam("cargoWeight") Double cargoWeight,
-                                       @RequestParam("cityName") String cityName) {
-
-        NewOrderWaypointDto waypointDto = new NewOrderWaypointDto();
-        waypointDto.setCargoNumber(cargoNumber);
-        waypointDto.setCargoName(cargoName);
-        waypointDto.setCargoWeight(cargoWeight);
-        waypointDto.setStatus(WaypointStatus.TODO.toString());
-        waypointDto.setAction(Action.UNLOADING.toString());
-        rawOrderService.addUnloadingWaypoint(waypointDto);
-
-        return "redirect:/create_order";
+    @PostMapping(value = "/add_unloading_waypoint", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String addUnloadingWaypoint(HttpServletRequest request) {
+        try {
+            NewOrderWaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), NewOrderWaypointDto.class);
+            rawOrderService.addUnloadingWaypoint(waypointDto);
+            return "{\"success\":1}";
+        } catch (Exception e) {  // autoCatch for TooLargeOrderTotalWeightException
+            return "{\"error\":" + e.getMessage() + "}";
+        }
     }
 
     @GetMapping("/edit_waypoint")

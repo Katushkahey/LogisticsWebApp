@@ -62,6 +62,7 @@ public class RawOrderSessionService {
             waypointDto.setId(listOfWaypoints.isEmpty() ? 1L : listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
             createNewCargo(waypointDto);
             totalWeight += waypointDto.getCargoWeight();
+            listOfWaypoints.add(waypointDto);
         }
     }
 

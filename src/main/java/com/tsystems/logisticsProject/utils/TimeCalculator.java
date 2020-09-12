@@ -32,6 +32,36 @@ public class TimeCalculator {
         this.distanceCalculator = distanceCalculator;
     }
 
+    public int calculateMaxSpentTimeForDriver(int optionalMaxDrivers, int hoursForOrderFromThisCity, int numberOfDrivers) {
+        int requiredNumberOfHoursPerPerson = calculateRequiredNumberOfHoursPerPerson(optionalMaxDrivers,
+                hoursForOrderFromThisCity, numberOfDrivers);
+        return Driver.MAX_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
+    }
+
+    public int calculateMaxSpentTimeForDriver(int requiredNumberOfHoursPerPerson) {
+        return Driver.MAX_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
+    }
+
+    private int calculateRequiredNumberOfHoursPerPerson(int optionalMaxDrivers, int hoursForOrderFromThisCity,
+                                                    int numberOfDrivers) {
+        int numberOfWorkingHoursInDayPerPerson = returnNormalNumberOfWorkingHoursInDayPerPerson(optionalMaxDrivers);
+        int numberOfTotalWorkingTimePerDay = numberOfWorkingHoursInDayPerPerson * numberOfDrivers;
+        int numberOfDayToCompleteOrder = (int) Math.ceil(hoursForOrderFromThisCity / numberOfWorkingHoursInDayPerPerson);
+        if (numberOfDayToCompleteOrder > fullDaysToEndMonth) {
+            return fullDaysToEndMonth * numberOfTotalWorkingTimePerDay;
+        } else {
+            return (int) Math.ceil(hoursForOrderFromThisCity / numberOfDrivers);
+        }
+    }
+
+    private int returnNormalNumberOfWorkingHoursInDayPerPerson(int optionalMaxDrivers) {
+        if (optionalMaxDrivers == 3) {
+            return 8;
+        } else {
+            return 12;
+        }
+    }
+
     public int calculateTotalHoursForOrderFromThisCity(int optionalMaxDriversForOrderFromThisCity, int hoursForOrderFromThisCity,
                                                        int numberOfDrivers) {
         int numberOfWorkingHoursInDayPerPerson;
@@ -44,10 +74,6 @@ public class TimeCalculator {
             numberOfWorkingHoursInDayPerPerson = 8;
             return hoursForOrderFromThisCity * NUMBER_OF_HOURS_IN_DAY / (numberOfWorkingHoursInDayPerPerson * numberOfDrivers);
         }
-    }
-
-    public int calculateMaxSpentTimeForDriverFromRequiredNumberOfHoursPerPerson(int requiredNumberOfHoursPerPerson) {
-        return Driver.MAX_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
     }
 
     public Map<City, Integer> calculateTimeForOrderFromEveryCity(Set<City> setOfCities, Long orderId) {

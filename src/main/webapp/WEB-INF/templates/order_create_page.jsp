@@ -72,18 +72,18 @@
 </br>
 <div>
     <span>
-        <a class="btn btn-success" data-toggle="modal" data-target="#create_loading_point"> Add LoadingPoint </a>
-        <div class="modal fade" id="create_loading_point" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_loading_waypoint"> Add LoadingPoint </button>
+        <div class="modal fade" id="add_loading_waypoint" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="createEditLabel"> Add Loading Point </h5>
+                        <h5 class="modal-title" id="title_add_loading_waypoint"> Add Loading Point </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/create_order/add_waypoint" method="get" class="formCreateWithValidation"
+                        <<form action="/create_order/add_loading_waypoint" method="post" class="formCreateWithValidation"
                               role="form">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="createNameInput"> CargoName </label>
@@ -100,7 +100,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="createCityInput">City</label>
                                 <div>
-                                    <select class="col-sm-6 field" name="cityName" id="createCityInput">
+                                    <select class="col-sm-6 city field" name="cityName" id="createCityInput">
                                         <option></option>
                                         <c:forEach var="city" items="${listOfCities}">
                                             <option value=${city.name}>${city.name}</option>
@@ -122,26 +122,26 @@
     <span>
     <c:choose>
         <c:when test="${order.cargoesToUnload.size() != 0}">
-            <a class="btn btn-success" data-toggle="modal" data-target="#create_waypoint"> Add Unloading Point </a>
-            <div class="modal fade" id="create_waypoint" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add_unloading_waypoint"> Add Unloading Point </button>
+            <div class="modal fade" id="add_unloading_waypoint" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="createWaypointEditLabel"> Add Unloading Point </h5>
+                            <h5 class="modal-title" id="title_add_unloading_waypoint"> Add Unloading Point </h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="/create_order/add_waypoint" method="get" class="formCreateWithValidation2"
+                            <form action="/create_order/add_unloading_waypoint" method="post" class="formCreateWithValidation2"
                                   role="form">
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" for="cargoInput">Cargo</label>
                                     <div>
-                                        <select class="col-sm-6 field" name="cargoId" id="cargoInput">
+                                       <select class="col-sm-6 id field" name="cargoId" id="cargoInput">
                                             <option></option>
                                             <c:forEach var="cargo" items="${order.cargoesToUnload}">
-                                                <option value=${cargo.id}>${cargo.name + ", " + cargo.weight}</option>
+                                                <option value=${cargo.id}>${cargo.name}, ${cargo.weight}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -149,7 +149,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" for="cityInput">City</label>
                                     <div>
-                                        <select class="col-sm-6 field" name="cityName" id="cityInput">
+                                        <select class="col-sm-6 city field" name="cityName" id="cityInput">
                                             <option></option>
                                             <c:forEach var="city" items="${listOfCities}">
                                                 <option value=${city.name}>${city.name}</option>
@@ -159,7 +159,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-10">
-                                        <button type="submit" class="Save3btn btn-default">Save</button>
+                                        <button type="submit" class="btn btn-success">Save</button>
                                     </div>
                                 </div>
                             </form>
@@ -260,13 +260,13 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editWaypointEditLabel"> Add Waypoint </h5>
+                        <h5 class="modal-title" id="title_edit_waypoint"> Edit Waypoint </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/create_order/edit_waypoint" method="get" class="formCreateWithValidation3"
+                        <form action="/create_order/edit_waypoint" method="post" class="formCreateWithValidation3"
                               role="form">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" visibility: hidden for="idEditInput">ID</label>
@@ -290,7 +290,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="cityEditInput">City</label>
                                 <div>
-                                    <select class="col-sm-6 field" name="cityName" id="cityEditInput">
+                                    <select class="col-sm-6 city field" name="cityName" id="cityEditInput">
                                         <c:forEach var="city" items="${listOfCities}">
                                             <option value=${city.name}>${city.name}</option>
                                         </c:forEach>
@@ -374,76 +374,100 @@
 </div>
 </body>
 <script>
-    $("#create_loading_point").on('show.bs.modal', function (e) {
+    $("#add_loading_waypoint").on('show.bs.modal', function (e) {
         $('#createNameInput').val(null)
         $('#createWeightInput').val(null);
         $('#createCityInput').val(null);
     });
-    $("#create_waypoint").on('hidden.bs.modal', function () {
+    $("#add_loading_waypoint").on('hidden.bs.modal', function () { // create_waypoint
         var form = $(this).find('form');
         form[0].reset();
     });
 
-    var form = document.querySelector('.formCreateWithValidation')
-    var fields = form.querySelectorAll('.field')
-    var weight = form.querySelector('.weight')
+    var form1 = document.querySelector('.formCreateWithValidation')
+    var fields1 = form1.querySelectorAll('.field')
+    var weight1 = form1.querySelector('.weight')
+    var name1 = form1.querySelector('.name')
+    var city1 = form1.querySelector('.city')
 
-    form.addEventListener("submit", function (event) {
+    form1.addEventListener("submit", function (event) {
         event.preventDefault()
 
-        var errors = form.querySelectorAll('.error')
+        var errors1 = form1.querySelectorAll('.error')
 
-        for (var i = 0; i < errors.length; i++) {
+        for (var i = 0; i < errors1.length; i++) {
             errors[i].remove()
         }
 
         var errors_counter = 0
-        for (var i = 0; i < fields.length; i++) {
-            if (!fields[i].value) {
+        for (var i = 0; i < fields1.length; i++) {
+            if (!fields1[i].value) {
                 errors_counter += 1
                 var error = document.createElement('div')
                 error.className = 'error'
                 error.style.color = 'red'
                 error.innerHTML = 'Can`t be empty'
-                form[i].parentElement.insertBefore(error, fields[i])
+                form1[i].parentElement.insertBefore(error, fields1[i])
             }
         }
 
-        if (weight.value > ${maxWeight} * 1000) {
+        if (weight1.value > ${maxWeight} * 1000) {
             errors_counter += 1
             var error2 = document.createElement('div')
             error2.className = 'error'
             error2.style.color = 'red'
-            error2.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'
-            weight.parentElement.insertBefore(error2, weight)
+            error2.innerHTML = 'This cargoWeight bigger than capacity of the biggest truck'
+            weight1.parentElement.insertBefore(error2, weight1)
         }
 
-        if (weight.value <= 0) {
+        if (weight1.value <= 0) {
             errors_counter += 1
             var error3 = document.createElement('div')
             error3.className = 'error'
             error3.style.color = 'red'
             error3.innerHTML = 'Can`t be < 0'
-            weight.parentElement.insertBefore(error3, weight)
+            weight1.parentElement.insertBefore(error3, weight1)
         }
 
         if (errors_counter < 1) {
-            form.submit()
+
+            $.ajax({
+                url: '/create_order/add_loading_waypoint',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    cargoName: name1.value,
+                    cargoWeight: weight1.value,
+                    cityName: city1.value,
+                    action: 'LOADING',
+                    status: 'TODO'
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert("error" + result.responseText);
+                }
+            });
+            // form.submit()
         }
     });
 </script>
 <script>
-    $("#create_waypoint").on('show.bs.modal', function (e) {
+    $("#add_unloading_waypoint").on('show.bs.modal', function (e) {
         $('#cargoInput').val(null);
         $('#cityInput').val(null);
     });
-    $("#create_waypoint").on('hidden.bs.modal', function () {
+    $("#add_unloading_waypoint").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
         form[0].reset();
     });
 
     var form2 = document.querySelector('.formCreateWithValidation2')
     var fields2 = form2.querySelectorAll('.field')
+    var id2 = form2.querySelector('.id')
+    var city2 = form2.querySelector('.city')
 
     form2.addEventListener("submit", function (event) {
         event.preventDefault()
@@ -451,7 +475,7 @@
         var errors2 = form2.querySelectorAll('.error')
 
         for (var i = 0; i < errors2.length; i++) {
-            errors[i].remove()
+            errors2[i].remove()
         }
 
         var errors_counter2 = 0
@@ -467,7 +491,25 @@
         }
 
         if (errors_counter2 < 1) {
-            form2.submit()
+            $.ajax({
+                url: '/create_order/add_unloading_waypoint',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    cargoNumber: id2.value,
+                    cityName: city2.value,
+                    action: 'UNLOADING',
+                    status: 'TODO'
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert("error" + result.responseText);
+                }
+            });
+            // form2.submit()
         }
     })
 </script>
