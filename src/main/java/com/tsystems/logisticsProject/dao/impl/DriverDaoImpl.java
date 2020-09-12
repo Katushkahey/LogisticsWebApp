@@ -2,12 +2,10 @@ package com.tsystems.logisticsProject.dao.impl;
 
 import com.tsystems.logisticsProject.dao.DriverDao;
 import com.tsystems.logisticsProject.entity.*;
-import com.tsystems.logisticsProject.entity.enums.TruckState;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 @Repository
@@ -16,7 +14,7 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public  void setSessionFactory(SessionFactory sessionFactory) {
+    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -41,14 +39,6 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
                 .getResultList();
     }
 
-//    public boolean checkEditedTelephoneNumber(String telephoneNumber, Long id) {
-//        return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE " +
-//                "d.telephoneNumber=:telephoneNumber AND d.id<>:id", Driver.class).
-//                setParameter("telephoneNumber", telephoneNumber)
-//                .setParameter("id", id)
-//                .getSingleResult();
-//    }
-
     public Driver findByTelephoneNubmer(String telephoneNumber) {
         return sessionFactory.getCurrentSession().createQuery("SELECT d FROM Driver d WHERE " +
                 "d.telephoneNumber=:telephoneNumber", Driver.class).
@@ -66,7 +56,7 @@ public class DriverDaoImpl extends AbstractDao<Driver> implements DriverDao {
 
     public Long getAvailableDrivers(int hours) {
         return sessionFactory.getCurrentSession().createQuery("SELECT COUNT(d) FROM Driver d WHERE d.currentOrder is NULL " +
-                "AND d.hoursThisMonth<:hours", Long .class)
+                "AND d.hoursThisMonth<:hours", Long.class)
                 .setParameter("hours", hours)
                 .getSingleResult();
     }

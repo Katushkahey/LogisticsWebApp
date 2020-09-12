@@ -4,8 +4,6 @@ import com.tsystems.logisticsProject.entity.enums.DriverState;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.YearMonth;
 
 @Data
 @Entity

@@ -9,7 +9,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 
 @Repository
@@ -18,7 +17,7 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public  void setSessionFactory(SessionFactory sessionFactory) {
+    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
@@ -63,7 +62,7 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
     }
 
     public List<Order> getTopOrders(int number) {
-        return  sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o order by o.id", Order.class)
+        return sessionFactory.getCurrentSession().createQuery("SELECT o FROM Order o order by o.id", Order.class)
                 .setMaxResults(number)
                 .getResultList();
     }
@@ -75,7 +74,7 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
                 Truck.class).setParameter("id", id).getSingleResult();
     }
 
-    public List<Cargo>  getListOfCargoesForOrder(Long orderId) {
+    public List<Cargo> getListOfCargoesForOrder(Long orderId) {
         return sessionFactory.getCurrentSession().createQuery("SELECT c FROM Cargo c WHERE c.order.id=:id",
                 Cargo.class).setParameter("id", orderId).getResultList();
     }

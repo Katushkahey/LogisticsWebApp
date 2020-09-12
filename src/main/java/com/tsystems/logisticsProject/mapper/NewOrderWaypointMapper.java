@@ -2,7 +2,6 @@ package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
-import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;

@@ -122,7 +122,7 @@
     <span>
     <c:choose>
         <c:when test="${order.cargoesToUnload.size() != 0}">
-            <a class="btn btn-success" data-toggle="modal" data-target="#create_waypoint"> Add LoadingPoint </a>
+            <a class="btn btn-success" data-toggle="modal" data-target="#create_waypoint"> Add Unloading Point </a>
             <div class="modal fade" id="create_waypoint" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">

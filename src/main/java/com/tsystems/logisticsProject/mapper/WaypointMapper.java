@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.mapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dao.CargoDao;
 import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.dto.WaypointDto;
@@ -50,6 +51,7 @@ public class WaypointMapper {
                 .addMappings(m -> m.skip(Waypoint::setCargo)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Waypoint::setCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Waypoint::setAction)).setPostConverter(toEntityConverter())
+                .addMappings(m -> m.skip(Waypoint::setStatus)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Waypoint::setStatus)).setPostConverter(toEntityConverter());
     }
 
@@ -73,7 +75,7 @@ public class WaypointMapper {
                 ? null : WaypointStatus.valueOf(source.getStatus()));
     }
 
-    private Cargo updateCargo(String cargoNumber, Double cargoWeight, String cargoName ) {
+    private Cargo updateCargo(String cargoNumber, Double cargoWeight, String cargoName) {
         Cargo cargo = cargoDao.findByNumber(cargoNumber);
         cargo.setWeight(cargoWeight);
         cargo.setName(cargoName);

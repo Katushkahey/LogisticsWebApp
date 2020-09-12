@@ -5,7 +5,6 @@ import com.tsystems.logisticsProject.dto.*;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.exception.checked.NotUniqueDriverTelephoneNumberException;
-import com.tsystems.logisticsProject.exception.checked.NotUniqueTruckNumberException;
 import com.tsystems.logisticsProject.exception.checked.NotUniqueUserNameException;
 import com.tsystems.logisticsProject.mapper.*;
 import com.tsystems.logisticsProject.service.*;
@@ -41,7 +40,7 @@ public class DriverServiceImpl implements DriverService {
     @Scheduled(cron = "0 0 0 1 * ?")
     public void ScheduledTasks() {
         List<Driver> listOfAllDrivers = driverDao.findAll();
-        for(Driver driver: listOfAllDrivers) {
+        for (Driver driver : listOfAllDrivers) {
             driver.setHoursThisMonth(0);
             driverDao.update(driver);
             applicationEventPublisher.publishEvent(new UpdateEvent());
@@ -52,7 +51,7 @@ public class DriverServiceImpl implements DriverService {
     public List<DriverAdminDto> getListOfDrivers() {
         List<DriverAdminDto> driversDto = new ArrayList<>();
         List<Driver> listOfDrivers = driverDao.findAll();
-        for (Driver driver: listOfDrivers) {
+        for (Driver driver : listOfDrivers) {
             driversDto.add(driverAdminMapper.toDto(driver));
         }
         return driversDto;
@@ -78,7 +77,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Transactional
     public void add(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException, NotUniqueUserNameException {
-        try{
+        try {
             driverDao.findByTelephoneNubmer(driverAdminDto.getTelephoneNumber());
             throw new NotUniqueDriverTelephoneNumberException(driverAdminDto.getTelephoneNumber());
         } catch (NoResultException e) {
@@ -129,5 +128,4 @@ public class DriverServiceImpl implements DriverService {
         mapOfDrivers.put("WorkedEnough", driverDao.getDriversWorkedEnough(Driver.MAX_HOURS_IN_MONTH));
         return mapOfDrivers;
     }
-
 }

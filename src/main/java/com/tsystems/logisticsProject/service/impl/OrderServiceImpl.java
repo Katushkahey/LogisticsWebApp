@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     public void setDependencies(OrderDao orderDao, WaypointService waypointService, OrderClientMapper orderClientMapper,
-                                ApplicationEventPublisher applicationEventPublisher,OrderAdminMapper orderAdminMApper,
+                                ApplicationEventPublisher applicationEventPublisher, OrderAdminMapper orderAdminMApper,
                                 OrderDriverMapper orderDriverMapper) {
         this.applicationEventPublisher = applicationEventPublisher;
         this.orderClientMapper = orderClientMapper;
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public void update (OrderDriverDto orderDriverDto) {
+    public void update(OrderDriverDto orderDriverDto) {
         update(orderDriverMapper.toEntity(orderDriverDto));
     }
 

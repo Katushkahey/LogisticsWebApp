@@ -31,7 +31,7 @@ public class TruckMapper {
         this.truckDao = truckDao;
     }
 
-    public Truck toEntity(TruckDto dto)  {
+    public Truck toEntity(TruckDto dto) {
         return Objects.isNull(dto) ? null : modelMapper.map(dto, Truck.class);
     }
 
@@ -60,7 +60,7 @@ public class TruckMapper {
         };
     }
 
-    public void mapSpecificFieldsForEntity(TruckDto source, Truck destination)  {
+    public void mapSpecificFieldsForEntity(TruckDto source, Truck destination) {
         destination.setTruckState(Objects.isNull(source) || Objects.isNull(source.getState()) ? null :
                 TruckState.valueOf(source.getState()));
         destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getCityName()) ? null :
@@ -94,6 +94,5 @@ public class TruckMapper {
         destination.setCityName(Objects.isNull(source) || Objects.isNull(source.getCurrentCity()) ? null :
                 source.getCurrentCity().getName());
     }
-
 
 }

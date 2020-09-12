@@ -59,16 +59,16 @@ public class DriverShortMapper {
     }
 
     public void mapSpecificFieldsForEntity(DriverShortDto source, Driver destination) {
-       if (source != null && source.getId() != null) {
-           Driver driver = driverDao.findById(source.getId());
-           destination.setTelephoneNumber(driver.getTelephoneNumber());
-           destination.setCurrentCity(driver.getCurrentCity());
-           destination.setUser(driver.getUser());
-           destination.setStartWorkingTime(driver.getStartWorkingTime());
-       }
-       destination.setDriverState(Objects.isNull(source) || Objects.isNull(source.getState()) ? null :
-               DriverState.valueOf(source.getState()));
-       destination.setCurrentOrder(Objects.isNull(source) || Objects.isNull(source.getOrderNumber()) ? null :
+        if (source != null && source.getId() != null) {
+            Driver driver = driverDao.findById(source.getId());
+            destination.setTelephoneNumber(driver.getTelephoneNumber());
+            destination.setCurrentCity(driver.getCurrentCity());
+            destination.setUser(driver.getUser());
+            destination.setStartWorkingTime(driver.getStartWorkingTime());
+        }
+        destination.setDriverState(Objects.isNull(source) || Objects.isNull(source.getState()) ? null :
+                DriverState.valueOf(source.getState()));
+        destination.setCurrentOrder(Objects.isNull(source) || Objects.isNull(source.getOrderNumber()) ? null :
                 orderDao.findByNumber(source.getOrderNumber()));
     }
 
@@ -87,5 +87,4 @@ public class DriverShortMapper {
         destination.setOrderNumber(Objects.isNull(source) || Objects.isNull(source.getCurrentOrder()) ||
                 Objects.isNull(source.getCurrentOrder().getNumber()) ? null : source.getCurrentOrder().getNumber());
     }
-
 }

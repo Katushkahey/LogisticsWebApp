@@ -28,7 +28,7 @@ public class WaypointServiceImpl implements WaypointService {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public void setDependencies(WaypointDao waypointDao,OrderService orderService, CargoService cargoService,
+    public void setDependencies(WaypointDao waypointDao, OrderService orderService, CargoService cargoService,
                                 ApplicationEventPublisher applicationEventPublisher, OrderDao orderDao,
                                 WaypointMapper waypointMapper) {
         this.waypointDao = waypointDao;

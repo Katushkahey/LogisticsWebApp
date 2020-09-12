@@ -1,6 +1,6 @@
 package com.tsystems.logisticsProject.exception.checked;
 
-public abstract class LogisticsWebAppException extends Exception  {
+public abstract class LogisticsWebAppException extends Exception {
 
     public LogisticsWebAppException(String message) {
         super(message);

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dto.DriverDto;
 import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
-import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
-import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.WaypointService;
@@ -42,7 +40,7 @@ public class DriverController {
         DriverDto driverDto = driverService.getDriverByPrincipalName(principal.getName());
         model.addAttribute("driverState", DriverState.values());
         model.addAttribute("driver", driverDto);
-        if (driverDto.getOrderNumber()!= null) {
+        if (driverDto.getOrderNumber() != null) {
             model.addAttribute("order", orderService.findByNumber(driverDto.getOrderNumber()));
         }
 
@@ -50,15 +48,15 @@ public class DriverController {
     }
 
     @PostMapping(value = "/edit_telephoneNumber", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, headers = "Accept=*/*"
-            , produces = MediaType.APPLICATION_JSON_VALUE) @ResponseBody
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public String editTelephone(HttpServletRequest request) {
         try {
             DriverDto driverDto = objectMapper.readValue(request.getInputStream(), DriverDto.class);
             driverService.update(driverDto);
 
             return "{\"success\":1}";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return e.toString();
         }
     }
@@ -71,19 +69,22 @@ public class DriverController {
             DriverDto driverDto = objectMapper.readValue(request.getInputStream(), DriverDto.class);
             driverService.update(driverDto);
             return "{\"success\":1}";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "{\"error\":" + e.getMessage() + "}";
         }
     }
 
-    @GetMapping("/start_order/{id}")
-    public String startOrder(@PathVariable("id") Long id) {
-        OrderDriverDto orderDriverDto = new OrderDriverDto();
-        orderDriverDto.setId(id);
-        orderDriverDto.setStatus(OrderStatus.IN_PROGRESS.toString());
-        orderService.update(orderDriverDto);
-        return "redirect:/driver";
+    @PostMapping(value = "/change_order_status", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String start_order(HttpServletRequest request) {
+        try {
+            OrderDriverDto orderDriverDto = objectMapper.readValue(request.getInputStream(), OrderDriverDto.class);
+            orderService.update(orderDriverDto);
+            return "{\"success\":1}";
+        } catch (Exception e) {
+            return "{\"error\":" + e.getMessage() + "}";
+        }
     }
 
     @GetMapping("/complete_waypoint/{id}")
@@ -91,14 +92,6 @@ public class DriverController {
         WaypointDto waypointDto = new WaypointDto();
         waypointDto.setId(id);
         waypointService.update(waypointDto);
-        return "redirect:/driver";
-    }
-
-    @GetMapping("/finish_order/{id}")
-    public String finishOrder(@PathVariable("id") Long id) {
-        OrderDriverDto orderDto = new OrderDriverDto();
-        orderDto.setId(id);
-        orderService.update(orderDto);
         return "redirect:/driver";
     }
 }

@@ -12,7 +12,7 @@ public class RoleDaoImpl extends AbstractDao<Role> implements RoleDao {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public  void setSessionFactory(SessionFactory sessionFactory) {
+    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

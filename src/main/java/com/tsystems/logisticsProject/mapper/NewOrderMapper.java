@@ -3,7 +3,6 @@ package com.tsystems.logisticsProject.mapper;
 import com.tsystems.logisticsProject.dto.CargoDto;
 import com.tsystems.logisticsProject.dto.NewOrderDto;
 import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
-import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Waypoint;

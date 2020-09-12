@@ -2,7 +2,6 @@ package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.dao.DriverDao;
-import com.tsystems.logisticsProject.dao.RoleDao;
 import com.tsystems.logisticsProject.dao.UserDao;
 import com.tsystems.logisticsProject.dto.DriverAdminDto;
 import com.tsystems.logisticsProject.entity.Driver;
@@ -22,16 +21,13 @@ public class DriverAdminMapper {
     private DriverDao driverDao;
     private CityDao cityDao;
     private UserDao userDao;
-    private RoleDao roleDao;
 
     @Autowired
-    public void setDependencies(ModelMapper modelMapper, DriverDao driverDao, CityDao cityDao, UserDao userDao,
-                                RoleDao roleDao) {
+    public void setDependencies(ModelMapper modelMapper, DriverDao driverDao, CityDao cityDao, UserDao userDao) {
         this.modelMapper = modelMapper;
         this.driverDao = driverDao;
         this.cityDao = cityDao;
         this.userDao = userDao;
-        this.roleDao = roleDao;
     }
 
     public Driver toEntity(DriverAdminDto dto) {

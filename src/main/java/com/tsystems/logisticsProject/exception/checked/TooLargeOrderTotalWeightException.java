@@ -2,7 +2,8 @@ package com.tsystems.logisticsProject.exception.checked;
 
 public class TooLargeOrderTotalWeightException extends Exception {
 
-    public TooLargeOrderTotalWeightException(String message) {
-        super("Total weight of this order bigger than capacity of the biges`t truck. No one truck could complete this order");
+    public TooLargeOrderTotalWeightException(Double weight, double capacity) {
+        super(String.format("Total weight of this order is %s. Capacity of the biggest truck is %d " +
+                "No one truck could complete this order", weight, capacity));
     }
 }

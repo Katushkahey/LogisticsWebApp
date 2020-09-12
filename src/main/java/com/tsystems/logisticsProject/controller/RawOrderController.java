@@ -1,10 +1,9 @@
 package com.tsystems.logisticsProject.controller;
 
 import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
-import com.tsystems.logisticsProject.dto.WaypointDto;
-import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
+import com.tsystems.logisticsProject.exception.checked.TooLargeOrderTotalWeightException;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
 import com.tsystems.logisticsProject.service.impl.RawOrderSessionService;
@@ -50,7 +49,11 @@ public class RawOrderController {
         waypointDto.setCityName(cityName);
         waypointDto.setStatus(WaypointStatus.TODO.toString());
         waypointDto.setAction(Action.LOADING.toString());
-        rawOrderService.addLoadingWaypoint(waypointDto);
+        try {
+            rawOrderService.addLoadingWaypoint(waypointDto);
+        } catch (TooLargeOrderTotalWeightException e) {
+
+        }
         return "redirect:/create_order";
     }
 
@@ -75,7 +78,11 @@ public class RawOrderController {
     @GetMapping("/edit_waypoint")
     public String editWaypoint(@RequestParam("id") Long id, @RequestParam("cityName") String cityName) {
         NewOrderWaypointDto waypointDto = new NewOrderWaypointDto();
-        rawOrderService.editWaypoint(waypointDto);
+        try {
+            rawOrderService.editWaypoint(waypointDto);
+        } catch (TooLargeOrderTotalWeightException e) {
+
+        }
         return "redirect:/create_order";
     }
 
@@ -96,5 +103,4 @@ public class RawOrderController {
         rawOrderService.clearAll();
         return "redirect:/order/info";
     }
-
 }

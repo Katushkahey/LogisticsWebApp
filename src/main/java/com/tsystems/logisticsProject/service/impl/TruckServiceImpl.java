@@ -5,7 +5,6 @@ import com.tsystems.logisticsProject.dto.TruckDto;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.exception.checked.NotUniqueTruckNumberException;
-import com.tsystems.logisticsProject.exception.unchecked.EntityNotFoundException;
 import com.tsystems.logisticsProject.mapper.TruckMapper;
 import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +47,7 @@ public class TruckServiceImpl implements TruckService {
 
     @Transactional
     public boolean findByNumber(String number) {
-        if(truckDao.findByNumber(number) == null) {
+        if (truckDao.findByNumber(number) == null) {
             return false;
         } else {
             return true;
@@ -63,10 +62,10 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public void checkEditedNumber(String number) throws NotUniqueTruckNumberException  {
+    public void checkEditedNumber(String number) throws NotUniqueTruckNumberException {
         try {
             truckDao.findByNumber(number);
-        }catch (NoResultException e){
+        } catch (NoResultException e) {
             throw new NotUniqueTruckNumberException(number);
         }
     }

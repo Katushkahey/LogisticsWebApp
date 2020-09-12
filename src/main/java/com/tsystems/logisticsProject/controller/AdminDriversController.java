@@ -2,11 +2,8 @@ package com.tsystems.logisticsProject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dto.DriverAdminDto;
-import com.tsystems.logisticsProject.dto.DriverDto;
-import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.DriverService;
-import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;

@@ -8,7 +8,6 @@ import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.Waypoint;
-import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -34,7 +33,7 @@ public class OrderDriverMapper {
 
     @Autowired
     public void setDependencies(ModelMapper modelMapper, WaypointMapper waypointMapper, OrderDao orderDao,
-                               WaypointDao waypointDao, TruckDao truckDao, DriverShortMapper driverShortMapper,
+                                WaypointDao waypointDao, TruckDao truckDao, DriverShortMapper driverShortMapper,
                                 DriverDao driverDao) {
         this.modelMapper = modelMapper;
         this.waypointMapper = waypointMapper;
@@ -92,7 +91,7 @@ public class OrderDriverMapper {
 
     private void finishOrder(OrderDriverDto source, Order destination) {
         List<Driver> listOfDriver = driverDao.findAllDriversForCurrentOrder(orderDao.findByNumber(source.getNumber()));
-        for (Driver driver: listOfDriver) {
+        for (Driver driver : listOfDriver) {
             driver.setCurrentOrder(null);
             driverDao.update(driver);
         }
@@ -127,20 +126,19 @@ public class OrderDriverMapper {
     private List<WaypointDto> getListOfWaypointsDto(Long orderId) {
         List<WaypointDto> waypointsDto = new ArrayList<>();
         List<Waypoint> waypoints = waypointDao.getListOfWaypointsByOrderId(orderId);
-        for (Waypoint waypoint: waypoints) {
+        for (Waypoint waypoint : waypoints) {
             waypointsDto.add(waypointMapper.toDto(waypoint));
         }
-        return  waypointsDto;
+        return waypointsDto;
     }
 
     private List<DriverShortDto> getListOfDriverShortDtoForOrder(Order order) {
         List<DriverShortDto> drivers = new ArrayList<>();
         List<Driver> listOfDrivers = driverDao.findAllDriversForCurrentOrder(order);
-        for (Driver driver: listOfDrivers) {
+        for (Driver driver : listOfDrivers) {
             drivers.add(driverShortMapper.toDto(driver));
         }
         return drivers;
     }
 
 }
-

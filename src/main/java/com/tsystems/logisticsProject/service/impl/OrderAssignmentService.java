@@ -26,6 +26,7 @@ public class OrderAssignmentService {
     private final int AVERAGE_VELOCITY = 60;
     private final int TIME_OF_ORDER_FOR_ONE_DRIVER_MAX = 12;
     private final int TIME_OF_ORDER_FOR_TWO_DRIVERS_MAX = 48;
+    private final int EARTH_RADIUS_IN_KILOMETRES = 6373;
     private static int fullDaysToEndMonth;
     private static int hoursToEndMonth;
     private List<CombinationForOrderDto> listOfCombinationForOrderDto;
@@ -448,7 +449,6 @@ public class OrderAssignmentService {
     }
 
     private double getDist(double lat1, double lon1, double lat2, double lon2) {
-        int R = 6373; // radius of the earth in kilometres
         double lat1rad = Math.toRadians(lat1);
         double lat2rad = Math.toRadians(lat2);
         double deltaLat = Math.toRadians(lat2 - lat1);
@@ -459,11 +459,10 @@ public class OrderAssignmentService {
                         Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return R * c;
+        return EARTH_RADIUS_IN_KILOMETRES * c;
     }
 
     public CombinationForOrderDto getCombinationForOrderByIndex(int index) {
         return listOfCombinationForOrderDto.get(index);
     }
-
 }

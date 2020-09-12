@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
-public class UpdateEventListener  {
+public class UpdateEventListener {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(UpdateEventListener.class);
+    //    private static final Logger LOGGER = LoggerFactory.getLogger(UpdateEventListener.class);
     private final MessageSender messageSender;
 
     @Autowired

@@ -3,10 +3,8 @@ package com.tsystems.logisticsProject.controller;
 import com.tsystems.logisticsProject.dto.CombinationForOrderDto;
 import com.tsystems.logisticsProject.dto.OrderAdminDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
-import com.tsystems.logisticsProject.mapper.OrderAdminMapper;
 import com.tsystems.logisticsProject.service.*;
 import com.tsystems.logisticsProject.service.impl.OrderAssignmentService;
-import com.tsystems.logisticsProject.entity.CombinationForOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +27,7 @@ public class AdminOrdersController {
         this.orderService = orderService;
         this.cityService = cityService;
         this.waypointService = waypointService;
-        this. truckService = truckService;
+        this.truckService = truckService;
         this.orderAssignmentService = orderAssignmentService;
     }
 

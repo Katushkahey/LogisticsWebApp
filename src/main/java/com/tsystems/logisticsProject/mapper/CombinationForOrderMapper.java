@@ -88,7 +88,7 @@ public class CombinationForOrderMapper {
 
     private List<DriverShortDto> getDriversForCombinationDto(List<Driver> drivers) {
         List<DriverShortDto> driversDto = new ArrayList<>();
-        for (Driver driver: drivers) {
+        for (Driver driver : drivers) {
             driversDto.add(driverShortMapper.toDto(driver));
         }
         return driversDto;
@@ -101,5 +101,4 @@ public class CombinationForOrderMapper {
         }
         return listOfDrivers;
     }
-
 }

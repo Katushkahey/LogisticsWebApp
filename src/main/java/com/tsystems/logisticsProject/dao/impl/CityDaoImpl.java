@@ -9,12 +9,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class CityDaoImpl extends AbstractDao<City>  implements CityDao {
+public class CityDaoImpl extends AbstractDao<City> implements CityDao {
 
     private SessionFactory sessionFactory;
 
     @Autowired
-    public  void setSessionFactory(SessionFactory sessionFactory) {
+    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

@@ -7,7 +7,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class WaypointDaoImpl extends AbstractDao<Waypoint> implements WaypointDa
     private SessionFactory sessionFactory;
 
     @Autowired
-    public  void setSessionFactory(SessionFactory sessionFactory) {
+    public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

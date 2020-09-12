@@ -133,8 +133,8 @@ public class DriverMapper {
         List<String> partners = new ArrayList<>();
         List<Driver> drivers = driverDao.findAllDriversForCurrentOrder(order);
         if (drivers != null) {
-            for (Driver driver: drivers) {
-                if(driver.getId() != id) {
+            for (Driver driver : drivers) {
+                if (driver.getId() != id) {
                     String driverDto = driver.getName() + " " + driver.getSurname() + ", " + driver.getTelephoneNumber();
                     partners.add(driverDto);
                 }
@@ -144,5 +144,4 @@ public class DriverMapper {
             return null;
         }
     }
-
 }
