@@ -72,7 +72,7 @@ public class AdminOrdersController {
     @GetMapping("/assign_order/{id}")
     public String assignOrder(@PathVariable("id") Long id, Model model) {
         model.addAttribute("order", orderService.findById(id));
-        model.addAttribute("listOfCombinations", orderAssignmentService.createListOfCombinationsForOrder(id));
+//        model.addAttribute("listOfCombinations", orderAssignmentService.createListOfCombinationsForOrder(id));
         return "assign_order_page";
     }
 

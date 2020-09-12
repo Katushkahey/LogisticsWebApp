@@ -83,7 +83,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <<form action="/create_order/add_loading_waypoint" method="post" class="formCreateWithValidation"
+                        <form action="/create_order/add_loading_waypoint" method="post" class="formCreateWithValidation"
                               role="form">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="createNameInput"> CargoName </label>
@@ -138,10 +138,10 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label" for="cargoInput">Cargo</label>
                                     <div>
-                                       <select class="col-sm-6 id field" name="cargoId" id="cargoInput">
+                                       <select class="col-sm-6 number field" name="cargoNumber" id="cargoInput">
                                             <option></option>
                                             <c:forEach var="cargo" items="${order.cargoesToUnload}">
-                                                <option value=${cargo.id}>${cargo.name}, ${cargo.weight}</option>
+                                                <option value=${cargo.number}>${cargo.name}, ${cargo.weight}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -232,7 +232,7 @@
                                                                       method="get" class="formWithValidation10"
                                                                       role="form">
                                                                     Are you sure, that you want to delete this waypoint? If this cargo has waypoint for UNLOADING
-                                                                    if also will be deleted. You can use button 'Edit' to edit waypoint.
+                                                                    it also will be deleted. You can use button 'Edit' to edit waypoint.
                                                                     <div class="modal-footer">
                                                                         <button type="button"
                                                                                 class="btn btn-secondary"
@@ -466,7 +466,7 @@
 
     var form2 = document.querySelector('.formCreateWithValidation2')
     var fields2 = form2.querySelectorAll('.field')
-    var id2 = form2.querySelector('.id')
+    var number2 = form2.querySelector('.number')
     var city2 = form2.querySelector('.city')
 
     form2.addEventListener("submit", function (event) {
@@ -497,7 +497,7 @@
                 type: "POST",
                 dataType: 'JSON',
                 data: JSON.stringify({
-                    cargoNumber: id2.value,
+                    cargoNumber: number2.value,
                     cityName: city2.value,
                     action: 'UNLOADING',
                     status: 'TODO'
@@ -521,10 +521,12 @@
         var name = $(cols[1]).text();
         var weight = $(cols[2]).text();
         var city = $(cols[3]).text();
+        // var action = $(cols[4]).text();
         $('#idEditInput').val(id);
         $('#editNameInput').val(name);
         $('#editWeightInput').val(weight);
         $('#cityEditInput').val(city);
+        // $('#actionE').val(action);
     });
     $("#edit_waypoint").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
@@ -533,16 +535,17 @@
 
     var form3 = document.querySelector('.formCreateWithValidation3')
     var fields3 = form3.querySelectorAll('.field')
+    var id3 = form3.querySelector('.id')
     var weight3 = form3.querySelector('.weight')
+    var name3 = form3.querySelector('.name')
+    var city3 = form3.querySelector('.city')
 
     form3.addEventListener("submit", function (event) {
         event.preventDefault()
 
         var errors3 = form3.querySelectorAll('.error')
 
-
-
-        for (var i = 0; i < errors.length; i++) {
+        for (var i = 0; i < errors3.length; i++) {
             errors3[i].remove()
         }
 
@@ -577,46 +580,35 @@
         }
 
         if (errors_counter3 < 1) {
-            form3.submit()
+            $.ajax({
+                url: '/create_order/edit_waypoint',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    id: id3.value,
+                    cargoWeight: weight3.value,
+                    cargoName: name3.value,
+                    cityName: city3.value
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert("error" + result.responseText);
+                }
+            });
+            // form3.submit()
         }
     })
 </script>
-<%--<script>--%>
-    <%--$("#save_order").on('show.bs.modal', function (e) {--%>
+<script>
+    $("#save_order").on('show.bs.modal', function (e) {
 
-    <%--});--%>
-    <%--$("#save_order").on('hidden.bs.modal', function () {--%>
-        <%--var form = $(this).find('form');--%>
-        <%--form[0].reset();--%>
-    <%--});--%>
-
-    <%--var form40 = document.querySelector('.formWithValidation40')--%>
-    <%--var fields40 = form40.querySelectorAll('.field')--%>
-
-    <%--form40.addEventListener("submit", function (event) {--%>
-        <%--event.preventDefault()--%>
-
-        <%--var errors = form40.querySelectorAll('.error')--%>
-
-        <%--for (var i = 0; i < errors.length; i++) {--%>
-            <%--errors[i].remove()--%>
-        <%--}--%>
-
-        <%--var errors_counter40 = 0--%>
-        <%--for (var i = 0; i < fields40.length; i++) {--%>
-            <%--if (!fields40[i].value) {--%>
-                <%--errors_counter40 += 1--%>
-                <%--var error = document.createElement('div')--%>
-                <%--error.className = 'error'--%>
-                <%--error.style.color = 'red'--%>
-                <%--error.innerHTML = 'Can`t be empty'--%>
-                <%--form40[i].parentElement.insertBefore(error, fields40[i])--%>
-            <%--}--%>
-        <%--}--%>
-
-        <%--if (errors_counter40 < 1) {--%>
-            <%--form40.submit()--%>
-        <%--}--%>
-    <%--})--%>
-<%--</script>--%>
+    });
+    $("#save_order").on('hidden.bs.modal', function () {
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+</script>
 </html>

@@ -100,7 +100,7 @@ public class TruckServiceImpl implements TruckService {
                 maxCapacity = capacity;
             }
         }
-        return maxCapacity;
+        return maxCapacity * 1000;
     }
 
     @Transactional

@@ -69,7 +69,9 @@ public class RawOrderSessionService {
     private void createNewCargo(NewOrderWaypointDto waypointDto) {
         CargoDto cargoDto = new CargoDto();
         cargoDto.setName(waypointDto.getCargoName());
-        cargoDto.setNumber(UUID.randomUUID().toString());
+        String cargoNumber = UUID.randomUUID().toString();
+        cargoDto.setNumber(cargoNumber);
+        waypointDto.setCargoNumber(cargoNumber);
         cargoDto.setWeight(waypointDto.getCargoWeight());
         cargoDto.setId(listOfAllCargoes.isEmpty() ? 1L : listOfAllCargoes.get(listOfAllCargoes.size() - 1).getId() + 1);
         listOfAllCargoes.add(cargoDto);
@@ -78,13 +80,16 @@ public class RawOrderSessionService {
 
     public void addUnloadingWaypoint(NewOrderWaypointDto waypointDto) {
         waypointDto.setId(listOfWaypoints.get(listOfAllCargoes.size() - 1).getId() + 1);
-        listOfWaypoints.add(waypointDto);
+
         for (CargoDto cargoDto : listOfCargoesToUnload) {
             if (cargoDto.getNumber().equals(waypointDto.getCargoNumber())) {
+                waypointDto.setCargoName(cargoDto.getName());
+                waypointDto.setCargoWeight(cargoDto.getWeight());
                 listOfCargoesToUnload.remove(cargoDto);
                 break;
             }
         }
+        listOfWaypoints.add(waypointDto);
         totalWeight -= waypointDto.getCargoWeight();
     }
 
@@ -116,13 +121,15 @@ public class RawOrderSessionService {
         }
     }
 
-    public void deleteWaypointById(Long id) {
+    public void deleteWaypointById(Long id) throws TooLargeOrderTotalWeightException {
         for (NewOrderWaypointDto waypointDto : listOfWaypoints) {
             if (waypointDto.getId() == id) {
                 if (waypointDto.getAction().equals(Action.LOADING.toString())) {
                     deleteLoadingWaypoint(waypointDto);
+                    break;
                 } else {
                     deleteUnLoadingWaypoint(waypointDto);
+                    break;
                 }
             }
         }
@@ -152,10 +159,10 @@ public class RawOrderSessionService {
         }
     }
 
-    private void deleteUnLoadingWaypoint(NewOrderWaypointDto waypointDto) {
+    private void deleteUnLoadingWaypoint(NewOrderWaypointDto waypointDto) throws TooLargeOrderTotalWeightException {
         listOfWaypoints.remove(waypointDto);
         if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
-            throw new NullPointerException();
+            throw new TooLargeOrderTotalWeightException(waypointDto.getCargoWeight(), truckService.getMaxCapacity());
         } else {
             totalWeight += waypointDto.getCargoWeight();
             addCargoToListForUnloadingAfterDeletingUnloadingPoint(waypointDto.getCargoNumber());
@@ -178,5 +185,6 @@ public class RawOrderSessionService {
         listOfCargoesToUnload.clear();
         listOfWaypoints.clear();
         listOfAllCargoes.clear();
+        totalWeight = 0.0;
     }
 }

@@ -64,25 +64,31 @@ public class RawOrderController {
             NewOrderWaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), NewOrderWaypointDto.class);
             rawOrderService.addUnloadingWaypoint(waypointDto);
             return "{\"success\":1}";
-        } catch (Exception e) {  // autoCatch for TooLargeOrderTotalWeightException
+        } catch (Exception e) {
             return "{\"error\":" + e.getMessage() + "}";
         }
     }
 
-    @GetMapping("/edit_waypoint")
-    public String editWaypoint(@RequestParam("id") Long id, @RequestParam("cityName") String cityName) {
-        NewOrderWaypointDto waypointDto = new NewOrderWaypointDto();
+    @PostMapping(value = "/edit_waypoint", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String editWaypoint(HttpServletRequest request) {
         try {
+            NewOrderWaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), NewOrderWaypointDto.class);
             rawOrderService.editWaypoint(waypointDto);
-        } catch (TooLargeOrderTotalWeightException e) {
-
+            return "{\"success\":1}";
+        } catch (Exception e) {
+            return "{\"error\":" + e.getMessage() + "}";
         }
-        return "redirect:/create_order";
     }
 
     @GetMapping("delete_waypoint/{id}")
     public String deleteWaypoint(@PathVariable("id") Long id) {
-        rawOrderService.deleteWaypointById(id);
+        try {
+            rawOrderService.deleteWaypointById(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return "redirect:/create_order";
     }
 
