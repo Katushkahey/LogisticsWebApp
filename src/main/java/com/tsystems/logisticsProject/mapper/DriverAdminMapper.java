@@ -8,6 +8,7 @@ import com.tsystems.logisticsProject.dto.DriverAdminDto;
 import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.User;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
+import com.tsystems.logisticsProject.exception.NotUniqueUserNameException;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class DriverAdminMapper {
                 .addMappings(m -> m.skip(Driver::setStartWorkingTime)).setPostConverter(toEntityConverter());
     }
 
-    public Converter<DriverAdminDto, Driver> toEntityConverter() {
+    public Converter<DriverAdminDto, Driver> toEntityConverter()  {
         return context -> {
             DriverAdminDto source = context.getSource();
             Driver destination = context.getDestination();
@@ -79,7 +80,7 @@ public class DriverAdminMapper {
                 driverDao.findById(source.getId()).getStartWorkingTime());
     }
 
-    private User returnUserForNewDriver(String userName) {
+    private User returnUserForNewDriver(String userName)  {
         User user = userDao.findByUsername(userName);
         if (user == null) {
             return new User(userName, "driver", roleDao.findByAuthority("ROLE_DRIVER"));
@@ -88,7 +89,7 @@ public class DriverAdminMapper {
             if (driver == null) {
                 return user;
             } else {
-                throw new NullPointerException();
+                throw new NotUniqueUserNameException(userName);
             }
         }
     }

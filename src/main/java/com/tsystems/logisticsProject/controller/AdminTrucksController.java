@@ -40,36 +40,29 @@ public class AdminTrucksController {
         return "redirect:/truck/info";
     }
 
-    @PostMapping(value = "/edit_truck", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, headers = "Accept=*/*"
-            , produces = MediaType.APPLICATION_JSON_VALUE) @ResponseBody
+    @PostMapping(value = "/edit_truck", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public String editTruck(HttpServletRequest request) {
         try {
             TruckDto truckDto = objectMapper.readValue(request.getInputStream(), TruckDto.class);
             truckService.update(truckDto);
             return "{\"success\":1}";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "{\"error \":" + e.getMessage() + "}";
         }
     }
 
-    @GetMapping("/create_truck")
-    public String createTruck(@RequestParam(name = "number") String number, @RequestParam(name = "capacity") Double capacity,
-                              @RequestParam(name = "crew") Integer crew, @RequestParam(name = "state") String state,
-                              @RequestParam(name = "city") String cityName) {
-
-        if (truckService.findByNumber(number)) {
-            return "error";
-        } else {
-            TruckDto truckDto = new TruckDto();
-            truckDto.setNumber(number);
-            truckDto.setCapacity(capacity);
-            truckDto.setCrewSize(crew);
-            truckDto.setState(state);
-            truckDto.setCityName(cityName);
+    @PostMapping(value = "/create_truck", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String createTruck(HttpServletRequest request) {
+        try {
+            TruckDto truckDto = objectMapper.readValue(request.getInputStream(), TruckDto.class);
             truckService.add(truckDto);
+            return "{\"success\":1}";
+        } catch (Exception e) {
+            return "{\"error \":" + e.getMessage() + "}";
         }
-        return "redirect:/truck/info";
     }
-
 }

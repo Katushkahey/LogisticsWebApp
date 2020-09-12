@@ -127,20 +127,24 @@ public class DriverMapper {
                 || Objects.isNull(source.getId()) ? null : getPartners(source.getCurrentOrder(), source.getId()));
         destination.setDriverState(Objects.isNull(source) || Objects.isNull(source.getDriverState()) ? null :
                 source.getDriverState().toString());
-        destination.setOrderNumber(Objects.isNull(source) || Objects.isNull(source.getCurrentCity()) ? null :
+        destination.setOrderNumber(Objects.isNull(source) || Objects.isNull(source.getCurrentOrder()) ? null :
                 source.getCurrentOrder().getNumber());
     }
 
     private List<String> getPartners(Order order, Long id) {
         List<String> partners = new ArrayList<>();
         List<Driver> drivers = driverDao.findAllDriversForCurrentOrder(order);
-        for (Driver driver: drivers) {
-            if(driver.getId() != id) {
-                String driverDto = driver.getName() + " " + driver.getSurname() + ", " + driver.getTelephoneNumber();
-                partners.add(driverDto);
+        if (drivers != null) {
+            for (Driver driver: drivers) {
+                if(driver.getId() != id) {
+                    String driverDto = driver.getName() + " " + driver.getSurname() + ", " + driver.getTelephoneNumber();
+                    partners.add(driverDto);
+                }
             }
+            return partners;
+        } else {
+            return null;
         }
-        return partners;
     }
 
 }

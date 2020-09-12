@@ -103,7 +103,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/driver/edit_telephoneNumber" method="get" class="formWithValidation" role="form">
+                <form action="/driver/edit_telephoneNumber" method="post" class="formWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
                         <div class="col-sm-9">
@@ -351,7 +351,44 @@
         }
 
         if (errors_counter < 1) {
-            form.submit()
+            var partners = null;
+            if (!('${driver.partners}'.length < 1)) {
+                partners = '${driver.partners}';
+            }
+
+            var order = null;
+            if (!('${driver.orderNumber}'.length < 1)) {
+                order = '${driver.orderNumber}';
+            }
+
+            var startWorkingTime = null;
+            if (!('${driver.startWorkingTime}'.length < 1)) {
+                startWorkingTime = '${driver.startWorkingTime}';
+            }
+
+            $.ajax({
+                url: '/driver/edit_telephoneNumber',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    id: ${driver.id},
+                    name: '${driver.name}',
+                    surname: "${driver.surname}",
+                    telephoneNumber: telephone.value,
+                    hoursThisMonth: ${driver.hoursThisMonth},
+                    partners: partners,
+                    driverState: '${driver.driverState}',
+                    orderNumber: order,
+                    startWorkingTime: startWorkingTime
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert("error" + result.responseText);
+                }
+            });
         }
     });
 </script>

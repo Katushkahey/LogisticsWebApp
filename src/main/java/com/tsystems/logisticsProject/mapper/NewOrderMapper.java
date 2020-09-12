@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Component
 public class NewOrderMapper {
@@ -83,8 +84,8 @@ public class NewOrderMapper {
             }
             cargo.setWaypoints(listOfCargoWaypoints);
             cargo.setOrder(destination);
-
-            destination.setNumber("fghjk");
+            String number = UUID.randomUUID().toString();
+            destination.setNumber(number);
             destination.setStatus(OrderStatus.NOT_ASSIGNED);
             destination.setCargoes(cargoes);
         }

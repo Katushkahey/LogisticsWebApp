@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dto.DriverDto;
 import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
@@ -10,22 +11,27 @@ import com.tsystems.logisticsProject.service.DriverService;
 import com.tsystems.logisticsProject.service.OrderService;
 import com.tsystems.logisticsProject.service.WaypointService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @Controller
 @RequestMapping("/driver")
 public class DriverController {
 
+    private ObjectMapper objectMapper;
     private DriverService driverService;
     private WaypointService waypointService;
     private OrderService orderService;
 
     @Autowired
-    public void setDependencies(DriverService driverService, WaypointService waypointService, OrderService orderService) {
+    public void setDependencies(DriverService driverService, WaypointService waypointService, OrderService orderService,
+                                ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
         this.driverService = driverService;
         this.waypointService = waypointService;
         this.orderService = orderService;
@@ -36,28 +42,26 @@ public class DriverController {
         DriverDto driverDto = driverService.getDriverByPrincipalName(principal.getName());
         model.addAttribute("driverState", DriverState.values());
         model.addAttribute("driver", driverDto);
-        model.addAttribute("order", orderService.findByNumber(driverDto.getOrderNumber()));
+        if (driverDto.getOrderNumber()!= null) {
+            model.addAttribute("order", orderService.findByNumber(driverDto.getOrderNumber()));
+        }
 
         return "driver_menu";
     }
 
-    @GetMapping("/edit_telephoneNumber/{id}")
-    public String editTelephone(@PathVariable("id") Long id, @RequestParam("telephone") String telephoneNumber) {
-        if (driverService.checkEditedTelephoneNumber(telephoneNumber, id)) {
-            return "error"; //водитель с таким номером телефона уже существует
-        }
-        DriverDto driverDto = new DriverDto();
-        driverDto.setId(id);
-        driverDto.setTelephoneNumber(telephoneNumber);
-        driverService.update(driverDto);
-        return "redirect:/driver";
-    }
+    @PostMapping(value = "/edit_telephoneNumber", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE, headers = "Accept=*/*"
+            , produces = MediaType.APPLICATION_JSON_VALUE) @ResponseBody
+    public String editTelephone(HttpServletRequest request) {
+        try {
+            DriverDto driverDto = objectMapper.readValue(request.getInputStream(), DriverDto.class);
+            driverService.update(driverDto);
 
-//    @PostMapping(value = "/edit_telephoneNumber" ,consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public String editTruck(@RequestBody MultiValueMap<String, String> formData) {
-//        System.out.println(formData);
-//        return "redirect:/driver";
-//    }
+            return "{\"success\":1}";
+        }
+        catch (Exception e) {
+            return e.toString();
+        }
+    }
 
     @GetMapping("/edit_state/{id}")
     public String editState(@PathVariable("id") Long id, @RequestParam("state") String  state) {

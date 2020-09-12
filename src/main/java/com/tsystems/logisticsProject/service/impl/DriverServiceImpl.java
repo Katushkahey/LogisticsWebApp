@@ -3,9 +3,6 @@ package com.tsystems.logisticsProject.service.impl;
 import com.tsystems.logisticsProject.dao.DriverDao;
 import com.tsystems.logisticsProject.dto.*;
 import com.tsystems.logisticsProject.entity.*;
-import com.tsystems.logisticsProject.entity.enums.DriverState;
-import com.tsystems.logisticsProject.entity.enums.OrderStatus;
-import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.mapper.*;
 import com.tsystems.logisticsProject.service.*;
@@ -23,27 +20,17 @@ public class DriverServiceImpl implements DriverService {
     private ApplicationEventPublisher applicationEventPublisher;
     private DriverMapper driverMapper;
     private DriverAdminMapper driverAdminMapper;
-    private DriverShortMapper driverShortMapper;
-    private OrderDriverMapper orderDriverMapper;
 
     private UserService userService;
-    private OrderService orderService;
-    private WaypointService waypointService;
     private DriverDao driverDao;
 
     @Autowired
     public void setDependencies(DriverDao driverDao, DriverMapper driverMapper, DriverAdminMapper driverAdminMapper,
-                                UserService userService, OrderService orderService, WaypointService waypointService,
-                                ApplicationEventPublisher applicationEventPublisher, DriverShortMapper driverShortMapper,
-                                OrderDriverMapper orderDriverMapper) {
+                                UserService userService, ApplicationEventPublisher applicationEventPublisher) {
         this.driverDao = driverDao;
         this.driverMapper = driverMapper;
         this.driverAdminMapper = driverAdminMapper;
-        this.driverShortMapper = driverShortMapper;
-        this.orderDriverMapper = orderDriverMapper;
         this.userService = userService;
-        this.orderService = orderService;
-        this.waypointService = waypointService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -94,11 +81,6 @@ public class DriverServiceImpl implements DriverService {
     public void add(DriverAdminDto driverAdminDto) {
         driverDao.add(driverAdminMapper.toEntity(driverAdminDto));
         applicationEventPublisher.publishEvent(new UpdateEvent());
-    }
-
-    @Transactional
-    public boolean findDriverByTelephoneNumber(String telephoneNumber) {
-        return driverDao.findByTelephoneNubmer(telephoneNumber);
     }
 
     @Transactional

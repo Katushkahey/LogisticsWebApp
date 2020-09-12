@@ -219,7 +219,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="input4">State</label>
                         <div>
-                            <select class="col-sm-6 field" name="state" id="input4">
+                            <select class="col-sm-6 state field" name="state" id="input4">
                                 <option value="OK">OK</option>
                                 <option value="BROKEN">BROKEN</option>
                             </select>
@@ -228,7 +228,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="input5">City</label>
                         <div>
-                            <select class="col-sm-6 field" name="city" id="input5">
+                            <select class="col-sm-6 city field" name="city" id="input5">
                                 <c:forEach var="city" items="${listOfCities}">
                                     <option value=${city.name}>${city.name}</option>
                                 </c:forEach>
@@ -368,6 +368,8 @@
     var capacity2 = form2.querySelector('.capacity')
     var crew2 = form2.querySelector('.crew')
     var fields2 = form2.querySelectorAll('.field')
+    var state2 = form2.querySelector('.state')
+    var city2 = form2.querySelector('.city')
 
     form2.addEventListener("submit", function (event) {
         event.preventDefault()
@@ -417,7 +419,26 @@
         }
 
         if (errors_counter2 < 1) {
-            form2.submit()
+            $.ajax({
+                url: '/truck/create_truck',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    number: number2.value,
+                    capacity: capacity2.value,
+                    crewSize: crew2.value,
+                    state: state2.value,
+                    available: true,
+                    cityName: city2.value,
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert(result.responseText);
+                }
+            });
         }
     })
 </script>

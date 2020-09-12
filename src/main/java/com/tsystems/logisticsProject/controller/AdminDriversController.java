@@ -2,8 +2,11 @@ package com.tsystems.logisticsProject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dto.DriverAdminDto;
+import com.tsystems.logisticsProject.dto.DriverDto;
+import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.DriverService;
+import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -42,7 +45,8 @@ public class AdminDriversController {
     }
 
     @PostMapping(value = "/create_driver", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE) @ResponseBody
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public String createDriver(HttpServletRequest request) {
         try {
             DriverAdminDto driverAdminDto = objectMapper.readValue(request.getInputStream(), DriverAdminDto.class);
@@ -54,7 +58,8 @@ public class AdminDriversController {
     }
 
     @PostMapping(value = "/edit_driver", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
-            , produces = MediaType.APPLICATION_JSON_VALUE) @ResponseBody
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public String editDriver(HttpServletRequest request) {
         try {
             DriverAdminDto driverAdminDto = objectMapper.readValue(request.getInputStream(), DriverAdminDto.class);
@@ -63,9 +68,9 @@ public class AdminDriversController {
             }
             driverService.update(driverAdminDto);
             return "{\"success\":1}";
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "{\"error \":" + e.getMessage() + "}";
         }
     }
+
 }

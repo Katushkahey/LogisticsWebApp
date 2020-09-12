@@ -68,7 +68,7 @@ public class RawOrderSessionService {
     private void createNewCargo(NewOrderWaypointDto waypointDto) {
         CargoDto cargoDto = new CargoDto();
         cargoDto.setName(waypointDto.getCargoName());
-        cargoDto.setNumber("cоздать уникальный номер");
+        cargoDto.setNumber(UUID.randomUUID().toString());
         cargoDto.setWeight(waypointDto.getCargoWeight());
         cargoDto.setId(Objects.isNull(listOfAllCargoes) ? 1L : listOfAllCargoes.get(listOfAllCargoes.size() - 1).getId() + 1);
         listOfAllCargoes.add(cargoDto);
