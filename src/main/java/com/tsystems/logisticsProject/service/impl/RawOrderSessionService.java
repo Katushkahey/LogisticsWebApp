@@ -59,7 +59,7 @@ public class RawOrderSessionService {
         if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
             throw new TooLargeOrderTotalWeightException(totalWeight + waypointDto.getCargoWeight(), truckService.getMaxCapacity());
         } else {
-            waypointDto.setId(Objects.isNull(listOfWaypoints) ? 1L : listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
+            waypointDto.setId(listOfWaypoints.isEmpty() ? 1L : listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
             createNewCargo(waypointDto);
             totalWeight += waypointDto.getCargoWeight();
         }
@@ -70,7 +70,7 @@ public class RawOrderSessionService {
         cargoDto.setName(waypointDto.getCargoName());
         cargoDto.setNumber(UUID.randomUUID().toString());
         cargoDto.setWeight(waypointDto.getCargoWeight());
-        cargoDto.setId(Objects.isNull(listOfAllCargoes) ? 1L : listOfAllCargoes.get(listOfAllCargoes.size() - 1).getId() + 1);
+        cargoDto.setId(listOfAllCargoes.isEmpty() ? 1L : listOfAllCargoes.get(listOfAllCargoes.size() - 1).getId() + 1);
         listOfAllCargoes.add(cargoDto);
         listOfCargoesToUnload.add(cargoDto);
     }
