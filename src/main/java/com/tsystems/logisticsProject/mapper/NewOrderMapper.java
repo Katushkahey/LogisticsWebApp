@@ -2,6 +2,7 @@ package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dto.CargoDto;
 import com.tsystems.logisticsProject.dto.NewOrderDto;
+import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Order;
@@ -22,13 +23,13 @@ public class NewOrderMapper {
 
     private ModelMapper mapper;
     private CargoMapper cargoMapper;
-    private NewWaypointMapper newWaypointMapper;
+    private NewOrderWaypointMapper newOrderWaypointMapper;
 
     @Autowired
-    public NewOrderMapper(ModelMapper mapper, CargoMapper cargoMapper, NewWaypointMapper newWaypointMapper) {
+    public NewOrderMapper(ModelMapper mapper, CargoMapper cargoMapper, NewOrderWaypointMapper newOrderWaypointMapper) {
         this.mapper = mapper;
         this.cargoMapper = cargoMapper;
-        this.newWaypointMapper = newWaypointMapper;
+        this.newOrderWaypointMapper = newOrderWaypointMapper;
     }
 
     public Order toEntity(NewOrderDto dto) {
@@ -60,13 +61,13 @@ public class NewOrderMapper {
             cargoes.add(cargoMapper.toEntity(cargoDto));
         }
 
-        for (WaypointDto waypointDto : source.getWaypoints()) {
-            waypoints.add(newWaypointMapper.toEntity(waypointDto));
+        for (NewOrderWaypointDto waypointDto : source.getWaypoints()) {
+            waypoints.add(newOrderWaypointMapper.toEntity(waypointDto));
         }
 
         for (Cargo cargo : cargoes) {
             List<Long> waypointsId = new ArrayList<>();
-            for (WaypointDto waypointDto : source.getWaypoints()) {
+            for (NewOrderWaypointDto waypointDto : source.getWaypoints()) {
                 if (waypointDto.getCargoNumber().equals(cargo.getNumber())) {
                     waypointsId.add(waypointDto.getId());
                 }

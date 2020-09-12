@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dao.CityDao;
+import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
@@ -14,24 +15,24 @@ import javax.annotation.PostConstruct;
 import java.util.Objects;
 
 @Component
-public class NewWaypointMapper {
+public class NewOrderWaypointMapper {
 
     private ModelMapper modelMapper;
     private CityDao cityDao;
 
     @Autowired
-    public NewWaypointMapper(ModelMapper modelMapper, CityDao cityDao) {
+    public NewOrderWaypointMapper(ModelMapper modelMapper, CityDao cityDao) {
         this.modelMapper = modelMapper;
         this.cityDao = cityDao;
     }
 
-    public Waypoint toEntity(WaypointDto dto) {
+    public Waypoint toEntity(NewOrderWaypointDto dto) {
         return Objects.isNull(dto) ? null : modelMapper.map(dto, Waypoint.class);
     }
 
     @PostConstruct
     public void setupMapper() {
-        modelMapper.createTypeMap(WaypointDto.class, Waypoint.class)
+        modelMapper.createTypeMap(NewOrderWaypointDto.class, Waypoint.class)
                 .addMappings(m -> m.skip(Waypoint::setId)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Waypoint::setCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Waypoint::setAction)).setPostConverter(toEntityConverter())
@@ -39,16 +40,16 @@ public class NewWaypointMapper {
                 .addMappings(m -> m.skip(Waypoint::setSequence)).setPostConverter(toEntityConverter());
     }
 
-    public Converter<WaypointDto, Waypoint> toEntityConverter() {
+    public Converter<NewOrderWaypointDto, Waypoint> toEntityConverter() {
         return context -> {
-            WaypointDto source = context.getSource();
+            NewOrderWaypointDto source = context.getSource();
             Waypoint destination = context.getDestination();
             mapSpecificFieldsForEntity(source, destination);
             return context.getDestination();
         };
     }
 
-    public void mapSpecificFieldsForEntity(WaypointDto source, Waypoint destination) {
+    public void mapSpecificFieldsForEntity(NewOrderWaypointDto source, Waypoint destination) {
         destination.setId(null);
         destination.setCity(Objects.isNull(source) || Objects.isNull(source.getCityName())
                 ? null : cityDao.findByName(source.getCityName()));

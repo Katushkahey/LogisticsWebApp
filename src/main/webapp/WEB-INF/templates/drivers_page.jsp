@@ -138,7 +138,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/drivers/edit_driver/" method="get" class="formWithValidation" role="form">
+                <form action="/drivers/edit_driver/" method="post" class="formWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="idInput" visibility: hidden>ID</label>
                         <div class="col-sm-9">

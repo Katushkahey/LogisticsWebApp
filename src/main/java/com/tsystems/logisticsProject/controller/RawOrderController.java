@@ -1,5 +1,6 @@
 package com.tsystems.logisticsProject.controller;
 
+import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
@@ -31,46 +32,19 @@ public class RawOrderController {
         this.cityService = cityService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public String returnPageToCreateOrder(Model model) {
-        model.addAttribute("listOfCargoes", rawOrderService.getListOfAllCargoes());
-        model.addAttribute("mapOfCargoes", rawOrderService.getListOfCargoesToUnload());
-        model.addAttribute("listOfWaypoints", rawOrderService.getListOfWaypoints());
+        model.addAttribute("order", rawOrderService.getOrderDto());
         model.addAttribute("maxWeight", truckService.getMaxCapacity());
         model.addAttribute("listOfCities", cityService.getListOfCities());
 
         return "order_create_page";
     }
 
-//    @GetMapping("/add_cargo")
-//    public String addCargo(@RequestParam("name") String name, @RequestParam("cargoWeight") Double weight) {
-//        rawOrderService.addNewCargo(name, weight);
-//        return "redirect:/create_order";
-//    }
-
-//    @GetMapping("/delete_cargo/{id}")
-//    public String deleteCargo(@PathVariable("id") Long id) {
-//        rawOrderService.deleteCargoById(id);
-//        return "redirect:/create_order";
-//    }
-
-//    @GetMapping("/edit_cargo")
-//    public String editCargo(@RequestParam("id") Long id, @RequestParam("name") String name,
-//                            @RequestParam("cargoWeight") double weight) {
-//        rawOrderService.editCargo(id, name, weight);
-//        return "redirect:/create_order";
-//    }
-
-//    @GetMapping("/save_cargoes")
-//    public String saveCargoes() {
-//        rawOrderService.saveCargoes();
-//        return "redirect:/create_order";
-//    }
-
     @GetMapping("/add_loading_waypoint")
     public String addLoadingWaypoint(@RequestParam("cargoName") String cargoName, @RequestParam("cityWeight")
             Double cargoWeight, @RequestParam("cityName") String cityName) {
-        WaypointDto waypointDto = new WaypointDto();
+        NewOrderWaypointDto waypointDto = new NewOrderWaypointDto();
         waypointDto.setCargoName(cargoName);
         waypointDto.setCargoWeight(cargoWeight);
         waypointDto.setCityName(cityName);
@@ -87,7 +61,7 @@ public class RawOrderController {
                                        @RequestParam("cargoWeight") Double cargoWeight,
                                        @RequestParam("cityName") String cityName) {
 
-        WaypointDto waypointDto = new WaypointDto();
+        NewOrderWaypointDto waypointDto = new NewOrderWaypointDto();
         waypointDto.setCargoNumber(cargoNumber);
         waypointDto.setCargoName(cargoName);
         waypointDto.setCargoWeight(cargoWeight);
@@ -100,7 +74,7 @@ public class RawOrderController {
 
     @GetMapping("/edit_waypoint")
     public String editWaypoint(@RequestParam("id") Long id, @RequestParam("cityName") String cityName) {
-        WaypointDto waypointDto = new WaypointDto();
+        NewOrderWaypointDto waypointDto = new NewOrderWaypointDto();
         rawOrderService.editWaypoint(waypointDto);
         return "redirect:/create_order";
     }
@@ -112,12 +86,8 @@ public class RawOrderController {
     }
 
     @GetMapping("save_order")
-    public String saveOrder(@RequestParam("orderNumber") String number, Model model) {
-        if (!rawOrderService.checkMaxWeightOfOrder()) {
-            model.addAttribute("error", true);
-            return "error";
-        }
-        rawOrderService.saveOrder(number);
+    public String saveOrder() {
+        rawOrderService.saveOrder();
         return "redirect:/order/info";
     }
 

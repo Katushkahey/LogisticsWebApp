@@ -62,6 +62,8 @@ public class TruckMapper {
     }
 
     public void mapSpecificFieldsForEntity(TruckDto source, Truck destination) {
+        destination.setNumber(Objects.isNull(source) || Objects.isNull(source.getNumber()) || Objects.isNull(source.getId())
+                ? null : checkEditedNumber(source.getNumber(), source.getId()));
         destination.setTruckState(Objects.isNull(source) || Objects.isNull(source.getState()) ? null :
                 TruckState.valueOf(source.getState()));
         destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getCityName()) ? null :
@@ -78,6 +80,14 @@ public class TruckMapper {
         }
     }
 
+    private String checkEditedNumber(String number, Long id) {
+        Truck truck = truckDao.findByNumber(number);
+        if (truck.getId() != id) {
+            throw new NullPointerException();
+        }
+        return number;
+    }
+
     public Converter<Truck, TruckDto> toDtoConverter() {
         return context -> {
             Truck source = context.getSource();
@@ -88,8 +98,6 @@ public class TruckMapper {
     }
 
     public void mapSpecificFieldsForDto(Truck source, TruckDto destination) {
-        destination.setNumber(Objects.isNull(source) || Objects.isNull(source.getNumber()) || Objects.isNull(source.getId())
-        ? null : checkEditedNumber(source.getNumber(), source.getId()));
         destination.setState(Objects.isNull(source) || Objects.isNull(source.getTruckState()) ? null :
                 source.getTruckState().toString());
         destination.setAvailable(Objects.isNull(source) ? null : (Objects.isNull(source.getOrder())));
@@ -97,11 +105,5 @@ public class TruckMapper {
                 source.getCurrentCity().getName());
     }
 
-    private String checkEditedNumber(String number, Long id) {
-        Truck truck = truckDao.findByNumber(number);
-        if (truck.getId() == id) {
-            throw new NullPointerException();
-        }
-        return number;
-    }
+
 }

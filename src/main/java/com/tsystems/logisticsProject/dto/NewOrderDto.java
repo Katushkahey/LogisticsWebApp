@@ -12,5 +12,6 @@ import java.util.List;
 public class NewOrderDto {
 
     List<CargoDto> cargoes;
-    List<WaypointDto> waypoints;
+    List<NewOrderWaypointDto> waypoints;
+    List<CargoDto> cargoesToUnload;
 }

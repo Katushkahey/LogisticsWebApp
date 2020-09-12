@@ -3,6 +3,7 @@ package com.tsystems.logisticsProject.service.impl;
 import com.tsystems.logisticsProject.dao.OrderDao;
 import com.tsystems.logisticsProject.dto.CargoDto;
 import com.tsystems.logisticsProject.dto.NewOrderDto;
+import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.mapper.NewOrderMapper;
@@ -30,8 +31,9 @@ public class RawOrderSessionService {
 
     private List<CargoDto> listOfCargoesToUnload;
     private List<CargoDto> listOfAllCargoes;
-    private List<WaypointDto> listOfWaypoints;
+    private List<NewOrderWaypointDto> listOfWaypoints;
     private Double totalWeight = 0.0;
+    NewOrderDto orderDto;
 
     @Autowired
     public RawOrderSessionService (TruckService truckService, OrderDao orderDao, NewOrderMapper newOrderMapper,
@@ -44,12 +46,16 @@ public class RawOrderSessionService {
 
     @PostConstruct
     public void init() {
+        orderDto = new NewOrderDto();
         listOfCargoesToUnload = new ArrayList<>();
         listOfAllCargoes = new ArrayList<>();
         listOfWaypoints = new ArrayList<>();
+        orderDto.setCargoes(listOfAllCargoes);
+        orderDto.setWaypoints(listOfWaypoints);
+        orderDto.setCargoesToUnload(listOfCargoesToUnload);
     }
 
-    public void addLoadingWaypoint(WaypointDto waypointDto) {
+    public void addLoadingWaypoint(NewOrderWaypointDto waypointDto) {
         if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
             throw new NullPointerException();
         } else {
@@ -59,7 +65,7 @@ public class RawOrderSessionService {
         }
     }
 
-    private void createNewCargo(WaypointDto waypointDto) {
+    private void createNewCargo(NewOrderWaypointDto waypointDto) {
         CargoDto cargoDto = new CargoDto();
         cargoDto.setName(waypointDto.getCargoName());
         cargoDto.setNumber("cоздать уникальный номер");
@@ -69,7 +75,7 @@ public class RawOrderSessionService {
         listOfCargoesToUnload.add(cargoDto);
     }
 
-    public void addUnloadingWaypoint(WaypointDto waypointDto) {
+    public void addUnloadingWaypoint(NewOrderWaypointDto waypointDto) {
         waypointDto.setId(listOfWaypoints.get(listOfAllCargoes.size() - 1).getId() + 1);
         listOfWaypoints.add(waypointDto);
         for (CargoDto cargoDto: listOfCargoesToUnload) {
@@ -81,8 +87,8 @@ public class RawOrderSessionService {
         totalWeight -= waypointDto.getCargoWeight();
     }
 
-    public void editWaypoint(WaypointDto waypointDto) {
-        for (WaypointDto waypointDto1: listOfWaypoints) {
+    public void editWaypoint(NewOrderWaypointDto waypointDto) {
+        for (NewOrderWaypointDto waypointDto1: listOfWaypoints) {
             if (waypointDto1.getId() == waypointDto.getId()) {
                 if (totalWeight - waypointDto1.getCargoWeight() + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
                     throw new NullPointerException();
@@ -98,7 +104,7 @@ public class RawOrderSessionService {
         }
     }
 
-    private void editCargoInList(List<CargoDto> list, WaypointDto waypointDto) {
+    private void editCargoInList(List<CargoDto> list, NewOrderWaypointDto waypointDto) {
         for (CargoDto cargoDto: list) {
             if (cargoDto.getNumber().equals(waypointDto.getCargoNumber())) {
                 cargoDto.setName(waypointDto.getCargoName());
@@ -109,7 +115,7 @@ public class RawOrderSessionService {
     }
 
     public void deleteWaypointById(Long id) {
-        for (WaypointDto waypointDto: listOfWaypoints) {
+        for (NewOrderWaypointDto waypointDto: listOfWaypoints) {
             if (waypointDto.getId() == id) {
                 if (waypointDto.getAction().equals(Action.LOADING.toString())) {
                     deleteLoadingWaypoint(waypointDto);
@@ -120,8 +126,8 @@ public class RawOrderSessionService {
         }
     }
 
-    private void deleteLoadingWaypoint(WaypointDto waypointDto) {
-        for (WaypointDto waypointDto1: listOfWaypoints) {
+    private void deleteLoadingWaypoint(NewOrderWaypointDto waypointDto) {
+        for (NewOrderWaypointDto waypointDto1: listOfWaypoints) {
             if (waypointDto1.getCargoNumber().equals(waypointDto.getCargoNumber())
                     && waypointDto1.getAction().equals(Action.UNLOADING.toString())) {
                 listOfWaypoints.remove(waypointDto1);
@@ -144,7 +150,7 @@ public class RawOrderSessionService {
         }
     }
 
-    private void deleteUnLoadingWaypoint(WaypointDto waypointDto) {
+    private void deleteUnLoadingWaypoint(NewOrderWaypointDto waypointDto) {
         listOfWaypoints.remove(waypointDto);
         if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
             throw new NullPointerException();
@@ -163,9 +169,6 @@ public class RawOrderSessionService {
     }
 
     public void saveOrder() {
-        NewOrderDto orderDto = new NewOrderDto();
-        orderDto.setCargoes(listOfAllCargoes);
-        orderDto.setWaypoints(listOfWaypoints);
         orderDao.add(newOrderMapper.toEntity(orderDto));
     }
 
