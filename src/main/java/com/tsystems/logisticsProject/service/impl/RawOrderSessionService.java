@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
@@ -79,7 +80,7 @@ public class RawOrderSessionService {
     }
 
     public void addUnloadingWaypoint(NewOrderWaypointDto waypointDto) {
-        waypointDto.setId(listOfWaypoints.get(listOfAllCargoes.size() - 1).getId() + 1);
+        waypointDto.setId(listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
 
         for (CargoDto cargoDto : listOfCargoesToUnload) {
             if (cargoDto.getNumber().equals(waypointDto.getCargoNumber())) {
@@ -100,7 +101,6 @@ public class RawOrderSessionService {
                     throw new TooLargeOrderTotalWeightException(totalWeight - waypointDto1.getCargoWeight()
                             + waypointDto.getCargoWeight(), truckService.getMaxCapacity());
                 }
-                waypointDto1.setCargoNumber(waypointDto.getCargoNumber());
                 waypointDto1.setCargoWeight(waypointDto.getCargoWeight());
                 waypointDto1.setCargoName(waypointDto.getCargoName());
                 waypointDto1.setCityName(waypointDto.getCityName());
@@ -160,11 +160,11 @@ public class RawOrderSessionService {
     }
 
     private void deleteUnLoadingWaypoint(NewOrderWaypointDto waypointDto) throws TooLargeOrderTotalWeightException {
-        listOfWaypoints.remove(waypointDto);
         if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
             throw new TooLargeOrderTotalWeightException(waypointDto.getCargoWeight(), truckService.getMaxCapacity());
         } else {
             totalWeight += waypointDto.getCargoWeight();
+            listOfWaypoints.remove(waypointDto);
             addCargoToListForUnloadingAfterDeletingUnloadingPoint(waypointDto.getCargoNumber());
         }
     }
@@ -177,6 +177,7 @@ public class RawOrderSessionService {
         }
     }
 
+    @Transactional
     public void saveOrder() {
         orderDao.add(newOrderMapper.toEntity(orderDto));
     }

@@ -2,9 +2,6 @@ package com.tsystems.logisticsProject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
-import com.tsystems.logisticsProject.entity.enums.Action;
-import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
-import com.tsystems.logisticsProject.exception.checked.TooLargeOrderTotalWeightException;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
 import com.tsystems.logisticsProject.service.impl.RawOrderSessionService;
@@ -82,8 +79,8 @@ public class RawOrderController {
         }
     }
 
-    @GetMapping("delete_waypoint/{id}")
-    public String deleteWaypoint(@PathVariable("id") Long id) {
+    @GetMapping("delete_waypoint")
+    public String deleteWaypoint(@RequestParam("id") Long id) {
         try {
             rawOrderService.deleteWaypointById(id);
         } catch (Exception e) {

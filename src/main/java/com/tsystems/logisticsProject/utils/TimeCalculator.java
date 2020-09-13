@@ -38,19 +38,19 @@ public class TimeCalculator {
         return Driver.MAX_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
     }
 
-    public int calculateMaxSpentTimeForDriver(int requiredNumberOfHoursPerPerson) {
-        return Driver.MAX_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
-    }
-
     private int calculateRequiredNumberOfHoursPerPerson(int optionalMaxDrivers, int hoursForOrderFromThisCity,
-                                                    int numberOfDrivers) {
-        int numberOfWorkingHoursInDayPerPerson = returnNormalNumberOfWorkingHoursInDayPerPerson(optionalMaxDrivers);
-        int numberOfTotalWorkingTimePerDay = numberOfWorkingHoursInDayPerPerson * numberOfDrivers;
-        int numberOfDayToCompleteOrder = (int) Math.ceil(hoursForOrderFromThisCity / numberOfWorkingHoursInDayPerPerson);
-        if (numberOfDayToCompleteOrder > fullDaysToEndMonth) {
-            return fullDaysToEndMonth * numberOfTotalWorkingTimePerDay;
+                                                        int numberOfDrivers) {
+        if (optionalMaxDrivers == 1) {
+            return Math.min(hoursToEndMonth, hoursForOrderFromThisCity);
         } else {
-            return (int) Math.ceil(hoursForOrderFromThisCity / numberOfDrivers);
+            int numberOfWorkingHoursInDayPerPerson = returnNormalNumberOfWorkingHoursInDayPerPerson(optionalMaxDrivers);
+            int numberOfTotalWorkingTimePerDay = numberOfWorkingHoursInDayPerPerson * numberOfDrivers;
+            int numberOfDayToCompleteOrder = (int) Math.ceil(hoursForOrderFromThisCity / numberOfWorkingHoursInDayPerPerson);
+            if (numberOfDayToCompleteOrder > fullDaysToEndMonth) {
+                return fullDaysToEndMonth * numberOfTotalWorkingTimePerDay;
+            } else {
+                return (int) Math.ceil(hoursForOrderFromThisCity / numberOfDrivers);
+            }
         }
     }
 

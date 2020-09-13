@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class CombinationForOrderDto extends AbstractDto{
+public class CombinationForOrderDto extends AbstractDto {
 
     private List<DriverShortDto> drivers;
     private String TruckNumber;

@@ -54,10 +54,9 @@ public class DriverController {
         try {
             DriverDto driverDto = objectMapper.readValue(request.getInputStream(), DriverDto.class);
             driverService.update(driverDto);
-
             return "{\"success\":1}";
         } catch (Exception e) {
-            return e.toString();
+            return "{\"error\":" + e.getMessage() + "}";
         }
     }
 

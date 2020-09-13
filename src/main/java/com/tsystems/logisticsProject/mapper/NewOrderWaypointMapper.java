@@ -54,8 +54,7 @@ public class NewOrderWaypointMapper {
                 ? null : cityDao.findByName(source.getCityName()));
         destination.setAction(Objects.isNull(source) || Objects.isNull(source.getAction())
                 ? null : Action.valueOf(source.getAction()));
-        destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getStatus())
-                ? null : WaypointStatus.valueOf(source.getStatus()));
+        destination.setStatus(Objects.isNull(source) ? null : WaypointStatus.TODO);
         destination.setSequence(source.getId());
     }
 

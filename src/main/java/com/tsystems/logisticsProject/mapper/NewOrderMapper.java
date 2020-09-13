@@ -58,6 +58,7 @@ public class NewOrderMapper {
         List<Cargo> cargoes = new ArrayList<>();
         List<Waypoint> waypoints = new ArrayList<>();
         for (CargoDto cargoDto : source.getCargoes()) {
+            cargoDto.setId(null);
             cargoes.add(cargoMapper.toEntity(cargoDto));
         }
 
