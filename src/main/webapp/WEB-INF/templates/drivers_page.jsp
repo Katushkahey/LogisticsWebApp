@@ -358,7 +358,7 @@
     var telephone2 = form2.querySelector('.telephone')
     var userName = form2.querySelector('.user')
     var fields2 = form2.querySelectorAll('.field')
-    var city = form2.querySelector('.city')
+    var city2 = form2.querySelector('.city')
 
     form2.addEventListener("submit", function (event) {
         event.preventDefault()
@@ -427,7 +427,7 @@
                     name: name3.value,
                     surname: surname2.value,
                     telephoneNumber: telephone2.value,
-                    cityName: city.value,
+                    cityName: city2.value,
                     userName: userName.value
                 }),
                 success : function(data) {

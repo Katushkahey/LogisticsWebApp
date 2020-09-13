@@ -15,11 +15,15 @@ public interface DriverService {
 
     List<DriverAdminDto> getListOfDrivers();
 
+    void checkUserNameToCreateDriver(String userName) throws NotUniqueUserNameException;
+
+    void createNewUser(String username);
+
     void ScheduledTasks();
 
     void deleteById(Long id);
 
-    void add(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException, NotUniqueUserNameException;
+    void add(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException;
 
     void update(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException;
 

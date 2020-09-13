@@ -56,38 +56,29 @@ public class TruckServiceImpl implements TruckService {
 
     @Transactional
     public void add(TruckDto truckDto) throws NotUniqueTruckNumberException {
-        checkEditedNumber(truckDto.getNumber());
-        truckDao.add(truckMapper.toEntity(truckDto));
-        applicationEventPublisher.publishEvent(new UpdateEvent());
-    }
-
-    @Transactional
-    public void checkEditedNumber(String number) throws NotUniqueTruckNumberException {
         try {
-            truckDao.findByNumber(number);
+            truckDao.findByNumber(truckDto.getNumber());
+            throw new NotUniqueTruckNumberException(truckDto.getNumber());
         } catch (NoResultException e) {
-            throw new NotUniqueTruckNumberException(number);
+            truckDao.add(truckMapper.toEntity(truckDto));
+            applicationEventPublisher.publishEvent(new UpdateEvent());
         }
     }
 
     @Transactional
     public void update(TruckDto truckDto) throws NotUniqueTruckNumberException {
-        checkEditedNumber(truckDto.getNumber(), truckDto.getId());
-        truckDao.update(truckMapper.toEntity(truckDto));
-        applicationEventPublisher.publishEvent(new UpdateEvent());
-    }
-
-    @Transactional
-    public void checkEditedNumber(String number, Long id) throws NotUniqueTruckNumberException {
         try {
-            Truck truck = truckDao.findByNumber(number);
-            if (truck.getId() != id) {
-                throw new NotUniqueTruckNumberException(number);
+            Truck truck = truckDao.findByNumber(truckDto.getNumber());
+            if (truck.getId() == truckDto.getId()) {
+                truckDao.update(truckMapper.toEntity(truckDto));
+                applicationEventPublisher.publishEvent(new UpdateEvent());
+            } else {
+                throw new NotUniqueTruckNumberException(truckDto.getNumber());
             }
         } catch (NoResultException e) {
-            // залогировать
+            truckDao.update(truckMapper.toEntity(truckDto));
+            applicationEventPublisher.publishEvent(new UpdateEvent());
         }
-
     }
 
     @Transactional

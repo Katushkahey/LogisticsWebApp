@@ -45,6 +45,7 @@ public class DriverAdminMapper {
                 .addMappings(m -> m.skip(DriverAdminDto::setAvailable)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(DriverAdminDto::setUserName)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(DriverAdminDto.class, Driver.class)
+                .addMappings(m -> m.skip(Driver::setHoursThisMonth)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setDriverState)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentOrder)).setPostConverter(toEntityConverter())
@@ -62,6 +63,8 @@ public class DriverAdminMapper {
     }
 
     public void mapSpecificFieldsForEntity(DriverAdminDto source, Driver destination) {
+        destination.setHoursThisMonth(Objects.isNull(source) || Objects.isNull(source.getId()) ? 0 :
+                driverDao.findById(source.getId()).getHoursThisMonth());
         destination.setDriverState(Objects.isNull(source) || Objects.isNull(source.getId()) ? DriverState.REST :
                 driverDao.findById(source.getId()).getDriverState());
         destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getCityName()) ? null :

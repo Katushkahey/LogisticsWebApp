@@ -63,7 +63,7 @@
                                 <td scope="row" align="center">${combination.totalHours}</td>
                                 <td scope="row" align="center">${combination.totalBillableHours}</td>
                                 <td scope="row" align="center"><a class="btn btn-success"
-                                                                  href="choose_assignment/${id}/${combination.id}">
+                                                                  href="choose_assignment/${order.id}/${combination.id}">
                                     Choose </a>
                             </tr>
                         </c:forEach>

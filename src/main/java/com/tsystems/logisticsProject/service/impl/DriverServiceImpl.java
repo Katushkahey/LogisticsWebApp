@@ -6,12 +6,14 @@ import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.exception.checked.NotUniqueDriverTelephoneNumberException;
 import com.tsystems.logisticsProject.exception.checked.NotUniqueUserNameException;
+import com.tsystems.logisticsProject.exception.unchecked.EntityNotFoundException;
 import com.tsystems.logisticsProject.mapper.*;
 import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
@@ -72,28 +74,30 @@ public class DriverServiceImpl implements DriverService {
     @Transactional
     public void update(Driver driver) {
         driverDao.update(driver);
-        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
-    public void add(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException, NotUniqueUserNameException {
+    public void add(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException {
         try {
             driverDao.findByTelephoneNubmer(driverAdminDto.getTelephoneNumber());
             throw new NotUniqueDriverTelephoneNumberException(driverAdminDto.getTelephoneNumber());
         } catch (NoResultException e) {
-            try {
-                User user = userService.findByUsername(driverAdminDto.getUserName());
-                try {
-                    driverDao.findByUser(user);
-                    throw new NotUniqueUserNameException(driverAdminDto.getUserName());
-                } catch (NoResultException exp) {
-                    driverDao.add(driverAdminMapper.toEntity(driverAdminDto));
-                }
-            } catch (NoResultException exception) {
-                userService.add(driverAdminDto.getUserName(), "ROLE_DRIVER");
-                driverDao.add(driverAdminMapper.toEntity(driverAdminDto));
-            }
+            driverDao.add(driverAdminMapper.toEntity(driverAdminDto));
         }
+    }
+
+    public void checkUserNameToCreateDriver(String userName) throws NotUniqueUserNameException {
+        try {
+            userService.findByUsername(userName);
+            throw new NotUniqueUserNameException(userName);
+        } catch (NoResultException exception) {
+            // лог
+        }
+    }
+
+    @Transactional
+    public void createNewUser(String username) {
+        userService.add(username, "ROLE_DRIVER");
     }
 
     @Transactional

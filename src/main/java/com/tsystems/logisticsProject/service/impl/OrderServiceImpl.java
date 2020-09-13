@@ -75,8 +75,10 @@ public class OrderServiceImpl implements OrderService {
             if (topId == id) {
                 orderDao.delete(orderDao.findById(id));
                 applicationEventPublisher.publishEvent(new UpdateEvent());
+                break;
             }else {
                 orderDao.delete(orderDao.findById(id));
+                break;
             }
         }
     }

@@ -182,6 +182,7 @@ public class RawOrderSessionService {
     @Transactional
     public void saveOrder() {
         orderDao.add(newOrderMapper.toEntity(orderDto));
+        clearAll();
         applicationEventPublisher.publishEvent(new UpdateEvent() {
         });
     }

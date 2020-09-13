@@ -2,6 +2,8 @@ package com.tsystems.logisticsProject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dto.DriverAdminDto;
+import com.tsystems.logisticsProject.entity.User;
+import com.tsystems.logisticsProject.exception.unchecked.EntityNotFoundException;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +49,9 @@ public class AdminDriversController {
     public String createDriver(HttpServletRequest request) {
         try {
             DriverAdminDto driverAdminDto = objectMapper.readValue(request.getInputStream(), DriverAdminDto.class);
-            driverService.update(driverAdminDto);
+            driverService.checkUserNameToCreateDriver(driverAdminDto.getUserName());
+            driverService. createNewUser(driverAdminDto.getUserName());
+            driverService.add(driverAdminDto);
             return "{\"success\":1}";
         } catch (Exception e) {
             return "{\"error \":" + e.getMessage() + "}";
