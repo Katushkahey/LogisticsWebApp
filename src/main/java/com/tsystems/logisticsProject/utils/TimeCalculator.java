@@ -37,7 +37,6 @@ public class TimeCalculator {
      * ему хватило времени на выполнение заказа
      */
 
-    // нет теста 8
     public int calculateMaxSpentTimeForDriver(int hoursToCompleteOrder, int numberOfWorkingHoursPerDayPerPerson,
                                               int numberOfDrivers) {
         int requiredNumberOfHoursPerPerson = calculateRequiredNumberOfHoursPerPerson(hoursToCompleteOrder,
@@ -51,7 +50,6 @@ public class TimeCalculator {
      * Иначе, время для поиска водителя = полное время, необходимое на выполнение заказа/2, тк выполнят его пополам.
      */
 
-    // нет теста 7
     public int calculateRequiredNumberOfHoursPerPerson(int hoursToCompleteOrder, int numberOfWorkingHoursPerDayPerPerson,
                                                        int numberOfDrivers) {
         if (hoursToCompleteOrder <= TIME_OF_ORDER_FOR_ONE_DRIVER_MAX) {
@@ -71,12 +69,10 @@ public class TimeCalculator {
         }
     }
 
-    // нет теста 6
     public int calculateRequiredNumberOfDaysToCompleteOrder(int hoursForOrderFromThisCity, int numberOfTotalWorkingHoursPerDay) {
-        return (int) Math.ceil(hoursForOrderFromThisCity / numberOfTotalWorkingHoursPerDay);
+        return (int)Math.ceil((double) hoursForOrderFromThisCity / (double)numberOfTotalWorkingHoursPerDay);
     }
 
-    // нет теста 5
     public int calculateTotalHoursForOrderFromThisCity(int optionalMaxDriversForOrderFromThisCity, int hoursForOrderFromThisCity,
                                                        int numberOfDrivers) {
         int numberOfWorkingHoursInDayPerPerson;
@@ -91,7 +87,6 @@ public class TimeCalculator {
         }
     }
 
-    // нет теста 4
     public Map<City, Integer> calculateTimeForOrderFromEveryCity(Set<City> setOfCities, Long orderId) {
         Map<City, Integer> mapOfHoursForEveryStartCity = new HashMap<>();
         for (City city : setOfCities) {
@@ -105,17 +100,14 @@ public class TimeCalculator {
         return mapOfHoursForEveryStartCity;
     }
 
-    // нет теста 3
     public int calculateHoursForDrivingByDistance(Double distance) {
-        return (int) Math.ceil(distance / AVERAGE_VELOCITY);
+        return (int) Math.ceil(distance / (double)AVERAGE_VELOCITY);
     }
-
-    // есть тест 2
+    
     public int calculateHoursForLoadingUnloading(List<Waypoint> listOfWaypoints) {
         return listOfWaypoints.size() / 2;
     }
 
-    // есть тест 1
     public int calculateLeftTimeToEndMonth() {
         int year = YearMonth.now().getYear();
         int month = YearMonth.now().getMonthValue();

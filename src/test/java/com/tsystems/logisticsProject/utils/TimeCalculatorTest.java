@@ -1,7 +1,5 @@
 package com.tsystems.logisticsProject.utils;
 
-import com.tsystems.logisticsProject.entity.Cargo;
-import com.tsystems.logisticsProject.entity.City;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import org.junit.Assert;
 import org.junit.Before;
@@ -46,12 +44,55 @@ public class TimeCalculatorTest {
     @Test
     public void testCalculateHoursForDrivingByDistance() {
         double distance = 605;
-        int expextedNumberOfHours = 11;
+        int expectedNumberOfHours = 11;
         int testNumberOfHours = calculator.calculateHoursForDrivingByDistance(distance);
-        Assert.assertEquals(expextedNumberOfHours, testNumberOfHours);
+        Assert.assertEquals(expectedNumberOfHours, testNumberOfHours);
     }
 
-    private void prefillTestData () {
+    @Test
+    public void testCalculateTotalHoursForOrderFromThisCity() {
+        int optionalNumberOfDrivers = 3;
+        int hoursForOrderFromThisCity = 96;
+        int numberOfDrivers = 2;
+        int expectedNumberOfHours = 96 / 8 / 2 * 24;
+        int testNumberOfHours = calculator.calculateTotalHoursForOrderFromThisCity(optionalNumberOfDrivers,
+                hoursForOrderFromThisCity, numberOfDrivers);
+        Assert.assertEquals(expectedNumberOfHours, testNumberOfHours);
+    }
+
+    @Test
+    public void testCalculateRequiredNumberOfDaysToCompleteOrder() {
+        int totalHoursToCompleteOrder = 98;
+        int numberOfTotalWorkingHoursPerDay = 16;
+        int expectedNumberOfDays = 7;
+        int testNumberOfDays = calculator.calculateRequiredNumberOfDaysToCompleteOrder(totalHoursToCompleteOrder,
+                numberOfTotalWorkingHoursPerDay);
+        Assert.assertEquals(expectedNumberOfDays, testNumberOfDays);
+    }
+
+    @Test
+    public void testCalculateRequiredNumberOfHoursPerPerson() {
+        int hoursToCompleteOrder = 96;
+        int numberOfWorkingHoursPerDayPerPerson = 8;
+        int numberOfDrivers = 2;
+        int expectedNumberOfHours = 48;
+        int testNumberOfHours = calculator.calculateRequiredNumberOfHoursPerPerson(hoursToCompleteOrder,
+                numberOfWorkingHoursPerDayPerPerson, numberOfDrivers);
+        Assert.assertEquals(expectedNumberOfHours, testNumberOfHours);
+    }
+
+    @Test
+    public void testCalculateMaxSpentTimeForDriver() {
+        int hoursToCompleteOrder = 96;
+        int numberOfWorkingHoursPerDayPerPerson = 8;
+        int numberOfDrivers = 2;
+        int expectedNumberOfHours = 176 - 48;
+        int testNumberOfHours = calculator.calculateMaxSpentTimeForDriver(hoursToCompleteOrder, numberOfWorkingHoursPerDayPerPerson,
+                numberOfDrivers);
+        Assert.assertEquals(expectedNumberOfHours, testNumberOfHours);
+    }
+
+    public void prefillTestData () {
         listOfFourWaypoints = new ArrayList<>();
         SpbPoint = new Waypoint();
         MscPoint = new Waypoint();
@@ -60,5 +101,6 @@ public class TimeCalculatorTest {
         listOfFourWaypoints.add(MscPoint);
         listOfFourWaypoints.add(SpbPoint);
         listOfFourWaypoints.add(MscPoint);
+        calculator.calculateLeftTimeToEndMonth();
     }
 }
