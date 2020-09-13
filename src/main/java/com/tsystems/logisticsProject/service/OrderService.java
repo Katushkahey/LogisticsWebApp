@@ -38,7 +38,5 @@ public interface OrderService {
 
     void cancelAssignment(OrderAdminDto orderAdminDto);
 
-    boolean deleteWaypoint(Long orderId, Long waypointId);
-
     List<OrderClientDto> getTopOrders();
 }

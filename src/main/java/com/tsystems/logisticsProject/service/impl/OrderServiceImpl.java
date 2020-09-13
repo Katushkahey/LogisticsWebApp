@@ -19,7 +19,7 @@ import java.util.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    public final static int REQUIRED_NUMBER = 10;
+    public static final int REQUIRED_NUMBER = 10;
 
     private ApplicationEventPublisher applicationEventPublisher;
     private OrderClientMapper orderClientMapper;
@@ -118,6 +118,7 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setTruckNumber(cf.getTruckNumber());
         orderDto.setDrivers(cf.getDrivers());
         orderDto.setStatus(OrderStatus.WAITING.toString());
+
         update(orderAdminMapper.toEntity(orderDto));
     }
 
@@ -127,11 +128,6 @@ public class OrderServiceImpl implements OrderService {
         orderAdminDto.setStatus(OrderStatus.NOT_ASSIGNED.toString());
         orderAdminDto.setDrivers(null);
         update(orderAdminMapper.toEntity(orderAdminDto));
-    }
-
-    @Transactional
-    public boolean deleteWaypoint(Long orderId, Long waypointId) {
-        return waypointService.deleteWaypoint(orderId, waypointId);
     }
 
     @Transactional

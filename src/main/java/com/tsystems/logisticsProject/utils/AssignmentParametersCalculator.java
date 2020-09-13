@@ -28,8 +28,7 @@ public class AssignmentParametersCalculator {
         this.truckService = truckService;
     }
 
-
-
+    // нет теста 4
     public List<Driver> returnDriversWithMinValidTimeAsList(List<Driver> listOfDrivers, int numberOfDrivers) {
         List<Driver> listOfDriversToReturn = new ArrayList<>();
         while (numberOfDrivers > 0) {
@@ -73,6 +72,7 @@ public class AssignmentParametersCalculator {
         return setOfCities;
     }
 
+    // нет теста 2
     public Map<City, Integer> calculateMaxOptionalNumberOfDriversForOrderFromEveryCity(Set<City> listOfCities, Long orderId) {
         Map<City, Integer> mapOfMaxOptionalNumberOfDrivers = new HashMap<>();
         Map<City, Integer> mapOfHoursForEveryStartCity = timeCalculator.calculateTimeForOrderFromEveryCity(listOfCities,
@@ -99,6 +99,7 @@ public class AssignmentParametersCalculator {
         }
     }
 
+    // нет теста 1
     private double calculateMaxOneTimeWeightForOrder(Long orderId) {
         List<Waypoint> listOfWaypoints = orderService.findWaypointsForCurrentOrderById(orderId);
         return orderService.getMaxWeightForOrderById(listOfWaypoints);

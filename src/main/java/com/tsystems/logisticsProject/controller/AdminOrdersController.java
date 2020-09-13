@@ -108,7 +108,7 @@ public class AdminOrdersController {
 
     @GetMapping("/delete_waypoint/{orderId}/{waypointId}")
     public String deleteWaypoint(@PathVariable("orderId") Long orderId, @PathVariable("waypointId") Long waypointId) {
-        if (orderService.deleteWaypoint(orderId, waypointId)) {
+        if (waypointService.deleteWaypoint(orderId, waypointId)) {
             return "redirect:/order/info";
         }
         return "redirect:/order/show_info/{orderId}";

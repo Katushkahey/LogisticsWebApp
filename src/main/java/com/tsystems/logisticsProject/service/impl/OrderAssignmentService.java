@@ -1,53 +1,44 @@
 package com.tsystems.logisticsProject.service.impl;
 
 import com.tsystems.logisticsProject.dto.CombinationForOrderDto;
-import com.tsystems.logisticsProject.entity.City;
-import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.Truck;
+import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.mapper.CombinationForOrderMapper;
 import com.tsystems.logisticsProject.service.DriverService;
-import com.tsystems.logisticsProject.entity.CombinationForOrder;
 import com.tsystems.logisticsProject.utils.AssignmentParametersCalculator;
 import com.tsystems.logisticsProject.utils.TimeCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Component
 public class OrderAssignmentService {
 
+
     private List<CombinationForOrderDto> listOfCombinationForOrderDto;
-    private CombinationForOrderMapper combinationForOrderMapper;
     private long combinationId;
     private DriverService driverService;
+    private CombinationForOrderMapper combinationForOrderMapper;
     private TimeCalculator timeCalculator;
     private AssignmentParametersCalculator assignmentParametersCalculator;
 
     @Autowired
-    private void setDependencies(DriverService driverService, CombinationForOrderMapper combinationForOrderMapper,
-                                 TimeCalculator timeCalculator,
+    private void setDependencies(DriverService driverService, CombinationForOrderMapper
+                                 combinationForOrderMapper, TimeCalculator timeCalculator,
                                  AssignmentParametersCalculator assignmentParametersCalculator) {
         this.driverService = driverService;
-        this.combinationForOrderMapper = combinationForOrderMapper;
         this.assignmentParametersCalculator = assignmentParametersCalculator;
+        this.combinationForOrderMapper = combinationForOrderMapper;
         this.timeCalculator = timeCalculator;
     }
 
-    @PostConstruct
-    public void init() {
+    public List<CombinationForOrderDto> createListOfCombinationsForOrder(Long orderId) {
         listOfCombinationForOrderDto = new ArrayList<>();
         combinationId = 0;
         timeCalculator.calculateLeftTimeToEndMonth();
-    }
-
-    public List<CombinationForOrderDto> createListOfCombinationsForOrder(Long orderId) {
-        Map<City, List<Truck>> mapOfTrucksForEveryCity =
-                assignmentParametersCalculator.getMapOfTrucksForEveryCity(orderId);
+        Map<City, List<Truck>> mapOfTrucksForEveryCity = assignmentParametersCalculator.getMapOfTrucksForEveryCity(orderId);
         Set<City> setOfCity = mapOfTrucksForEveryCity.keySet();
-        Map<City, Integer> mapOfMaxOptionalNumberOfDrivers =
-                assignmentParametersCalculator.calculateMaxOptionalNumberOfDriversForOrderFromEveryCity(setOfCity, orderId);
+        Map<City, Integer> mapOfMaxOptionalNumberOfDrivers = assignmentParametersCalculator.calculateMaxOptionalNumberOfDriversForOrderFromEveryCity(setOfCity, orderId);
         Map<City, Integer> mapOfHoursForOrderFromEveryCity = timeCalculator.calculateTimeForOrderFromEveryCity(setOfCity, orderId);
 
         // заходим в каждый город, где есть подходящая для выполнения заказа фура
@@ -57,7 +48,7 @@ public class OrderAssignmentService {
             List<Truck> listOfTruckForCurrentOrderInEveryCity = mapOfTrucksForEveryCity.get(city);
 
             // получаем оптимальное количество водителей, необходимое для выполнения этого заказа
-            int optionalMaxDrivers = mapOfMaxOptionalNumberOfDrivers.get(city);
+            int optionalMaxDriversForOrderFromThisCity = mapOfMaxOptionalNumberOfDrivers.get(city);
 
             // получаем количество часов, необходимое для выполнения данного заказа из этого города
             // с учетом расстояния от города старта и расстояния до города возвращеня домой
@@ -72,20 +63,16 @@ public class OrderAssignmentService {
                  * где каждый из водителей работает по 8 часов в день.
                  * Т.к фура вмещает только двоих, значит едем по 16 часов в день.
                  */
-                if (truck.getCrewSize() < optionalMaxDrivers) {
+                if (truck.getCrewSize() < optionalMaxDriversForOrderFromThisCity) {
+                    int numberOfDrivers = 2;
+                    int workingHoursPerDayForEveryPerson = 8;
                     // количество дней на выполнение заказа = полное количество часов в пути / 16 часов в день ,округляем в большую сторону
-                    int numberOfDrivers = truck.getCrewSize();
-                    /** если необходимое кол-во дней на выполнение заказа больше ,чем кол-во дней до конца месяца,
-                     * то для поиска водителей время будет равно кол-ву дней до конца месяца * на 8 часов каждый день,
-                     * тк после этого их часы обнулятся.
-                     * Иначе, время для поиска водителя = полное время, необходимое на выполнение заказа/2, тк выполнят его пополам.
-                     */
 
                     /** считаем максимальное количество часов ,которое может уже быть потрачено водителем на момент назначения заказа, что бы
                      * ему хватило времени на выполнение заказа
                      */
-                    int maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers,
-                            hoursForOrderFromThisCity, numberOfDrivers);
+                    int maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity,
+                            workingHoursPerDayForEveryPerson, numberOfDrivers);
 
                     /** осуществляем запрос, который отдас нам водителей, у которых сейчас нет назначенного заказа, которые находятся в том же городе,
                      * что и фура и у которых хватает часов на выполнение заказа.
@@ -101,19 +88,16 @@ public class OrderAssignmentService {
                          * и посмотрим, подходит ли нам все еще этот водителью
                          */
                         if (listOfDrivers.size() < truck.getCrewSize()) {
-                            numberOfDrivers = listOfDrivers.size();
-                            // необходимое кол-во дней на выполнение заказа = количество часов на выполнение заказа / 8 часов в день
-
-                            maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers,
-                                    hoursForOrderFromThisCity, numberOfDrivers);
-
+                            numberOfDrivers = 1;
+                            maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity,
+                                    workingHoursPerDayForEveryPerson, numberOfDrivers);
                             // если у него хватит часов на выполнение заказа, то мы добавляем такой вариант в список возможных вариантов.
                             if (listOfDrivers.get(0).getHoursThisMonth() <= maxSpentTimeForDriver) {
-                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDrivers);
+                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDriversForOrderFromThisCity);
                             }
                             // если количество найденных водителей = вместимости фуры, то просто добавим такой вариант в список возможных вариантов.
                         } else if (listOfDrivers.size() == truck.getCrewSize()) {
-                            addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDrivers);
+                            addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDriversForOrderFromThisCity);
                         } else {
                             /**если количество найденных водителей больше, чем вмещает в себя фура, мы из представленного списка выберем тех,
                              * у кого до конца месяца осталось наименьше количество часов, что бы оптимальнее расходовать ресурсы и добавим данную комбинацию в
@@ -121,17 +105,19 @@ public class OrderAssignmentService {
                              */
                             List<Driver> listOfDriversForCombination =
                                     assignmentParametersCalculator.returnDriversWithMinValidTimeAsList(listOfDrivers, 2);
-                            addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversForCombination, optionalMaxDrivers);
+                            addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversForCombination, optionalMaxDriversForOrderFromThisCity);
                         }
                     }
                 } else {
                     /**если необходимое число водителей для выполнения заказа == 1, значит заказ максимум на 12 часов ,
                      * значит один водитель будет выполнять весь заказ, и ему необходимо иметь полное кол-во часов на выполнение заказа
                      */
-                    if (optionalMaxDrivers == 1) {
+                    if (optionalMaxDriversForOrderFromThisCity == 1) {
+                        int numberOfDrivers = 1;
+                        int workingHoursPerDayForEveryPerson = 12;
                         int maxSpentTimeForDriver =
-                                timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers, hoursForOrderFromThisCity,
-                                        optionalMaxDrivers);
+                                timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity, workingHoursPerDayForEveryPerson,
+                                        numberOfDrivers);
                         List<Driver> listOfDrivers = driverService.findDriversForTruck(city, maxSpentTimeForDriver);
 
                         /** если мы нашли людей, подходящих под это  заказ, то из них выберем того, у кого до конца месяца осталось наименьшее кол-во
@@ -140,7 +126,7 @@ public class OrderAssignmentService {
                         if (listOfDrivers != null && listOfDrivers.size() != 0) {
                             List<Driver> listOfDriversToCombination =
                                     assignmentParametersCalculator.returnDriversWithMinValidTimeAsList(listOfDrivers, 1);
-                            addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversToCombination, optionalMaxDrivers);
+                            addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversToCombination, optionalMaxDriversForOrderFromThisCity);
                         }
 
                         /**
@@ -148,11 +134,11 @@ public class OrderAssignmentService {
                          *   водители будут работать по 12 часов в день, тк заказ при таком расклады выходит максимум на 2 дня.
                          */
 
-                    } else if (optionalMaxDrivers == 2) {
-
-                        int maxSpentTimeForDriver =
-                                timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers, hoursForOrderFromThisCity,
-                                        optionalMaxDrivers);
+                    } else if (optionalMaxDriversForOrderFromThisCity == 2) {
+                        int numberOfDrivers = 2;
+                        int workingHoursPerDayForEveryPerson = 12;
+                        int maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity,
+                                workingHoursPerDayForEveryPerson, numberOfDrivers);
                         List<Driver> listOfDrivers = driverService.findDriversForTruck(city, maxSpentTimeForDriver);
                         if (listOfDrivers != null && listOfDrivers.size() != 0) {
                             /** если количество водителей в найденом списке, меньше 2 необходимых, значит
@@ -160,17 +146,18 @@ public class OrderAssignmentService {
                              *  проверим, хватит ли ему времени в таком случае.
                              */
                             if (listOfDrivers.size() < 2) {
-                                int numberOfDrivers = 1;
-                                int newMaxSpentTimeForDriver =
-                                        timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers, hoursForOrderFromThisCity,
-                                                numberOfDrivers);
+                                numberOfDrivers = 1;
+
+                                int newMaxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity,
+                                        workingHoursPerDayForEveryPerson, numberOfDrivers);
+
                                 // если ему хватает часов на выполнение данного заказа, то мы добавляем данную комбинацию в список комбинаций
-                                if (listOfDrivers.get(0).getHoursThisMonth() >= newMaxSpentTimeForDriver) {
-                                    addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDrivers);
+                                if (listOfDrivers.get(0).getHoursThisMonth() <= newMaxSpentTimeForDriver) {
+                                    addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDriversForOrderFromThisCity);
                                 }
                                 // если список найденных нами водителей = 2, значит мы просто добавим такую комбинацию в список всех комбинаций
                             } else if (listOfDrivers.size() == 2) {
-                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDrivers);
+                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDriversForOrderFromThisCity);
                                 /**
                                  * если количество найденных водителей больше ,чем нам необходимо, мы просто выберем из всех тех, у кого до конца месяца осталось наименьшее
                                  * количество часов, что бы оптимальнее использовать ресурсы и добавим такую комбинацию в список всех возможных комбинаций.
@@ -179,41 +166,40 @@ public class OrderAssignmentService {
                                 List<Driver> listOfDriversForCombination =
                                         assignmentParametersCalculator.returnDriversWithMinValidTimeAsList(listOfDrivers, 2);
 
-                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversForCombination, optionalMaxDrivers);
+                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversForCombination, optionalMaxDriversForOrderFromThisCity);
                             }
                         }
                         // раз нам нужно 3 человека, значит заказ длительный, едем по 8 часов каждый
                     } else {
-                        int maxSpentTimeForDriver =
-                                timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers, hoursForOrderFromThisCity,
-                                        optionalMaxDrivers);
+                        int numberOfDrivers = 3;
+                        int workingHoursPerDayForEveryPerson = 8;
+                        int maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity,
+                                workingHoursPerDayForEveryPerson, numberOfDrivers);
                         List<Driver> listOfDrivers = driverService.findDriversForTruck(city, maxSpentTimeForDriver);
                         if (listOfDrivers != null && listOfDrivers.size() != 0) {
                             // если мы нашли больше водителей, чем нам нужно ,выберем 3 с наименьшим кол-вом оставшегося времени....
                             if (listOfDrivers.size() > 3) {
                                 List<Driver> listOfDriversForCombination =
                                         assignmentParametersCalculator.returnDriversWithMinValidTimeAsList(listOfDrivers, 3);
-                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversForCombination, optionalMaxDrivers);
+                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDriversForCombination, optionalMaxDriversForOrderFromThisCity);
 
                             } else if (listOfDrivers.size() == 3) {
-                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDrivers);
+                                addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDriversForOrderFromThisCity);
 
                                 // если список подходящих водителей меньше ,чем нам нужно, значит мы нашли либо 2 либо 1 водителя
                             } else {
                                 if (listOfDrivers.size() == 1) {
-                                    int numberOfDrivers = 1;
-                                    maxSpentTimeForDriver =
-                                            timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers, hoursForOrderFromThisCity,
-                                                    numberOfDrivers);
+                                    numberOfDrivers = 1;
+                                    maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity,
+                                            workingHoursPerDayForEveryPerson, numberOfDrivers);
                                     // проверим ,хватит ли найденному водителю времени после перерасчета и если да, добавим комбинацию.
                                     if (listOfDrivers.get(0).getHoursThisMonth() < maxSpentTimeForDriver) {
-                                        addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDrivers);
+                                        addCombinationForOrderInList(truck, hoursForOrderFromThisCity, listOfDrivers, optionalMaxDriversForOrderFromThisCity);
                                     }
                                 } else {
-                                    int numberOfDrivers = 2;
-                                    maxSpentTimeForDriver =
-                                            timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers, hoursForOrderFromThisCity,
-                                                    numberOfDrivers);
+                                    numberOfDrivers = 2;
+                                    maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity,
+                                            workingHoursPerDayForEveryPerson, numberOfDrivers);
                                     // проверим хватит ли двум найденным водителя времени на заказ после перерасчета необходимого времени
                                     List<Driver> newListOfDrivers = new ArrayList<>();
                                     for (Driver driver : listOfDrivers) {
@@ -224,17 +210,16 @@ public class OrderAssignmentService {
                                     // если в новом списке осталось 2 водителя, значит им обоим хватило времени, и мы добавляем комбинацию.
                                     if (newListOfDrivers.size() == 2) {
 
-                                        addCombinationForOrderInList(truck, hoursForOrderFromThisCity, newListOfDrivers, optionalMaxDrivers);
+                                        addCombinationForOrderInList(truck, hoursForOrderFromThisCity, newListOfDrivers, optionalMaxDriversForOrderFromThisCity);
                                         /**если в новом списке остался только 1 водитель, значит времени на выполнение заказа после перерасчета хватило только ему
                                          * но тк заказ он будет в таком случае выполнять 1, нам нужно снова перерасчитать время и убедиться, что водителю его хватит.
                                          */
                                     } else if (newListOfDrivers.size() == 1) {
                                         numberOfDrivers = 1;
-                                        maxSpentTimeForDriver =
-                                                timeCalculator.calculateMaxSpentTimeForDriver(optionalMaxDrivers, hoursForOrderFromThisCity,
-                                                        numberOfDrivers);
+                                        maxSpentTimeForDriver = timeCalculator.calculateMaxSpentTimeForDriver(hoursForOrderFromThisCity,
+                                                workingHoursPerDayForEveryPerson, numberOfDrivers);
                                         if (newListOfDrivers.get(0).getHoursThisMonth() < maxSpentTimeForDriver) {
-                                            addCombinationForOrderInList(truck, hoursForOrderFromThisCity, newListOfDrivers, optionalMaxDrivers);
+                                            addCombinationForOrderInList(truck, hoursForOrderFromThisCity, newListOfDrivers, optionalMaxDriversForOrderFromThisCity);
                                         }
                                     }
                                 }
@@ -247,15 +232,15 @@ public class OrderAssignmentService {
         return listOfCombinationForOrderDto;
     }
 
-    private void addCombinationForOrderInList(Truck truck, int hoursForOrderFromThisCity, List<Driver> listOfDriversForCombination,
-                                              int optionalMaxDriversForOrderFromThisCity) {
+    private void addCombinationForOrderInList(Truck truck, int hoursForOrderFromThisCity, List<Driver> listOfDriversForCombination, int optionalMaxDriversForOrderFromThisCity) {
         combinationId++;
         CombinationForOrder combinationForOrder = new CombinationForOrder();
         combinationForOrder.setId(combinationId);
         combinationForOrder.setListOfDrivers(listOfDriversForCombination);
         combinationForOrder.setTruck(truck);
+        int numberOfDrivers = listOfDriversForCombination.size();
         int totalHours = timeCalculator.calculateTotalHoursForOrderFromThisCity(optionalMaxDriversForOrderFromThisCity,
-                hoursForOrderFromThisCity, listOfDriversForCombination.size());
+                hoursForOrderFromThisCity, numberOfDrivers);
         combinationForOrder.setTotalHours(totalHours);
         combinationForOrder.setTotalBillableHours(hoursForOrderFromThisCity);
         listOfCombinationForOrderDto.add(combinationForOrderMapper.toDto(combinationForOrder));

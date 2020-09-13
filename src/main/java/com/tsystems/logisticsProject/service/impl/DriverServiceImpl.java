@@ -83,6 +83,7 @@ public class DriverServiceImpl implements DriverService {
             throw new NotUniqueDriverTelephoneNumberException(driverAdminDto.getTelephoneNumber());
         } catch (NoResultException e) {
             driverDao.add(driverAdminMapper.toEntity(driverAdminDto));
+            applicationEventPublisher.publishEvent(new UpdateEvent());
         }
     }
 

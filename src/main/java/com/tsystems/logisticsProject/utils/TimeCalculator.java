@@ -1,7 +1,6 @@
 package com.tsystems.logisticsProject.utils;
 
 import com.tsystems.logisticsProject.entity.City;
-import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,10 @@ public class TimeCalculator {
 
     public int fullDaysToEndMonth;
     public int hoursToEndMonth;
+    private final int TIME_OF_ORDER_FOR_ONE_DRIVER_MAX = 12;
     private final int AVERAGE_VELOCITY = 60;
     private  final int NUMBER_OF_HOURS_IN_DAY = 24;
+    private  final int NUMBER_OF_HOURS_IN_MONTH = 176;
 
     private OrderService orderService;
     private DistanceCalculator distanceCalculator;
@@ -32,36 +33,50 @@ public class TimeCalculator {
         this.distanceCalculator = distanceCalculator;
     }
 
-    public int calculateMaxSpentTimeForDriver(int optionalMaxDrivers, int hoursForOrderFromThisCity, int numberOfDrivers) {
-        int requiredNumberOfHoursPerPerson = calculateRequiredNumberOfHoursPerPerson(optionalMaxDrivers,
-                hoursForOrderFromThisCity, numberOfDrivers);
-        return Driver.MAX_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
+    /** считаем максимальное количество часов ,которое может уже быть потрачено водителем на момент назначения заказа, что бы
+     * ему хватило времени на выполнение заказа
+     */
+
+    // нет теста 8
+    public int calculateMaxSpentTimeForDriver(int hoursToCompleteOrder, int numberOfWorkingHoursPerDayPerPerson,
+                                              int numberOfDrivers) {
+        int requiredNumberOfHoursPerPerson = calculateRequiredNumberOfHoursPerPerson(hoursToCompleteOrder,
+                numberOfWorkingHoursPerDayPerPerson, numberOfDrivers);
+        return NUMBER_OF_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
     }
 
-    private int calculateRequiredNumberOfHoursPerPerson(int optionalMaxDrivers, int hoursForOrderFromThisCity,
-                                                        int numberOfDrivers) {
-        if (optionalMaxDrivers == 1) {
-            return Math.min(hoursToEndMonth, hoursForOrderFromThisCity);
-        } else {
-            int numberOfWorkingHoursInDayPerPerson = returnNormalNumberOfWorkingHoursInDayPerPerson(optionalMaxDrivers);
-            int numberOfTotalWorkingTimePerDay = numberOfWorkingHoursInDayPerPerson * numberOfDrivers;
-            int numberOfDayToCompleteOrder = (int) Math.ceil(hoursForOrderFromThisCity / numberOfWorkingHoursInDayPerPerson);
-            if (numberOfDayToCompleteOrder > fullDaysToEndMonth) {
-                return fullDaysToEndMonth * numberOfTotalWorkingTimePerDay;
+    /** если необходимое кол-во дней на выполнение заказа больше ,чем кол-во дней до конца месяца,
+     * то для поиска водителей время будет равно кол-ву дней до конца месяца * на 8 часов каждый день,
+     * тк после этого их часы обнулятся.
+     * Иначе, время для поиска водителя = полное время, необходимое на выполнение заказа/2, тк выполнят его пополам.
+     */
+
+    // нет теста 7
+    public int calculateRequiredNumberOfHoursPerPerson(int hoursToCompleteOrder, int numberOfWorkingHoursPerDayPerPerson,
+                                                       int numberOfDrivers) {
+        if (hoursToCompleteOrder <= TIME_OF_ORDER_FOR_ONE_DRIVER_MAX) {
+            if (hoursToCompleteOrder > hoursToEndMonth) {
+                return hoursToEndMonth;
             } else {
-                return (int) Math.ceil(hoursForOrderFromThisCity / numberOfDrivers);
+                return hoursToCompleteOrder;
+            }
+        } else {
+            int numberOfTotalWorkingHoursPerDay = numberOfDrivers * numberOfWorkingHoursPerDayPerPerson;
+            int numberOfDaysToCompleteOrder = calculateRequiredNumberOfDaysToCompleteOrder(hoursToCompleteOrder, numberOfTotalWorkingHoursPerDay);
+            if (numberOfDaysToCompleteOrder > fullDaysToEndMonth) {
+                return fullDaysToEndMonth * numberOfWorkingHoursPerDayPerPerson;
+            } else {
+                return numberOfDaysToCompleteOrder * numberOfWorkingHoursPerDayPerPerson;
             }
         }
     }
 
-    private int returnNormalNumberOfWorkingHoursInDayPerPerson(int optionalMaxDrivers) {
-        if (optionalMaxDrivers == 3) {
-            return 8;
-        } else {
-            return 12;
-        }
+    // нет теста 6
+    public int calculateRequiredNumberOfDaysToCompleteOrder(int hoursForOrderFromThisCity, int numberOfTotalWorkingHoursPerDay) {
+        return (int) Math.ceil(hoursForOrderFromThisCity / numberOfTotalWorkingHoursPerDay);
     }
 
+    // нет теста 5
     public int calculateTotalHoursForOrderFromThisCity(int optionalMaxDriversForOrderFromThisCity, int hoursForOrderFromThisCity,
                                                        int numberOfDrivers) {
         int numberOfWorkingHoursInDayPerPerson;
@@ -76,12 +91,13 @@ public class TimeCalculator {
         }
     }
 
+    // нет теста 4
     public Map<City, Integer> calculateTimeForOrderFromEveryCity(Set<City> setOfCities, Long orderId) {
         Map<City, Integer> mapOfHoursForEveryStartCity = new HashMap<>();
         for (City city : setOfCities) {
             List<Waypoint> listOfWaypoints = orderService.findWaypointsForCurrentOrderById(orderId);
             double totalDistance = distanceCalculator.calculateTotalDistanceForOrderDependingOnStartCity(city, listOfWaypoints);
-            int hoursForLoadingUnloading = calculateHoursForLoadingUnloading(orderId);
+            int hoursForLoadingUnloading = calculateHoursForLoadingUnloading(listOfWaypoints);
             int hoursForDriving = calculateHoursForDrivingByDistance(totalDistance);
             int totalalNumberOfHours = hoursForDriving + hoursForLoadingUnloading;
             mapOfHoursForEveryStartCity.put(city, totalalNumberOfHours);
@@ -89,15 +105,18 @@ public class TimeCalculator {
         return mapOfHoursForEveryStartCity;
     }
 
-    private int calculateHoursForDrivingByDistance(Double distance) {
+    // нет теста 3
+    public int calculateHoursForDrivingByDistance(Double distance) {
         return (int) Math.ceil(distance / AVERAGE_VELOCITY);
     }
 
-    private int calculateHoursForLoadingUnloading(Long orderId) {
-        return orderService.findWaypointsForCurrentOrderById(orderId).size() / 2;
+    // есть тест 2
+    public int calculateHoursForLoadingUnloading(List<Waypoint> listOfWaypoints) {
+        return listOfWaypoints.size() / 2;
     }
 
-    public void calculateLeftTimeToEndMonth() {
+    // есть тест 1
+    public int calculateLeftTimeToEndMonth() {
         int year = YearMonth.now().getYear();
         int month = YearMonth.now().getMonthValue();
 
@@ -108,8 +127,9 @@ public class TimeCalculator {
 
         int hour = LocalDateTime.now().getHour();
         fullDaysToEndMonth = daysInMonth - today;
-        int hoursInMonth = daysInMonth * 24;
-        int hoursFromStartMonth = (today - 1) * 24 + hour;
+        int hoursInMonth = daysInMonth * NUMBER_OF_HOURS_IN_DAY;
+        int hoursFromStartMonth = (today - 1) * NUMBER_OF_HOURS_IN_DAY + hour;
         hoursToEndMonth = hoursInMonth - hoursFromStartMonth;
+        return fullDaysToEndMonth;
     }
 }
