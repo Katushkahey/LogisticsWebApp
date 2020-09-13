@@ -51,7 +51,6 @@ public class WaypointMapper {
                 .addMappings(m -> m.skip(Waypoint::setCargo)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Waypoint::setCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Waypoint::setAction)).setPostConverter(toEntityConverter())
-                .addMappings(m -> m.skip(Waypoint::setStatus)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Waypoint::setStatus)).setPostConverter(toEntityConverter());
     }
 

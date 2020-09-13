@@ -11,6 +11,8 @@ public class DistanceCalculator {
 
     private final int EARTH_RADIUS_IN_KILOMETRES = 6373;
 
+
+    // есть тест
     public double calculateTotalDistanceForOrderDependingOnStartCity(City city, List<Waypoint> listOfWaypoints) {
         City startCity = listOfWaypoints.get(0).getCity();
         City endCity = listOfWaypoints.get(listOfWaypoints.size() - 1).getCity();
@@ -19,7 +21,8 @@ public class DistanceCalculator {
         return distanceToFirstWaypoint + calculateDistanceBetweenWaypointsForOrder(listOfWaypoints) + distanceFromLastWaypointToHome;
     }
 
-    private Double calculateDistanceBetweenWaypointsForOrder(List<Waypoint> listOfWaypoints) {
+    // есть тест
+    public Double calculateDistanceBetweenWaypointsForOrder(List<Waypoint> listOfWaypoints) {
         Waypoint waypointFrom;
         Waypoint waypointTo;
         double distanceBetweenWaypointsOfOrder = 0;
@@ -35,10 +38,12 @@ public class DistanceCalculator {
         return distanceBetweenWaypointsOfOrder;
     }
 
-    private double calculateDistanceBetweenTwoCities(City cityFrom, City cityTo) {
+    // есть тест
+    public double calculateDistanceBetweenTwoCities(City cityFrom, City cityTo) {
         return getDist(cityFrom.getLat(), cityFrom.getLng(), cityTo.getLat(), cityTo.getLng());
     }
 
+    // есть тест
     public double getDist(double lat1, double lon1, double lat2, double lon2) {
         double lat1rad = Math.toRadians(lat1);
         double lat2rad = Math.toRadians(lat2);

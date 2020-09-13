@@ -1,14 +1,18 @@
 package com.tsystems.logisticsProject.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dto.CombinationForOrderDto;
 import com.tsystems.logisticsProject.dto.OrderAdminDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
 import com.tsystems.logisticsProject.service.*;
 import com.tsystems.logisticsProject.service.impl.OrderAssignmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/order")
@@ -20,15 +24,18 @@ public class AdminOrdersController {
     private TruckService truckService;
     private OrderAssignmentService orderAssignmentService;
 
+    private ObjectMapper objectMapper;
+
     @Autowired
     public void setDependencies(OrderService orderService, CityService cityService,
                                 WaypointService waypointService, OrderAssignmentService orderAssignmentService,
-                                TruckService truckService) {
+                                TruckService truckService, ObjectMapper objectMapper) {
         this.orderService = orderService;
         this.cityService = cityService;
         this.waypointService = waypointService;
         this.truckService = truckService;
         this.orderAssignmentService = orderAssignmentService;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/info-2")
@@ -85,18 +92,18 @@ public class AdminOrdersController {
         return "redirect:/order/info";
     }
 
-    @GetMapping("/edit_waypoint/{id}")
-    public String editWaypoint(@PathVariable("id") Long orderId, @RequestParam("id") Long waypointId,
-                               @RequestParam("cargoName") String cargoName, @RequestParam("weight") double weight,
-                               @RequestParam("city") String city, Model model) {
-        WaypointDto waypointDto = new WaypointDto();
-        waypointDto.setId(waypointId);
-        waypointDto.setCargoName(cargoName);
-        waypointDto.setCargoWeight(weight);
-        waypointDto.setCityName(city);
-        waypointService.update(waypointDto);
+    @PostMapping(value = "/edit_waypoint/{id}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String editWaypoint(@PathVariable("id") Long orderId, HttpServletRequest request) {
+        try {
+            WaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), WaypointDto.class);
+            waypointService.update(waypointDto);
+            return "{\"success\":1}";
+        } catch (Exception e) {
 
-        return "redirect:/order/show_info/{orderId}";
+            return "{\"error\":" + e.getMessage() + "}";
+        }
     }
 
     @GetMapping("/delete_waypoint/{orderId}/{waypointId}")
