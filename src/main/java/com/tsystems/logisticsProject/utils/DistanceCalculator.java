@@ -39,7 +39,7 @@ public class DistanceCalculator {
         return getDist(cityFrom.getLat(), cityFrom.getLng(), cityTo.getLat(), cityTo.getLng());
     }
 
-    private double getDist(double lat1, double lon1, double lat2, double lon2) {
+    public double getDist(double lat1, double lon1, double lat2, double lon2) {
         double lat1rad = Math.toRadians(lat1);
         double lat2rad = Math.toRadians(lat2);
         double deltaLat = Math.toRadians(lat2 - lat1);
