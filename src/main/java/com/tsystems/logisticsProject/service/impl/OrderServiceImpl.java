@@ -19,7 +19,7 @@ import java.util.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final int REQUIRED_NUMBER = 10;
+    public final static int REQUIRED_NUMBER = 10;
 
     private ApplicationEventPublisher applicationEventPublisher;
     private OrderClientMapper orderClientMapper;
@@ -70,8 +70,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public void deleteById(Long id) {
-        orderDao.delete(orderDao.findById(id));
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        List<Long> topIds = orderDao.getTopIds(REQUIRED_NUMBER);
+        for (Long topId: topIds) {
+            if (topId == id) {
+                orderDao.delete(orderDao.findById(id));
+                applicationEventPublisher.publishEvent(new UpdateEvent());
+            }else {
+                orderDao.delete(orderDao.findById(id));
+            }
+        }
     }
 
     @Transactional
@@ -82,12 +89,20 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void update(Order order) {
         orderDao.update(order);
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+
     }
 
     @Transactional
     public void update(OrderDriverDto orderDriverDto) {
-        update(orderDriverMapper.toEntity(orderDriverDto));
+        List<Long> topIds = orderDao.getTopIds(REQUIRED_NUMBER);
+        for (Long topId: topIds) {
+            if (topId == orderDriverDto.id) {
+                update(orderDriverMapper.toEntity(orderDriverDto));
+                applicationEventPublisher.publishEvent(new UpdateEvent());
+            } else {
+                update(orderDriverMapper.toEntity(orderDriverDto));
+            }
+        }
     }
 
     @Transactional

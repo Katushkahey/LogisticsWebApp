@@ -41,7 +41,20 @@ public class WaypointServiceImpl implements WaypointService {
 
     @Transactional
     public void update(WaypointDto waypointDto) {
-        waypointDao.update(waypointMapper.toEntity(waypointDto));
+        Waypoint waypoint = waypointMapper.toEntity(waypointDto);
+        Order order = waypoint.getCargo().getOrder();
+        List<Long> topId = orderDao.getTopIds(OrderServiceImpl.REQUIRED_NUMBER);
+       for (Long id: topId) {
+           if (id == order.getId()) {
+               waypointDao.update(waypointMapper.toEntity(waypointDto));
+               applicationEventPublisher.publishEvent(new UpdateEvent());
+               break;
+           } else {
+               waypointDao.update(waypointMapper.toEntity(waypointDto));
+               break;
+           }
+       }
+
     }
 
     @Transactional
@@ -52,18 +65,36 @@ public class WaypointServiceImpl implements WaypointService {
     @Transactional
     public boolean deleteWaypoint(Long orderId, Long waypointId) {
         Order orderToUpdate = orderDao.findById(orderId);
-        List<Waypoint> listOfWaypoint = waypointDao.getListOfWaypointsByOrderId(orderId);
-        if (listOfWaypoint.size() == 2) {
-            orderService.deleteById(orderId);
-            applicationEventPublisher.publishEvent(new UpdateEvent());
-            return true;
+        List<Long> topId = orderDao.getTopIds(OrderServiceImpl.REQUIRED_NUMBER);
+        for (Long id : topId) {
+            if (id == orderToUpdate.getId()) {
+                List<Waypoint> listOfWaypoint = waypointDao.getListOfWaypointsByOrderId(orderId);
+                if (listOfWaypoint.size() == 2) {
+                    orderService.deleteById(orderId);
+                    applicationEventPublisher.publishEvent(new UpdateEvent());
+                    return true;
+                }
+                Waypoint waypointToDelete = waypointDao.findById(waypointId);
+                Cargo cargo = waypointToDelete.getCargo();
+                orderToUpdate.getCargoes().remove(cargo);
+                orderService.update(orderToUpdate);
+                cargoService.delete(cargo);
+                applicationEventPublisher.publishEvent(new UpdateEvent());
+                return false;
+            } else {
+                List<Waypoint> listOfWaypoint = waypointDao.getListOfWaypointsByOrderId(orderId);
+                if (listOfWaypoint.size() == 2) {
+                    orderService.deleteById(orderId);
+                    return true;
+                }
+                Waypoint waypointToDelete = waypointDao.findById(waypointId);
+                Cargo cargo = waypointToDelete.getCargo();
+                orderToUpdate.getCargoes().remove(cargo);
+                orderService.update(orderToUpdate);
+                cargoService.delete(cargo);
+                return false;
+            }
         }
-        Waypoint waypointToDelete = waypointDao.findById(waypointId);
-        Cargo cargo = waypointToDelete.getCargo();
-        orderToUpdate.getCargoes().remove(cargo);
-        orderService.update(orderToUpdate);
-        cargoService.delete(cargo);
-        applicationEventPublisher.publishEvent(new UpdateEvent());
-        return false;
+        return true;
     }
 }

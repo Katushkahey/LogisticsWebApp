@@ -67,6 +67,12 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
                 .getResultList();
     }
 
+    public List<Long> getTopIds(int number) {
+        return sessionFactory.getCurrentSession().createQuery("SELECT o.id FROM Order o order by o.id", Long.class)
+                .setMaxResults(number)
+                .getResultList();
+    }
+
 //    select truck_id from orders where id = 28
 
     public Truck findTruckOfOrder(Long id) {

@@ -5,11 +5,13 @@ import com.tsystems.logisticsProject.dto.CargoDto;
 import com.tsystems.logisticsProject.dto.NewOrderDto;
 import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.entity.enums.Action;
+import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.exception.checked.TooLargeOrderTotalWeightException;
 import com.tsystems.logisticsProject.mapper.NewOrderMapper;
 import com.tsystems.logisticsProject.service.TruckService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -180,6 +182,8 @@ public class RawOrderSessionService {
     @Transactional
     public void saveOrder() {
         orderDao.add(newOrderMapper.toEntity(orderDto));
+        applicationEventPublisher.publishEvent(new UpdateEvent() {
+        });
     }
 
     public void clearAll() {
