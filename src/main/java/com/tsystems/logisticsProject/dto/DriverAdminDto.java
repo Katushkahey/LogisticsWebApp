@@ -4,6 +4,7 @@ import lombok.*;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DriverAdminDto extends AbstractDto {
@@ -13,7 +14,8 @@ public class DriverAdminDto extends AbstractDto {
     private String telephoneNumber;
     private int hoursThisMonth;
     private String cityName;
-    private boolean isAvailable;
+    @Builder.Default
+    private boolean isAvailable = true;
     private String userName;
 
 

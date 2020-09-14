@@ -1,240 +1,202 @@
 package com.tsystems.logisticsProject.service.impl;
 
-import com.tsystems.logisticsProject.entity.*;
+import com.tsystems.logisticsProject.dao.OrderDao;
+import com.tsystems.logisticsProject.dto.CargoDto;
+import com.tsystems.logisticsProject.dto.NewOrderDto;
+import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.entity.enums.Action;
-import com.tsystems.logisticsProject.entity.enums.OrderStatus;
-import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.UpdateEvent;
-import com.tsystems.logisticsProject.service.CityService;
-import com.tsystems.logisticsProject.service.OrderService;
+import com.tsystems.logisticsProject.exception.checked.TooLargeOrderTotalWeightException;
+import com.tsystems.logisticsProject.mapper.NewOrderMapper;
 import com.tsystems.logisticsProject.service.TruckService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Data
 @Component
 @Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class RawOrderSessionService {
 
-    private CityService cityService;
-    private OrderService orderService;
-    private TruckService truckService;
     private ApplicationEventPublisher applicationEventPublisher;
+    private NewOrderMapper newOrderMapper;
+    private TruckService truckService;
+    private OrderDao orderDao;
 
-    private Cargo cargo;
-    private Map<Cargo, Integer> mapOfCargoes;
-    private List<Cargo> listOfCargoes;
-    private Waypoint waypoint;
-    private List<Waypoint> listOfWaypoints;
+    private List<CargoDto> listOfCargoesToUnload;
+    private List<CargoDto> listOfAllCargoes;
+    private List<NewOrderWaypointDto> listOfWaypoints;
+    private Double totalWeight = 0.0;
+    NewOrderDto orderDto;
+
+    private static final Logger LOG = Logger.getLogger(OrderAssignmentService.class.getName());
 
     @Autowired
-    public RawOrderSessionService (CityService cityService, OrderService orderService, TruckService truckService,
-                                   ApplicationEventPublisher applicationEventPublisher) {
-        this.cityService = cityService;
-        this.orderService = orderService;
+    public RawOrderSessionService(TruckService truckService, OrderDao orderDao, NewOrderMapper newOrderMapper,
+                                  ApplicationEventPublisher applicationEventPublisher) {
         this.truckService = truckService;
+        this.orderDao = orderDao;
+        this.newOrderMapper = newOrderMapper;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @PostConstruct
     public void init() {
-        mapOfCargoes = new HashMap<>();
-        listOfCargoes = new ArrayList<>();
+        orderDto = new NewOrderDto();
+        listOfCargoesToUnload = new ArrayList<>();
+        listOfAllCargoes = new ArrayList<>();
         listOfWaypoints = new ArrayList<>();
+        orderDto.setCargoes(listOfAllCargoes);
+        orderDto.setWaypoints(listOfWaypoints);
+        orderDto.setCargoesToUnload(listOfCargoesToUnload);
     }
 
-    public void addNewCargo(String name, Double weight) {
-        Cargo rawCargo = new Cargo();
-        rawCargo.setName(name);
-        rawCargo.setWeight(weight);
-        if (listOfCargoes.size() == 0) {
-            rawCargo.setId(1L);
+    public void addLoadingWaypoint(NewOrderWaypointDto waypointDto) throws TooLargeOrderTotalWeightException {
+        if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
+            LOG.info("Total weight of new order is too large");
+            throw new TooLargeOrderTotalWeightException(totalWeight + waypointDto.getCargoWeight(), truckService.getMaxCapacity());
         } else {
-            rawCargo.setId(listOfCargoes.get(listOfCargoes.size() - 1).getId() + 1);
+            waypointDto.setId(listOfWaypoints.isEmpty() ? 1L : listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
+            createNewCargo(waypointDto);
+            totalWeight += waypointDto.getCargoWeight();
+            listOfWaypoints.add(waypointDto);
         }
-        listOfCargoes.add(rawCargo);
     }
 
-    public void deleteCargoById(Long id) {
-        for (Cargo cargo : listOfCargoes) {
-            if (cargo.getId() == id) {
-                listOfCargoes.remove(cargo);
+    private void createNewCargo(NewOrderWaypointDto waypointDto) {
+        CargoDto cargoDto = new CargoDto();
+        cargoDto.setName(waypointDto.getCargoName());
+        String cargoNumber = UUID.randomUUID().toString();
+        cargoDto.setNumber(cargoNumber);
+        waypointDto.setCargoNumber(cargoNumber);
+        cargoDto.setWeight(waypointDto.getCargoWeight());
+        cargoDto.setId(listOfAllCargoes.isEmpty() ? 1L : listOfAllCargoes.get(listOfAllCargoes.size() - 1).getId() + 1);
+        listOfAllCargoes.add(cargoDto);
+        listOfCargoesToUnload.add(cargoDto);
+    }
+
+    public void addUnloadingWaypoint(NewOrderWaypointDto waypointDto) {
+        waypointDto.setId(listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
+
+        for (CargoDto cargoDto : listOfCargoesToUnload) {
+            if (cargoDto.getNumber().equals(waypointDto.getCargoNumber())) {
+                waypointDto.setCargoName(cargoDto.getName());
+                waypointDto.setCargoWeight(cargoDto.getWeight());
+                listOfCargoesToUnload.remove(cargoDto);
                 break;
             }
         }
+        listOfWaypoints.add(waypointDto);
+        totalWeight -= waypointDto.getCargoWeight();
     }
 
-    public void editCargo(Long id, String name, double weight) {
-        for (Cargo cargo : listOfCargoes) {
-            if (cargo.getId() == id) {
-                cargo.setName(name);
-                cargo.setWeight(weight);
-                break;
-            }
-        }
-    }
-
-    public void saveCargoes() {
-        for (Cargo cargo : listOfCargoes) {
-            mapOfCargoes.put(cargo, 2);
-        }
-    }
-
-    public void addWaypoint(Long cargoId, String cityName) {
-
-        Waypoint newWaypoint = new Waypoint();
-        newWaypoint.setCity(cityService.findByName(cityName));
-        if (listOfWaypoints.size() == 0) {
-            newWaypoint.setId(1L);
-        } else {
-            newWaypoint.setId(listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
-        }
-
-        for (Cargo cargo : listOfCargoes) {
-            if (cargo.getId() == cargoId) {
-                addWaypoint(cargo, newWaypoint);
-            }
-        }
-
-        Iterator it = mapOfCargoes.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry cargoInfo = (Map.Entry) it.next();
-            Cargo cargo = (Cargo) cargoInfo.getKey();
-            if (cargo.getId() == cargoId) {
-                newWaypoint.setCargo(cargo);
-                if ((Integer) cargoInfo.getValue() == 2) {
-                    newWaypoint.setAction(Action.LOADING);
-                    cargoInfo.setValue(1);
-                } else {
-                    newWaypoint.setAction(Action.UNLOADING);
-                    mapOfCargoes.remove(cargoInfo.getKey());
+    public void editWaypoint(NewOrderWaypointDto waypointDto) throws TooLargeOrderTotalWeightException {
+        for (NewOrderWaypointDto waypointDto1 : listOfWaypoints) {
+            if (waypointDto1.getId() == waypointDto.getId()) {
+                if (totalWeight - waypointDto1.getCargoWeight() + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
+                    LOG.info("Total weight of new order is too large");
+                    throw new TooLargeOrderTotalWeightException(totalWeight - waypointDto1.getCargoWeight()
+                            + waypointDto.getCargoWeight(), truckService.getMaxCapacity());
                 }
-                listOfWaypoints.add(newWaypoint);
+                waypointDto1.setCargoWeight(waypointDto.getCargoWeight());
+                waypointDto1.setCargoName(waypointDto.getCargoName());
+                waypointDto1.setCityName(waypointDto.getCityName());
+                editCargoInList(listOfAllCargoes, waypointDto);
+                editCargoInList(listOfCargoesToUnload, waypointDto);
                 break;
             }
         }
     }
 
-    private void addWaypoint(Cargo cargo, Waypoint waypoint) {
-        if (cargo.getWaypoints() == null) {
-            List<Waypoint> listOfWaypoints = new ArrayList<>();
-            listOfWaypoints.add(waypoint);
-            cargo.setWaypoints(listOfWaypoints);
-        }
-        cargo.getWaypoints().add(waypoint);
-    }
-
-    public void editWaypoint(Long id, String cityName) {
-        City newCityForWaypoint = cityService.findByName(cityName);
-
-        editWaypointInListOfWaypoints(id, newCityForWaypoint);
-        editWaypointInListOfCargoes(id, newCityForWaypoint);
-    }
-
-    private void editWaypointInListOfWaypoints(Long id, City city) {
-        for (Waypoint waypoint : listOfWaypoints) {
-            if (waypoint.getId() == id) {
-                waypoint.setCity(city);
+    private void editCargoInList(List<CargoDto> list, NewOrderWaypointDto waypointDto) {
+        for (CargoDto cargoDto : list) {
+            if (cargoDto.getNumber().equals(waypointDto.getCargoNumber())) {
+                cargoDto.setName(waypointDto.getCargoName());
+                cargoDto.setWeight(waypointDto.getCargoWeight());
+                break;
             }
         }
     }
 
-    private void editWaypointInListOfCargoes(Long id, City city) {
-        for (Cargo cargo : listOfCargoes) {
-            List<Waypoint> waypoints = cargo.getWaypoints();
-            for (Waypoint waypoint : waypoints) {
-                if (waypoint.getId() == id) {
-                    waypoint.setCity(city);
-                }
-            }
-        }
-    }
-
-    public void deleteWaypointById(Long id) {
-        for (Waypoint waypoint : listOfWaypoints) {
-            if (waypoint.getId() == id) {
-                Cargo cargoFromRemovedWaypoint = waypoint.getCargo();
-                if (waypoint.getAction().equals(Action.LOADING)) {
-                    for (Waypoint waypoint1 : listOfWaypoints) {
-                        if (waypoint1.getCargo().getId() == cargoFromRemovedWaypoint.getId() && waypoint1.getId() != id) {
-                            listOfWaypoints.remove(waypoint1);
-                            break;
-                        }
-                    }
-                    listOfWaypoints.remove(waypoint);
-                    mapOfCargoes.put(cargoFromRemovedWaypoint, 2);
+    public void deleteWaypointById(Long id) throws TooLargeOrderTotalWeightException {
+        for (NewOrderWaypointDto waypointDto : listOfWaypoints) {
+            if (waypointDto.getId() == id) {
+                if (waypointDto.getAction().equals(Action.LOADING.toString())) {
+                    deleteLoadingWaypoint(waypointDto);
                     break;
                 } else {
-                    listOfWaypoints.remove(waypoint);
-                    mapOfCargoes.put(cargoFromRemovedWaypoint, 1);
+                    deleteUnLoadingWaypoint(waypointDto);
                     break;
                 }
             }
         }
-        deleteWaypointFromItsCargoById(id);
     }
 
-    private void deleteWaypointFromItsCargoById(Long id) {
-        for (Cargo cargo : listOfCargoes) {
-            if (cargo.getWaypoints() != null) {
-                List<Waypoint> listOfWaypoint = cargo.getWaypoints();
-                for (Waypoint waypoint : listOfWaypoint) {
-                    if (waypoint.getId() == id) {
-                        listOfWaypoint.remove(waypoint);
-                        break;
-                    }
-                }
+    private void deleteLoadingWaypoint(NewOrderWaypointDto waypointDto) {
+        for (NewOrderWaypointDto waypointDto1 : listOfWaypoints) {
+            if (waypointDto1.getCargoNumber().equals(waypointDto.getCargoNumber())
+                    && waypointDto1.getAction().equals(Action.UNLOADING.toString())) {
+                listOfWaypoints.remove(waypointDto1);
+                totalWeight += waypointDto1.getCargoWeight();
+                break;
+            }
+        }
+        listOfWaypoints.remove(waypointDto);
+        totalWeight -= waypointDto.getCargoWeight();
+        deleteCargoFromList(listOfCargoesToUnload, waypointDto.getCargoNumber());
+        deleteCargoFromList(listOfAllCargoes, waypointDto.getCargoNumber());
+    }
+
+    private void deleteCargoFromList(List<CargoDto> list, String cargoNumber) {
+        for (CargoDto cargoDto : list) {
+            if (cargoDto.getNumber().equals(cargoNumber)) {
+                list.remove(cargoDto);
+                break;
             }
         }
     }
 
-    public void saveOrder(String number) {
-        for (Waypoint waypoint : listOfWaypoints) {
-            waypoint.setSequence(waypoint.getId());
-            waypoint.setId(null);
-            waypoint.setStatus(WaypointStatus.TODO);
-            waypoint.getCargo().setId(null);
+    private void deleteUnLoadingWaypoint(NewOrderWaypointDto waypointDto) throws TooLargeOrderTotalWeightException {
+        if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
+            LOG.info("Total weight of new order is too large");
+            throw new TooLargeOrderTotalWeightException(waypointDto.getCargoWeight(), truckService.getMaxCapacity());
+        } else {
+            totalWeight += waypointDto.getCargoWeight();
+            listOfWaypoints.remove(waypointDto);
+            addCargoToListForUnloadingAfterDeletingUnloadingPoint(waypointDto.getCargoNumber());
+        }
+    }
 
+    private void addCargoToListForUnloadingAfterDeletingUnloadingPoint(String cargoNumber) {
+        for (CargoDto cargoDto : listOfAllCargoes) {
+            if (cargoDto.getNumber().equals(cargoNumber)) {
+                listOfCargoesToUnload.add(cargoDto);
+            }
         }
-        Order order = new Order();
-        order.setCargoes(listOfCargoes);
-        order.setStatus(OrderStatus.NOT_ASSIGNED);
-        order.setNumber(number);
-        for (Cargo cargo : listOfCargoes) {
-            cargo.setOrder(order);
-        }
-        orderService.add(order);
+    }
+
+    @Transactional
+    public void saveOrder() {
+        orderDao.add(newOrderMapper.toEntity(orderDto));
         clearAll();
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        applicationEventPublisher.publishEvent(new UpdateEvent() {
+        });
     }
 
     public void clearAll() {
-        mapOfCargoes.clear();
+        listOfCargoesToUnload.clear();
         listOfWaypoints.clear();
-        listOfCargoes.clear();
-    }
-
-    /**
-     * this method can be used for debugging
-     */
-    private void printHashMap() {
-        Iterator it = mapOfCargoes.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry cargoInfo = (Map.Entry) it.next();
-            System.out.println("" + cargoInfo.getKey() + " " + cargoInfo.getValue());
-        }
-    }
-
-    public boolean checkMaxWeightOfOrder() {
-        double maxWeight = orderService.getMaxWeightForOrderById(listOfWaypoints);
-        return (maxWeight / 1000 <= truckService.getMaxCapacity());
+        listOfAllCargoes.clear();
+        totalWeight = 0.0;
     }
 }

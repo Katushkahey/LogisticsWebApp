@@ -60,6 +60,9 @@
                                         <th scope="col"> Delete </th>
                                     </c:otherwise>
                                 </c:choose>
+                                <th scope="col" style="display:none; visibility:collapse">CargoNumber</th>
+                                <th scope="row" style="display:none; visibility:collapse">waypointSequence</th>
+                                <th scope="row" style="display:none; visibility:collapse">waypointId</th>
                             </tr>
                     </thead>
                     <tbody>
@@ -83,6 +86,9 @@
                                                                           href="/order/delete_waypoint/${order.id}/${waypoint.id}"> Delete </a></td>
                                     </c:otherwise>
                                 </c:choose>
+                                <td scope="col" style="display:none; visibility:collapse">${waypoint.cargoNumber}</td>
+                                <td scope="row" style="display:none; visibility:collapse">${waypoint.sequence}</td>
+                                <td scope="row" style="display:none; visibility:collapse">${waypoint.id}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -101,7 +107,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/order/edit_waypoint/${order.id}" method="get" class="formWithValidation" role="form">
+                <form action="/order/edit_waypoint/${order.id}" method="post" class="formWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
                         <div class="col-sm-9">
@@ -109,9 +115,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="cargoInput">Cargo</label>
+                        <label class="col-sm-3 control-label" for="cargoNameInput">Cargo</label>
                         <div class="col-sm-9">
-                            <input type="text" class="cargo field" name="cargoName" id="cargoInput"/>
+                            <input type="text" class="cargoName field" name="cargoName" id="cargoNameInput"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -123,7 +129,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="cityInput">City</label>
                         <div>
-                            <select class="col-sm-6 field" name="city" id="cityInput">
+                            <select class="col-sm-6 city field" name="city" id="cityInput">
                                 <c:forEach var="city" items="${listOfCities}">
                                     <option value=${city.name}>${city.name}</option>
                                 </c:forEach>
@@ -131,9 +137,32 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-3 control-label" for="sequenceInput">Weight, kg</label>
+                        <label class="col-sm-3 control-label" visibility: hidden for="actionInput">action</label>
                         <div class="col-sm-9">
-                            <input type="number" class="sequence field" name="sequence" id="sequenceInput"/>
+                            <input type="text" readonly class="action field" name="action" visibility: hidden
+                                   id="actionInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" visibility: hidden for="statusInput">status</label>
+                        <div class="col-sm-9">
+                            <input type="text" readonly class="status field" name="status" visibility: hidden
+                                   id="statusInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" visibility: hidden
+                               for="cargoNumberInput">cargoNumber</label>
+                        <div class="col-sm-9">
+                            <input type="text" readonly class="cargoNumber field" name="cargoNumber" visibility: hidden
+                                   id="cargoNumberInput"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" visibility: hidden for="sequenceInput">Sequence</label>
+                        <div class="col-sm-9">
+                            <input type="text" readonly class="sequence field" name="sequence" visibility: hidden
+                                   id="sequenceInput"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -152,13 +181,22 @@
         var waypointId = $(e.relatedTarget).data('waypoint-id');
         var cols = $('#waypoint-' + waypointId + ' td');
         var id = waypointId;
-        var cargo = $(cols[1]).text();
-        var weight = $(cols[2]).text();
-        var city = $(cols[3]).text();
+        var cargoName = $(cols[1]).text();
+        var cargoWeight = $(cols[2]).text();
+        var cityName = $(cols[3]).text();
+        var action = $(cols[4]).text();
+        var status = $(cols[5]).text();
+        var cargoNumber = $(cols[8]).text();
+        var sequence = $(cols[9]).text();
+        // var waypoinId = $(cols[10]).text();
         $('#idInput').val(id);
-        $('#cargoInput').val(cargo);
-        $('#weightInput').val(weight);
-        $('#cityInput').val(city);
+        $('#cargoNameInput').val(cargoName);
+        $('#weightInput').val(cargoWeight);
+        $('#cityInput').val(cityName);
+        $('#actionInput').val(action);
+        $('#statusInput').val(status);
+        $('#cargoNumberInput').val(cargoNumber);
+        $('#sequenceInput').val(sequence);
     });
     $("#edit_waypoint").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
@@ -166,7 +204,14 @@
     });
 
     var form = document.querySelector('.formWithValidation')
-    var weight = form.querySelector('.weight')
+    var waypointId = form.querySelector('.id')
+    var cargoName = form.querySelector('.cargoName')
+    var cargoWeight = form.querySelector('.weight')
+    var cityName = form.querySelector('.city')
+    var action = form.querySelector('.action')
+    // var status = form.querySelector('.status')
+    var cargoNumber = form.querySelector('.cargoNumber')
+    var sequence = form.querySelector('.sequence')
     var fields = form.querySelectorAll('.field')
 
     form.addEventListener("submit", function (event) {
@@ -190,27 +235,51 @@
             }
         }
 
-        if (errors_counter < 1) {
-            form.submit()
-        }
-
-        if (weight.value > ${maxWeight} * 1000) {
+        if (cargoWeight.value > ${maxWeight} * 1000) {
             errors_counter += 1
             var error2 = document.createElement('div')
             error2.className = 'error'
             error2.style.color = 'red'
-            error2.innerHTML = 'This cargoWeight bigger than capacity of the biges`t truck'
-            weight.parentElement.insertBefore(error2, weight)
+            error2.innerHTML = 'This cargoWeight bigger than capacity of the biggest truck'
+            cargoWeight.parentElement.insertBefore(error2, cargoWeight)
         }
 
-        if (weight.value <= 0) {
+        if (cargoWeight.value <= 0) {
             errors_counter += 1
             var error3 = document.createElement('div')
             error3.className = 'error'
             error3.style.color = 'red'
             error3.innerHTML = 'Can`t be < 0'
-            weight.parentElement.insertBefore(error3, weight)
+            cargoWeight.parentElement.insertBefore(error3, cargoWeight)
         }
+
+        if (errors_counter < 1) {
+            $.ajax({
+                url: '/order/edit_waypoint/${order.id}',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    id: waypointId.value,
+                    cargoName: cargoName.value,
+                    cargoNumber: cargoNumber.value,
+                    cargoWeight: cargoWeight.value,
+                    cityName: cityName.value,
+                    action: action.value,
+                    // status: status.value,
+                    status: "TODO",
+                    sequence: sequence.value
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert("error" + result.responseText);
+                }
+            });
+            // form.submit()
+        }
+
     })
 </script>
 </html>

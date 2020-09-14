@@ -24,8 +24,4 @@ public class CityServiceImpl implements CityService {
         return cityDao.findAll();
     }
 
-    @Transactional
-    public City findByName(String name) {
-        return cityDao.findByName(name);
-    }
 }

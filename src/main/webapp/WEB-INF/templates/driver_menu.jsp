@@ -103,7 +103,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/driver/edit_telephoneNumber" method="get" class="formWithValidation" role="form">
+                <form action="/driver/edit_telephoneNumber" method="post" class="formWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" visibility: hidden for="idInput">ID</label>
                         <div class="col-sm-9">
@@ -136,9 +136,10 @@
         <c:choose>
             <c:when test="${order.status=='WAITING'}">
                 <a class="nav-item3">
-                    <form action="/driver/start_order/${order.id}" method="get">
-                        <input type="submit" class="btn btn-success" value="Start"/>
-                    </form>
+                    <button type="button" class="btn btn-success"
+                            data-toggle="modal" data-target="#start_order"
+                            data-order-id="${order.id}"> StartOrder
+                    </button>
                 </a>
             </c:when>
             <c:otherwise>
@@ -203,6 +204,7 @@
                 <table class="table">
                     <thead class="thead-light" align="center">
                             <tr>
+                                <th scope="col" style="display:none; visibility:collapse"> CargoNumber </th>
                                 <th scope="col"> City </th>
                                 <th scope="col"> Cargo </th>
                                 <th scope="col"> Weight </th>
@@ -212,29 +214,35 @@
                                         <th scope="col">Status</th>
                                     </c:when>
                                 </c:choose>
+                                <th scope="col" style="display:none; visibility:collapse"> Sequence </th>
                             </tr>
                     </thead>
                     <tbody align="center">
                         <c:forEach var="waypoint" items="${order.waypoints}">
-                            <tr>
-                                <td scope="row"> ${waypoint.cityName} </td>
-                                <td scope="row"> ${waypoint.cargoName} </td>
-                                <th scope="row"> ${waypoint.cargoWeight}</th>
-                                <td scope="row"> ${waypoint.action} </td>
+                            <tr id="waypoint-${waypoint.id}">
+                                <td scope="row" style="display:none; visibility:collapse">${waypoint.cargoNumber}</td>
+                                <td scope="row">${waypoint.cityName}</td>
+                                <td scope="row">${waypoint.cargoName}</td>
+                                <td scope="row">${waypoint.cargoWeight}</td>
+                                <td scope="row">${waypoint.action}</td>
                                 <c:choose>
                                     <c:when test="${order.status == 'IN_PROGRESS'}">
                                         <c:choose>
                                             <c:when test="${waypoint.status=='TODO'}">
-                                                <td scope="row"> <a class="btn btn-secondary"
-                                                                    href="/driver/complete_waypoint/${waypoint.id}"> Done </a>
+                                                <td scope="row">
+                                                    <button type="button" class="btn btn-success"
+                                                            data-toggle="modal" data-target="#complete_waypoint"
+                                                            data-waypoint-id="${waypoint.id}"> Done
+                                                    </button>
                                                 </td>
                                             </c:when>
                                             <c:otherwise>
-                                                <td scope="row"> ${waypoint.status} </td>
+                                                <td scope="row">${waypoint.status}</td>
                                             </c:otherwise>
                                         </c:choose>
                                     </c:when>
                                 </c:choose>
+                                <td scope="row" style="display:none; visibility:collapse">${waypoint.sequence}</td>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -250,6 +258,94 @@
                 <span class="text-white">Waypoints of order №${order.number}</span>
             </button>
         </nav>
+        <div class="modal fade" id="complete_waypoint" tabindex="-1" role="dialog" aria-labelledby="allertCompleteWaypointModal"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="allertCompleteWaypointModal">Complete Waypoint</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/driver/complete_waypoint" method="post"
+                              class="formWithValidation_waypoint" role="form">
+                            Are you sure, you want to complete this waypoint?
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" visibility: hidden for="idInputWaypoint">Id</label>
+                                <div class="col-sm-9">
+                                    <input type="number" readonly visibility: hidden class="id field" name="id" id="idInputWaypoint"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" visibility: hidden for="cargoNumberInputWaypoint">cargoNumber</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="number field" name="number" visibility: hidden id="cargoNumberInputWaypoint"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="cityInputWaypoint">City</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="city field" name="city" id="cityInputWaypoint"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="cargoNameInputWaypoint">Cargo</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="name field" name="name" id="cargoNameInputWaypoint"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="cargoWeightInputWaypoint">Weight</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="weight field" name="weight" id="cargoWeightInputWaypoint"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="actionInputWaypoint">Action</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="action field" name="action" id="actionInputWaypoint"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" visibility: hidden for="sequenceInputWaypoint">Sequence</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="sequence field" name="sequence" visibility: hidden id="sequenceInputWaypoint"/>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
+                                <button type="submit" class="btn btn-success"> Yes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="start_order" tabindex="-1" role="dialog" aria-labelledby="allertStartModal"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="allertStartModal">Finish working</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/driver/change_order_status" method="post"
+                              class="formWithValidation0" role="form">
+                            Are you sure, you want to start order №${order.number}?
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"> No</button>
+                                <button type="submit" class="btn btn-success"> Yes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="modal fade" id="edit_state" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -260,7 +356,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/driver/edit_state/${driver.id}" method="get" role="form">
+                        <form action="/driver/edit_state" method="post" class="formWithValidation2" role="form">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" for="stateInput">State</label>
                                 <div class="col-sm-9">
@@ -292,7 +388,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/driver/finish_order/${order.id}" method="get"
+                        <form action="/driver/change_order_status" method="post"
                               class="formWithValidation3" role="form">
                             Are you sure, that order №${order.number} is completed?
                             <div class="modal-footer">
@@ -351,7 +447,44 @@
         }
 
         if (errors_counter < 1) {
-            form.submit()
+            var partners = null;
+            if (!('${driver.partners}'.length < 1)) {
+                partners = '${driver.partners}';
+            }
+
+            var order = null;
+            if (!('${driver.orderNumber}'.length < 1)) {
+                order = '${driver.orderNumber}';
+            }
+
+            var startWorkingTime = null;
+            if (!('${driver.startWorkingTime}'.length < 1)) {
+                startWorkingTime = '${driver.startWorkingTime}';
+            }
+
+            $.ajax({
+                url: '/driver/edit_telephoneNumber',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    id: ${driver.id},
+                    name: '${driver.name}',
+                    surname: "${driver.surname}",
+                    telephoneNumber: telephone.value,
+                    hoursThisMonth: ${driver.hoursThisMonth},
+                    partners: partners,
+                    driverState: '${driver.driverState}',
+                    orderNumber: order,
+                    startWorkingTime: startWorkingTime
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert("error" + result.responseText);
+                }
+            });
         }
     });
 </script>
@@ -363,6 +496,83 @@
     $("#edit_state").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
         form[0].reset();
+
+    });
+    var form = document.querySelector('.formWithValidation2')
+    var state = form.querySelector('.state')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        var partners = null;
+        if (!('${driver.partners}'.length < 1)) {
+            partners = '${driver.partners}';
+        }
+
+        var order = null;
+        if (!('${driver.orderNumber}'.length < 1)) {
+            order = '${driver.orderNumber}';
+        }
+
+        var startWorkingTime = null;
+        if (!('${driver.startWorkingTime}'.length < 1)) {
+            startWorkingTime = '${driver.startWorkingTime}';
+        }
+
+        $.ajax({
+            url: '/driver/edit_state',
+            datatype: 'json',
+            type: "POST",
+            dataType: 'JSON',
+            data: JSON.stringify({
+                id: ${driver.id},
+                name: '${driver.name}',
+                surname: "${driver.surname}",
+                telephoneNumber: '${driver.telephoneNumber}',
+                hoursThisMonth: ${driver.hoursThisMonth},
+                partners: partners,
+                driverState: state.value,
+                orderNumber: order,
+                startWorkingTime: startWorkingTime
+            }),
+            success : function(data) {
+                window.location.reload();
+            },
+            error : function(result) {
+                alert("error" + result.responseText);
+            }
+        });
+    });
+</script>
+<script>
+    $("#start_order").on('hidden.bs.modal', function () {
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+
+    var form = document.querySelector('.formWithValidation0')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        $.ajax({
+            url: '/driver/change_order_status',
+            datatype: 'json',
+            type: "POST",
+            dataType: 'JSON',
+            data: JSON.stringify({
+                id: ${order.id},
+                number: '${order.number}',
+                truckNumber: '${order.truckNumber}',
+                status: 'IN_PROGRESS'
+            }),
+            success : function(data) {
+                window.location.reload();
+            },
+            error : function(result) {
+                alert("error" + result.responseText);
+            }
+        });
     });
 </script>
 <script>
@@ -370,5 +580,92 @@
         var form = $(this).find('form');
         form[0].reset();
     });
+
+    var form = document.querySelector('.formWithValidation3')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        $.ajax({
+            url: '/driver/change_order_status',
+            datatype: 'json',
+            type: "POST",
+            dataType: 'JSON',
+            data: JSON.stringify({
+                id: ${order.id},
+                number: '${order.number}',
+                truckNumber: '${order.truckNumber}',
+                status: 'COMPLETED'
+            }),
+            success : function(data) {
+                alert("Congratulations! You've finished order.");
+                window.location.reload();
+            },
+            error : function(result) {
+                alert("error" + result.responseText);
+            }
+        });
+    });
+</script>
+<script>
+    $("#complete_waypoint").on('show.bs.modal', function (e) {
+        var waypointId = $(e.relatedTarget).data('waypoint-id');
+        var cols = $('#waypoint-' + waypointId + ' td');
+        var id = waypointId;
+        var cargoNumber = $(cols[0]).text();
+        var cityName = $(cols[1]).text();
+        var cargoName = $(cols[2]).text();
+        var cargoWeight = $(cols[3]).text();
+        var action = $(cols[4]).text();
+        var sequence = $(cols[6]).text();
+        $('#idInputWaypoint').val(id);
+        $('#cargoNumberInputWaypoint').val(cargoNumber);
+        $('#cityInputWaypoint').val(cityName);
+        $('#cargoNameInputWaypoint').val(cargoName);
+        $('#cargoWeightInputWaypoint').val(cargoWeight);
+        $('#actionInputWaypoint').val(action);
+        $('#sequenceInputWaypoint').val(sequence);
+    });
+    $("#complete_waypoint").on('hidden.bs.modal', function () {
+        // alert("Изменения будут отменены");
+        var form = $(this).find('form');
+        form[0].reset();
+    });
+
+    var form = document.querySelector('.formWithValidation_waypoint')
+    var id = form.querySelector('.id')
+    var cargoNumber = form.querySelector('.number')
+    var cityName = form.querySelector('.city')
+    var cargoName = form.querySelector('.name')
+    var cargoWeight = form.querySelector('.weight')
+    var action = form.querySelector('.action')
+    var sequence = form.querySelector('.sequence')
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault()
+
+        $.ajax({
+            url: '/driver/complete_waypoint',
+            datatype: 'json',
+            type: "POST",
+            dataType: 'JSON',
+            data: JSON.stringify({
+                id: id.value,
+                cargoNumber: cargoNumber.value,
+                cargoName: cargoName.value,
+                cargoWeight: cargoWeight.value,
+                cityName: cityName.value,
+                action: action.value,
+                status: 'DONE',
+                sequence: sequence.value
+            }),
+            success : function(data) {
+                window.location.reload();
+            },
+            error : function(result) {
+                alert(result.responseText);
+            }
+        });
+    })
 </script>
 </html>

@@ -22,5 +22,4 @@ public class DriverDto extends AbstractDto {
     private String orderNumber;
     private Long startWorkingTime;
 
-
 }

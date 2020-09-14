@@ -32,13 +32,11 @@ public interface OrderService {
 
     void update(Order order);
 
-    void update (OrderDriverDto orderDriverDto);
+    void update(OrderDriverDto orderDriverDto);
 
     void assign(OrderAdminDto orderDto, CombinationForOrderDto cf);
 
     void cancelAssignment(OrderAdminDto orderAdminDto);
-
-    boolean deleteWaypoint(Long orderId, Long waypointId);
 
     List<OrderClientDto> getTopOrders();
 }

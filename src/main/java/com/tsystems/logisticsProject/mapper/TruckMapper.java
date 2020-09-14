@@ -46,7 +46,6 @@ public class TruckMapper {
                 .addMappings(m -> m.skip(TruckDto::setAvailable)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(TruckDto::setCityName)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(TruckDto.class, Truck.class)
-                .addMappings(m-> m.skip(Truck::setNumber)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Truck::setTruckState)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Truck::setCurrentCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Truck::setOrder)).setPostConverter(toEntityConverter());
@@ -66,6 +65,7 @@ public class TruckMapper {
                 TruckState.valueOf(source.getState()));
         destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getCityName()) ? null :
                 cityDao.findByName(source.getCityName()));
+
         if (source.isAvailable() || source.getId() != null) {
             destination.setOrder(null);
         } else {
@@ -88,8 +88,6 @@ public class TruckMapper {
     }
 
     public void mapSpecificFieldsForDto(Truck source, TruckDto destination) {
-        destination.setNumber(Objects.isNull(source) || Objects.isNull(source.getNumber()) || Objects.isNull(source.getId())
-        ? null : checkEditedNumber(source.getNumber(), source.getId()));
         destination.setState(Objects.isNull(source) || Objects.isNull(source.getTruckState()) ? null :
                 source.getTruckState().toString());
         destination.setAvailable(Objects.isNull(source) ? null : (Objects.isNull(source.getOrder())));
@@ -97,11 +95,4 @@ public class TruckMapper {
                 source.getCurrentCity().getName());
     }
 
-    private String checkEditedNumber(String number, Long id) {
-        Truck truck = truckDao.findByNumber(number);
-        if (truck.getId() == id) {
-            throw new NullPointerException();
-        }
-        return number;
-    }
 }

@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
-public class UpdateEventListener  {
+public class UpdateEventListener {
 
-//    private static final Logger LOGGER = LoggerFactory.getLogger(UpdateEventListener.class);
+    private static final Logger LOG= LoggerFactory.getLogger(UpdateEventListener.class);
     private final MessageSender messageSender;
 
     @Autowired
@@ -23,7 +23,7 @@ public class UpdateEventListener  {
     @TransactionalEventListener
     @Async
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
-//        LOGGER.debug(" entity update ({}) detected and message being sent", applicationEvent);
+        LOG.info(" entity update detected and message being sent", applicationEvent);
         messageSender.send();
     }
 }

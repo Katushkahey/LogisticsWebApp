@@ -15,11 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final int REQUIRED_NUMBER = 10;
+    public static final int REQUIRED_NUMBER = 10;
 
     private ApplicationEventPublisher applicationEventPublisher;
     private OrderClientMapper orderClientMapper;
@@ -29,9 +30,11 @@ public class OrderServiceImpl implements OrderService {
     private WaypointService waypointService;
     private OrderDao orderDao;
 
+    private static final Logger LOG = Logger.getLogger(OrderAssignmentService.class.getName());
+
     @Autowired
     public void setDependencies(OrderDao orderDao, WaypointService waypointService, OrderClientMapper orderClientMapper,
-                                ApplicationEventPublisher applicationEventPublisher,OrderAdminMapper orderAdminMApper,
+                                ApplicationEventPublisher applicationEventPublisher, OrderAdminMapper orderAdminMApper,
                                 OrderDriverMapper orderDriverMapper) {
         this.applicationEventPublisher = applicationEventPublisher;
         this.orderClientMapper = orderClientMapper;
@@ -70,8 +73,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public void deleteById(Long id) {
-        orderDao.delete(orderDao.findById(id));
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+        List<Long> topIds = orderDao.getTopIds(REQUIRED_NUMBER);
+        for (Long topId: topIds) {
+            if (topId == id) {
+                orderDao.delete(orderDao.findById(id));
+                applicationEventPublisher.publishEvent(new UpdateEvent());
+                break;
+            }else {
+                orderDao.delete(orderDao.findById(id));
+                break;
+            }
+        }
     }
 
     @Transactional
@@ -82,12 +94,19 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void update(Order order) {
         orderDao.update(order);
-        applicationEventPublisher.publishEvent(new UpdateEvent());
     }
 
     @Transactional
-    public void update (OrderDriverDto orderDriverDto) {
-        update(orderDriverMapper.toEntity(orderDriverDto));
+    public void update(OrderDriverDto orderDriverDto) {
+        List<Long> topIds = orderDao.getTopIds(REQUIRED_NUMBER);
+        for (Long topId: topIds) {
+            if (topId == orderDriverDto.id) {
+                update(orderDriverMapper.toEntity(orderDriverDto));
+                applicationEventPublisher.publishEvent(new UpdateEvent());
+            } else {
+                update(orderDriverMapper.toEntity(orderDriverDto));
+            }
+        }
     }
 
     @Transactional
@@ -110,11 +129,7 @@ public class OrderServiceImpl implements OrderService {
         orderAdminDto.setStatus(OrderStatus.NOT_ASSIGNED.toString());
         orderAdminDto.setDrivers(null);
         update(orderAdminMapper.toEntity(orderAdminDto));
-    }
-
-    @Transactional
-    public boolean deleteWaypoint(Long orderId, Long waypointId) {
-        return waypointService.deleteWaypoint(orderId, waypointId);
+        LOG.info("Asignment for order " + orderAdminDto.getNumber() + "has been canceled");
     }
 
     @Transactional

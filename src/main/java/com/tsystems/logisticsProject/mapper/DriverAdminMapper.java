@@ -2,11 +2,9 @@ package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.dao.DriverDao;
-import com.tsystems.logisticsProject.dao.RoleDao;
 import com.tsystems.logisticsProject.dao.UserDao;
 import com.tsystems.logisticsProject.dto.DriverAdminDto;
 import com.tsystems.logisticsProject.entity.Driver;
-import com.tsystems.logisticsProject.entity.User;
 import com.tsystems.logisticsProject.entity.enums.DriverState;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -23,16 +21,13 @@ public class DriverAdminMapper {
     private DriverDao driverDao;
     private CityDao cityDao;
     private UserDao userDao;
-    private RoleDao roleDao;
 
     @Autowired
-    public void setDependencies(ModelMapper modelMapper, DriverDao driverDao, CityDao cityDao, UserDao userDao,
-                                RoleDao roleDao) {
+    public void setDependencies(ModelMapper modelMapper, DriverDao driverDao, CityDao cityDao, UserDao userDao) {
         this.modelMapper = modelMapper;
         this.driverDao = driverDao;
         this.cityDao = cityDao;
         this.userDao = userDao;
-        this.roleDao = roleDao;
     }
 
     public Driver toEntity(DriverAdminDto dto) {
@@ -50,6 +45,7 @@ public class DriverAdminMapper {
                 .addMappings(m -> m.skip(DriverAdminDto::setAvailable)).setPostConverter(toDtoConverter())
                 .addMappings(m -> m.skip(DriverAdminDto::setUserName)).setPostConverter(toDtoConverter());
         modelMapper.createTypeMap(DriverAdminDto.class, Driver.class)
+                .addMappings(m -> m.skip(Driver::setHoursThisMonth)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setDriverState)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentCity)).setPostConverter(toEntityConverter())
                 .addMappings(m -> m.skip(Driver::setCurrentOrder)).setPostConverter(toEntityConverter())
@@ -57,7 +53,7 @@ public class DriverAdminMapper {
                 .addMappings(m -> m.skip(Driver::setStartWorkingTime)).setPostConverter(toEntityConverter());
     }
 
-    public Converter<DriverAdminDto, Driver> toEntityConverter() {
+    public Converter<DriverAdminDto, Driver> toEntityConverter()  {
         return context -> {
             DriverAdminDto source = context.getSource();
             Driver destination = context.getDestination();
@@ -67,6 +63,8 @@ public class DriverAdminMapper {
     }
 
     public void mapSpecificFieldsForEntity(DriverAdminDto source, Driver destination) {
+        destination.setHoursThisMonth(Objects.isNull(source) || Objects.isNull(source.getId()) ? 0 :
+                driverDao.findById(source.getId()).getHoursThisMonth());
         destination.setDriverState(Objects.isNull(source) || Objects.isNull(source.getId()) ? DriverState.REST :
                 driverDao.findById(source.getId()).getDriverState());
         destination.setCurrentCity(Objects.isNull(source) || Objects.isNull(source.getCityName()) ? null :
@@ -74,23 +72,9 @@ public class DriverAdminMapper {
         destination.setCurrentOrder(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
                 driverDao.findById(source.getId()).getCurrentOrder());
         destination.setUser(Objects.isNull(source) || Objects.isNull(source.getUserName()) ?
-                driverDao.findUserByDriverId(source.getId()) : returnUserForNewDriver(source.getUserName()));
+                driverDao.findUserByDriverId(source.getId()) : userDao.findByUsername(source.getUserName()));
         destination.setStartWorkingTime(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
                 driverDao.findById(source.getId()).getStartWorkingTime());
-    }
-
-    private User returnUserForNewDriver(String userName) {
-        User user = userDao.findByUsername(userName);
-        if (user == null) {
-            return new User(userName, "driver", roleDao.findByAuthority("ROLE_DRIVER"));
-        } else {
-            Driver driver = driverDao.findByUser(user);
-            if (driver == null) {
-                return user;
-            } else {
-                throw new NullPointerException();
-            }
-        }
     }
 
     public Converter<Driver, DriverAdminDto> toDtoConverter() {

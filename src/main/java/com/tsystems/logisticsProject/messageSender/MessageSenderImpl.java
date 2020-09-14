@@ -1,6 +1,5 @@
 package com.tsystems.logisticsProject.messageSender;
 
-import org.hibernate.engine.spi.ManagedEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -29,13 +28,4 @@ public class MessageSenderImpl implements MessageSender {
             }
         });
     }
-
-//    public void send(final String message) {
-//        jmsTemplate.send(new MessageCreator() {
-//            public Message createMessage(Session session) throws JMSException {
-//                return session.createTextMessage(message);
-//            }
-//        });
-//    }
-
 }

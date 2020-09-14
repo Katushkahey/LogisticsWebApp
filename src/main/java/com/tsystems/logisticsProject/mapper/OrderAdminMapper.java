@@ -19,7 +19,6 @@ public class OrderAdminMapper {
     private ModelMapper modelMapper;
     private WaypointMapper waypointMapper;
     private DriverShortMapper driverShortMapper;
-    private TruckMapper truckMapper;
     private OrderService orderService;
     private TruckDao truckDao;
     private OrderDao orderDao;
@@ -29,7 +28,7 @@ public class OrderAdminMapper {
     @Autowired
     public OrderAdminMapper(ModelMapper modelMapper, WaypointMapper waypointMapper, TruckDao truckDao, OrderDao orderDao,
                             WaypointDao waypointDao, DriverDao driverDao, OrderService orderService,
-                            DriverShortMapper driverShortMapper, TruckMapper truckMapper) {
+                            DriverShortMapper driverShortMapper) {
         this.modelMapper = modelMapper;
         this.waypointMapper = waypointMapper;
         this.driverShortMapper = driverShortMapper;
@@ -38,7 +37,6 @@ public class OrderAdminMapper {
         this.waypointDao = waypointDao;
         this.driverDao = driverDao;
         this.orderService = orderService;
-        this.truckMapper = truckMapper;
     }
 
     public Order toEntity(OrderAdminDto dto) {
@@ -80,7 +78,7 @@ public class OrderAdminMapper {
         destination.setDrivers(Objects.isNull(source) || Objects.isNull(source.getNumber()) ? null
                 : setDriversForOrder(source.getDrivers(), source.getNumber()));
         destination.setOrderTruck(Objects.isNull(source) || Objects.isNull(source.getId())
-                 ? null : setTruckForOrder(source.getTruckNumber(), source.getId()));
+                ? null : setTruckForOrder(source.getTruckNumber(), source.getId()));
         destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
                 OrderStatus.valueOf(source.getStatus()));
         destination.setCompletionDate(Objects.isNull(source) || Objects.isNull(source.getId()) ? null :
@@ -98,8 +96,8 @@ public class OrderAdminMapper {
     private List<Driver> cancelAssignmentForDrivers(String orderNumber) {
         Order order = orderDao.findByNumber(orderNumber);
         List<Driver> drivers = driverDao.findAllDriversForCurrentOrder(order);
-        if (drivers != null){
-            for (Driver driver: drivers) {
+        if (drivers != null) {
+            for (Driver driver : drivers) {
                 driver.setCurrentOrder(null);
                 driverDao.update(driver);
             }
@@ -109,7 +107,7 @@ public class OrderAdminMapper {
 
     private List<Driver> assignDriversForOrder(List<DriverShortDto> drivers, String orderNumber) {
         List<Driver> listOfDrivers = new ArrayList<>();
-        for (DriverShortDto driverDto: drivers) {
+        for (DriverShortDto driverDto : drivers) {
             driverDto.setOrderNumber(orderNumber);
             Driver driver = driverShortMapper.toEntity(driverDto);
             driverDao.update(driver);
@@ -171,7 +169,7 @@ public class OrderAdminMapper {
     private List<DriverShortDto> getDriversForOrderAdminDto(Order order) {
         List<DriverShortDto> driversDto = new ArrayList<>();
         List<Driver> drivers = driverDao.findAllDriversForCurrentOrder(order);
-        for (Driver driver: drivers) {
+        for (Driver driver : drivers) {
             driversDto.add(driverShortMapper.toDto(driver));
         }
         return driversDto;
@@ -184,7 +182,7 @@ public class OrderAdminMapper {
 
     private List<String> getCargoesForOrderAdminDto(List<Cargo> cargoes) {
         List<String> cargoesForOrderAdminDto = new ArrayList<>();
-        for (Cargo cargo: cargoes) {
+        for (Cargo cargo : cargoes) {
             String cargoDto = cargo.getName() + " " + cargo.getWeight().toString();
             cargoesForOrderAdminDto.add(cargoDto);
         }
@@ -204,7 +202,7 @@ public class OrderAdminMapper {
     private List<WaypointDto> getWaypointsForOrderAdminDto(Long orderId) {
         List<WaypointDto> waypointsDto = new ArrayList<>();
         List<Waypoint> waypoints = waypointDao.getListOfWaypointsByOrderId(orderId);
-        for (Waypoint waypoint: waypoints) {
+        for (Waypoint waypoint : waypoints) {
             waypointsDto.add(waypointMapper.toDto(waypoint));
         }
         return waypointsDto;

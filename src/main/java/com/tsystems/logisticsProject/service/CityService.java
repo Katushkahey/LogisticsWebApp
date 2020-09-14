@@ -7,6 +7,4 @@ import java.util.List;
 public interface CityService {
 
     List<City> getListOfCities();
-
-    City findByName(String name);
 }

@@ -7,6 +7,6 @@ public interface UserService extends UserDetailsService {
 
     User findByUsername(String username);
 
-    void add(User user, String authority);
+    void add(String username, String authority);
 
 }

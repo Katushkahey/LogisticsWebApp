@@ -1,93 +1,102 @@
 package com.tsystems.logisticsProject.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
 import com.tsystems.logisticsProject.service.impl.RawOrderSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/create_order")
 public class RawOrderController {
 
+    private ObjectMapper objectMapper;
+
     private RawOrderSessionService rawOrderService;
     private TruckService truckService;
     private CityService cityService;
 
+    private static final Logger LOG = Logger.getLogger(RawOrderController.class.getName());
+
     @Autowired
     public void setDependencies(RawOrderSessionService rawOrderService, TruckService truckService,
-                                CityService cityService) {
+                                CityService cityService, ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
         this.rawOrderService = rawOrderService;
         this.truckService = truckService;
         this.cityService = cityService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public String returnPageToCreateOrder(Model model) {
-        model.addAttribute("listOfCargoes", rawOrderService.getListOfCargoes());
-        model.addAttribute("mapOfCargoes", rawOrderService.getMapOfCargoes());
-        model.addAttribute("listOfWaypoints", rawOrderService.getListOfWaypoints());
+        model.addAttribute("order", rawOrderService.getOrderDto());
         model.addAttribute("maxWeight", truckService.getMaxCapacity());
         model.addAttribute("listOfCities", cityService.getListOfCities());
 
         return "order_create_page";
     }
 
-    @GetMapping("/add_cargo")
-    public String addCargo(@RequestParam("name") String name, @RequestParam("cargoWeight") Double weight) {
-        rawOrderService.addNewCargo(name, weight);
-        return "redirect:/create_order";
+    @PostMapping(value = "/add_loading_waypoint", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String addLoadingWaypoint(HttpServletRequest request) {
+        try {
+            NewOrderWaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), NewOrderWaypointDto.class);
+            rawOrderService.addLoadingWaypoint(waypointDto);
+            return "{\"success\":1}";
+        } catch (Exception e) {
+            return "{\"error\":" + e.getMessage() + "}";
+        }
     }
 
-    @GetMapping("/delete_cargo/{id}")
-    public String deleteCargo(@PathVariable("id") Long id) {
-        rawOrderService.deleteCargoById(id);
-        return "redirect:/create_order";
+    @PostMapping(value = "/add_unloading_waypoint", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String addUnloadingWaypoint(HttpServletRequest request) {
+        try {
+            NewOrderWaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), NewOrderWaypointDto.class);
+            rawOrderService.addUnloadingWaypoint(waypointDto);
+            return "{\"success\":1}";
+        } catch (Exception e) {
+            return "{\"error\":" + e.getMessage() + "}";
+        }
     }
 
-    @GetMapping("/edit_cargo")
-    public String editCargo(@RequestParam("id") Long id, @RequestParam("name") String name,
-                            @RequestParam("cargoWeight") double weight) {
-        rawOrderService.editCargo(id, name, weight);
-        return "redirect:/create_order";
+    @PostMapping(value = "/edit_waypoint", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String editWaypoint(HttpServletRequest request) {
+        try {
+            NewOrderWaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), NewOrderWaypointDto.class);
+            rawOrderService.editWaypoint(waypointDto);
+            return "{\"success\":1}";
+        } catch (Exception e) {
+            return "{\"error\":" + e.getMessage() + "}";
+        }
     }
 
-    @GetMapping("/save_cargoes")
-    public String saveCargoes() {
-        rawOrderService.saveCargoes();
-        return "redirect:/create_order";
-    }
-
-    @GetMapping("/add_waypoint")
-    public String addWaypoint(@RequestParam("cargoId") Long cargoId, @RequestParam("cityName") String cityName) {
-        rawOrderService.addWaypoint(cargoId, cityName);
-        return "redirect:/create_order";
-    }
-
-    @GetMapping("/edit_waypoint")
-    public String editWaypoint(@RequestParam("id") Long id, @RequestParam("cityName") String cityName) {
-        rawOrderService.editWaypoint(id, cityName);
-        return "redirect:/create_order";
-    }
-
-    @GetMapping("delete_waypoint/{id}")
-    public String deleteWaypoint(@PathVariable("id") Long id) {
-        rawOrderService.deleteWaypointById(id);
+    @GetMapping("delete_waypoint")
+    public String deleteWaypoint(@RequestParam("id") Long id) {
+        try {
+            rawOrderService.deleteWaypointById(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return "redirect:/create_order";
     }
 
     @GetMapping("save_order")
-    public String saveOrder(@RequestParam("orderNumber") String number, Model model) {
-        if (!rawOrderService.checkMaxWeightOfOrder()) {
-            model.addAttribute("error", true);
-            return "error";
-        }
-        rawOrderService.saveOrder(number);
+    public String saveOrder() {
+        rawOrderService.saveOrder();
+        LOG.info("new order has been created");
         return "redirect:/order/info";
     }
 
@@ -96,5 +105,4 @@ public class RawOrderController {
         rawOrderService.clearAll();
         return "redirect:/order/info";
     }
-
 }

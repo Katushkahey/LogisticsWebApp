@@ -4,6 +4,7 @@ import com.tsystems.logisticsProject.dao.TruckDao;
 import com.tsystems.logisticsProject.dto.TruckDto;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.event.UpdateEvent;
+import com.tsystems.logisticsProject.exception.checked.NotUniqueTruckNumberException;
 import com.tsystems.logisticsProject.mapper.TruckMapper;
 import com.tsystems.logisticsProject.service.TruckService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,25 +12,22 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
 public class TruckServiceImpl implements TruckService {
 
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
     private TruckMapper truckMapper;
     private TruckDao truckDao;
 
     @Autowired
-    public TruckServiceImpl(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    @Autowired
-    public void setDependencies(TruckDao truckDao, TruckMapper truckMapper) {
+    public void setDependencies(TruckDao truckDao, TruckMapper truckMapper, ApplicationEventPublisher applicationEventPublisher) {
         this.truckDao = truckDao;
         this.truckMapper = truckMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
@@ -44,29 +42,39 @@ public class TruckServiceImpl implements TruckService {
     }
 
     @Transactional
-    public boolean findByNumber(String number) {
-        if(truckDao.findByNumber(number) == null) {
-            return false;
-        } else {
-            return true;
+    public void add(TruckDto truckDto) throws NotUniqueTruckNumberException {
+        try {
+            truckDao.findByNumber(truckDto.getNumber());
+            throw new NotUniqueTruckNumberException(truckDto.getNumber());
+        } catch (NoResultException e) {
+            truckDao.add(truckMapper.toEntity(truckDto));
+            applicationEventPublisher.publishEvent(new UpdateEvent());
         }
     }
 
     @Transactional
-    public void add(TruckDto truckDto) {
-        truckDao.add(truckMapper.toEntity(truckDto));
-        applicationEventPublisher.publishEvent(new UpdateEvent());
-    }
-
-    @Transactional
-    public void update(TruckDto truckDto) {
-        truckDao.update(truckMapper.toEntity(truckDto));
-        applicationEventPublisher.publishEvent(new UpdateEvent());
+    public void update(TruckDto truckDto) throws NotUniqueTruckNumberException {
+        try {
+            Truck truck = truckDao.findByNumber(truckDto.getNumber());
+            if (truck.getId() == truckDto.getId()) {
+                truckDao.update(truckMapper.toEntity(truckDto));
+                applicationEventPublisher.publishEvent(new UpdateEvent());
+            } else {
+                throw new NotUniqueTruckNumberException(truckDto.getNumber());
+            }
+        } catch (NoResultException e) {
+            truckDao.update(truckMapper.toEntity(truckDto));
+            applicationEventPublisher.publishEvent(new UpdateEvent());
+        }
     }
 
     @Transactional
     public double getMaxCapacity() {
         List<Truck> listOfTruck = getListOfTrucks();
+        return calculateMaxCapacity(listOfTruck);
+    }
+
+    public double calculateMaxCapacity(List<Truck> listOfTruck) {
         double maxCapacity = 0;
         for (Truck truck : listOfTruck) {
             double capacity = truck.getCapacity();
@@ -74,7 +82,7 @@ public class TruckServiceImpl implements TruckService {
                 maxCapacity = capacity;
             }
         }
-        return maxCapacity;
+        return maxCapacity * 1000;
     }
 
     @Transactional

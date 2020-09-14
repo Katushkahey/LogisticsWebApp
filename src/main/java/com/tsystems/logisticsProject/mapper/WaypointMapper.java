@@ -1,8 +1,10 @@
 package com.tsystems.logisticsProject.mapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tsystems.logisticsProject.dao.CargoDao;
 import com.tsystems.logisticsProject.dao.CityDao;
 import com.tsystems.logisticsProject.dto.WaypointDto;
+import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
@@ -63,13 +65,21 @@ public class WaypointMapper {
 
     public void mapSpecificFieldsForEntity(WaypointDto source, Waypoint destination) {
         destination.setCargo(Objects.isNull(source) || Objects.isNull(source.getCargoNumber())
-                ? null : cargoDao.findByNumber(source.getCargoNumber()));
+                ? null : updateCargo(source.getCargoNumber(), source.getCargoWeight(), source.getCargoName()));
         destination.setCity(Objects.isNull(source) || Objects.isNull(source.getCityName())
                 ? null : cityDao.findByName(source.getCityName()));
         destination.setAction(Objects.isNull(source) || Objects.isNull(source.getAction())
                 ? null : Action.valueOf(source.getAction()));
         destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getStatus())
                 ? null : WaypointStatus.valueOf(source.getStatus()));
+    }
+
+    private Cargo updateCargo(String cargoNumber, Double cargoWeight, String cargoName) {
+        Cargo cargo = cargoDao.findByNumber(cargoNumber);
+        cargo.setWeight(cargoWeight);
+        cargo.setName(cargoName);
+        cargoDao.update(cargo);
+        return cargo;
     }
 
     public Converter<Waypoint, WaypointDto> toDtoConverter() {
