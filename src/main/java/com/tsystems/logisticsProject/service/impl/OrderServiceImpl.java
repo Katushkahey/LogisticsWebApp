@@ -91,7 +91,6 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void update(Order order) {
         orderDao.update(order);
-
     }
 
     @Transactional

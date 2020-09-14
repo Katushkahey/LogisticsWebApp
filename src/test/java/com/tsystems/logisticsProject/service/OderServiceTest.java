@@ -4,8 +4,6 @@ import com.tsystems.logisticsProject.entity.Cargo;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.service.impl.OrderServiceImpl;
-import com.tsystems.logisticsProject.utils.AssignmentParametersCalculator;
-import com.tsystems.logisticsProject.utils.TimeCalculator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OderServiceImplTest {
+public class OderServiceTest {
 
     @Mock
     private OrderService orderService;
@@ -54,7 +52,7 @@ public class OderServiceImplTest {
         Assert.assertEquals(expectedTotalWeight, testTotalWeight, 1);
     }
 
-    private void prefillTestData () {
+    private void prefillTestData() {
         firstCargo = new Cargo();
         firstCargo.setWeight(14000.0);
 

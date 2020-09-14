@@ -13,8 +13,6 @@ public interface TruckService {
 
     void deleteById(Long id);
 
-    boolean findByNumber(String number);
-
     void add(TruckDto truckDto) throws NotUniqueTruckNumberException;
 
     void update(TruckDto truckDto) throws NotUniqueTruckNumberException;

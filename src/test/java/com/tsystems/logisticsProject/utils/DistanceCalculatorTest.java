@@ -64,7 +64,7 @@ public class DistanceCalculatorTest {
         Assert.assertEquals(expectedDistance, distTest);
     }
 
-    private void prefillTestData () {
+    private void prefillTestData() {
         SaintPetersburg = new City();
         SaintPetersburg.setLat(59.937500);
         SaintPetersburg.setLng(30.308611);

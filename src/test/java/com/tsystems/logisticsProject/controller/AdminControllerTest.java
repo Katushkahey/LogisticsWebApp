@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,7 +19,7 @@ public class AdminControllerTest {
 
     @Before
     public void setup() {
-        controller = new AdminController ();
+        controller = new AdminController();
         mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 

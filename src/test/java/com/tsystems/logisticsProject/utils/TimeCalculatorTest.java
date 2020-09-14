@@ -92,7 +92,7 @@ public class TimeCalculatorTest {
         Assert.assertEquals(expectedNumberOfHours, testNumberOfHours);
     }
 
-    public void prefillTestData () {
+    public void prefillTestData() {
         listOfFourWaypoints = new ArrayList<>();
         SpbPoint = new Waypoint();
         MscPoint = new Waypoint();

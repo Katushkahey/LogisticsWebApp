@@ -47,7 +47,6 @@ public class UserServiceImpl implements UserService {
     public void add(String username, String authority) {
         User user = new User();
         user.setUsername(username);
-        System.out.println(username);
         user.setAuthority(roleDao.findByAuthority(authority));
         user.setPassword(passwordEncoder.encode("driver"));
         userDao.add(user);

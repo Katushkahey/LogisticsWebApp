@@ -1,10 +1,6 @@
 package com.tsystems.logisticsProject.utils;
 
 import com.tsystems.logisticsProject.entity.*;
-import com.tsystems.logisticsProject.entity.enums.Action;
-import com.tsystems.logisticsProject.service.OrderService;
-import com.tsystems.logisticsProject.service.TruckService;
-import com.tsystems.logisticsProject.service.impl.OrderServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +20,7 @@ public class AssignmentParametrsCalculatorTest {
     @Mock
     private AssignmentParametersCalculator calculator;
 
-    private List<Truck>  listOfTrucks;
+    private List<Truck> listOfTrucks;
     private Set<City> setOfCities;
     private List<Driver> listOfDrivers;
     private List<Driver> listOfThreeDriversWithMaxSpentTime;
@@ -118,8 +114,5 @@ public class AssignmentParametrsCalculatorTest {
 
         listOfOneDriverWithMaxSpentTime = new ArrayList<>();
         listOfOneDriverWithMaxSpentTime.add(driver5);
-
-
     }
-
 }

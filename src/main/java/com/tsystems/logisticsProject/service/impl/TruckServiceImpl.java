@@ -19,19 +19,15 @@ import java.util.List;
 @Service
 public class TruckServiceImpl implements TruckService {
 
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
     private TruckMapper truckMapper;
     private TruckDao truckDao;
 
     @Autowired
-    public TruckServiceImpl(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
-
-    @Autowired
-    public void setDependencies(TruckDao truckDao, TruckMapper truckMapper) {
+    public void setDependencies(TruckDao truckDao, TruckMapper truckMapper, ApplicationEventPublisher applicationEventPublisher) {
         this.truckDao = truckDao;
         this.truckMapper = truckMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
@@ -43,15 +39,6 @@ public class TruckServiceImpl implements TruckService {
     public void deleteById(Long id) {
         truckDao.delete(truckDao.findById(id));
         applicationEventPublisher.publishEvent(new UpdateEvent());
-    }
-
-    @Transactional
-    public boolean findByNumber(String number) {
-        if (truckDao.findByNumber(number) == null) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     @Transactional
@@ -84,6 +71,10 @@ public class TruckServiceImpl implements TruckService {
     @Transactional
     public double getMaxCapacity() {
         List<Truck> listOfTruck = getListOfTrucks();
+        return calculateMaxCapacity(listOfTruck);
+    }
+
+    public double calculateMaxCapacity(List<Truck> listOfTruck) {
         double maxCapacity = 0;
         for (Truck truck : listOfTruck) {
             double capacity = truck.getCapacity();
