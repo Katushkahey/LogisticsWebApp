@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/truck")
-public class AdminTrucksController {
+public class TrucksController {
 
     private TruckService truckService;
     private CityService cityService;
