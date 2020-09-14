@@ -281,7 +281,7 @@
                             <div class="form-group">
                                 <label class="col-sm-3 control-label" visibility: hidden for="cargoNumberInputWaypoint">cargoNumber</label>
                                 <div class="col-sm-9">
-                                    <input type="number" readonly class="number field" name="number" visibility: hidden id="cargoNumberInputWaypoint"/>
+                                    <input type="text" readonly class="number field" name="number" visibility: hidden id="cargoNumberInputWaypoint"/>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -545,12 +545,6 @@
     });
 </script>
 <script>
-    $("#finish_order").on('hidden.bs.modal', function () {
-        var form = $(this).find('form');
-        form[0].reset();
-    });
-</script>
-<script>
     $("#start_order").on('hidden.bs.modal', function () {
         var form = $(this).find('form');
         form[0].reset();
@@ -604,7 +598,7 @@
                 status: 'COMPLETED'
             }),
             success : function(data) {
-                alert("Congratulations! You've finished order.\nThank you for choosing our company.");
+                alert("Congratulations! You've finished order.");
                 window.location.reload();
             },
             error : function(result) {

@@ -5,7 +5,6 @@ import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
 import com.tsystems.logisticsProject.service.impl.RawOrderSessionService;
-import jdk.internal.jline.internal.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -20,6 +19,7 @@ import java.util.logging.Logger;
 public class RawOrderController {
 
     private ObjectMapper objectMapper;
+
     private RawOrderSessionService rawOrderService;
     private TruckService truckService;
     private CityService cityService;
@@ -96,7 +96,7 @@ public class RawOrderController {
     @GetMapping("save_order")
     public String saveOrder() {
         rawOrderService.saveOrder();
-        Log.info("new order has been created");
+        LOG.info("new order has been created");
         return "redirect:/order/info";
     }
 

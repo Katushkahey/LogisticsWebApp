@@ -45,11 +45,16 @@ public class WaypointController {
         return "redirect:/order/show_info/{orderId}";
     }
 
-    @GetMapping("driver/complete_waypoint/{id}")
-    public String completeWaypoint(@PathVariable("id") Long id) {
-        WaypointDto waypointDto = new WaypointDto();
-        waypointDto.setId(id);
-        waypointService.update(waypointDto);
-        return "redirect:/driver";
+    @PostMapping(value = "driver/complete_waypoint", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public String completeWaypoint(HttpServletRequest request) {
+        try {
+            WaypointDto waypointDto = objectMapper.readValue(request.getInputStream(), WaypointDto.class);
+            waypointService.update(waypointDto);
+            return "{\"success\":1}";
+        } catch (Exception e) {
+            return "{\"error\":" + e.getMessage() + "}";
+        }
     }
 }
