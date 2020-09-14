@@ -73,8 +73,6 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
                 .getResultList();
     }
 
-//    select truck_id from orders where id = 28
-
     public Truck findTruckOfOrder(Long id) {
         return sessionFactory.getCurrentSession().createQuery("SELECT o.orderTruck from Order o where o.id=:id",
                 Truck.class).setParameter("id", id).getSingleResult();

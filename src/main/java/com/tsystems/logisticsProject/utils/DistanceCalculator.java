@@ -11,6 +11,12 @@ public class DistanceCalculator {
 
     private final int EARTH_RADIUS_IN_KILOMETRES = 6373;
 
+    /**
+     * calculate total distance to be driven during completing the order.
+     *  Includes distance between home and firs waypoint of order and distance
+     *  between last waypoint and home.
+     * @return final distance to be driven depending on home city.
+     */
     public double calculateTotalDistanceForOrderDependingOnStartCity(City city, List<Waypoint> listOfWaypoints) {
         City startCity = listOfWaypoints.get(0).getCity();
         City endCity = listOfWaypoints.get(listOfWaypoints.size() - 1).getCity();
@@ -18,6 +24,11 @@ public class DistanceCalculator {
         double distanceFromLastWaypointToHome = calculateDistanceBetweenTwoCities(endCity, city);
         return distanceToFirstWaypoint + calculateDistanceBetweenWaypointsForOrder(listOfWaypoints) + distanceFromLastWaypointToHome;
     }
+
+    /**
+     * calculate total distance between all waypoints of order.
+     * @return total order`s distance.
+     */
 
     public Double calculateDistanceBetweenWaypointsForOrder(List<Waypoint> listOfWaypoints) {
         Waypoint waypointFrom;
@@ -39,6 +50,12 @@ public class DistanceCalculator {
         return getDist(cityFrom.getLat(), cityFrom.getLng(), cityTo.getLat(), cityTo.getLng());
     }
 
+    /**
+     * calculate distance between two points by their lat and long.
+     * This uses the ‘haversine’ formula to calculate the great-circle distance between two points – that is,
+     * the shortest distance over the earth’s surface.
+     * @return distance between two points.
+     */
     public double getDist(double lat1, double lon1, double lat2, double lon2) {
         double lat1rad = Math.toRadians(lat1);
         double lat2rad = Math.toRadians(lat2);

@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/drivers")
@@ -21,6 +22,8 @@ public class AdminDriversController {
     private ObjectMapper objectMapper;
     private DriverService driverService;
     private CityService cityService;
+
+    private static final Logger LOG = Logger.getLogger(AdminDriversController.class.getName());
 
     @Autowired
     public void setDependencies(DriverService driverService, CityService cityService, ObjectMapper objectMapper) {
@@ -51,9 +54,11 @@ public class AdminDriversController {
             DriverAdminDto driverAdminDto = objectMapper.readValue(request.getInputStream(), DriverAdminDto.class);
             driverService.checkUserNameToCreateDriver(driverAdminDto.getUserName());
             driverService. createNewUser(driverAdminDto.getUserName());
+            LOG.info("new user created");
             driverService.add(driverAdminDto);
             return "{\"success\":1}";
         } catch (Exception e) {
+            LOG.info(e.getMessage());
             return "{\"error \":" + e.getMessage() + "}";
         }
     }

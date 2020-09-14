@@ -5,6 +5,7 @@ import com.tsystems.logisticsProject.dto.NewOrderWaypointDto;
 import com.tsystems.logisticsProject.service.CityService;
 import com.tsystems.logisticsProject.service.TruckService;
 import com.tsystems.logisticsProject.service.impl.RawOrderSessionService;
+import jdk.internal.jline.internal.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/create_order")
@@ -21,6 +23,8 @@ public class RawOrderController {
     private RawOrderSessionService rawOrderService;
     private TruckService truckService;
     private CityService cityService;
+
+    private static final Logger LOG = Logger.getLogger(RawOrderController.class.getName());
 
     @Autowired
     public void setDependencies(RawOrderSessionService rawOrderService, TruckService truckService,
@@ -92,6 +96,7 @@ public class RawOrderController {
     @GetMapping("save_order")
     public String saveOrder() {
         rawOrderService.saveOrder();
+        Log.info("new order has been created");
         return "redirect:/order/info";
     }
 

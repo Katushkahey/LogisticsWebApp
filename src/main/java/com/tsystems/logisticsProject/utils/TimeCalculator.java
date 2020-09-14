@@ -33,10 +33,11 @@ public class TimeCalculator {
         this.distanceCalculator = distanceCalculator;
     }
 
-    /** считаем максимальное количество часов ,которое может уже быть потрачено водителем на момент назначения заказа, что бы
-     * ему хватило времени на выполнение заказа
+    /**
+     * calculate how much hourse can be spent by driver in this month to define
+     * that he is suitable
+     * @return max number of spent hours for searching driver
      */
-
     public int calculateMaxSpentTimeForDriver(int hoursToCompleteOrder, int numberOfWorkingHoursPerDayPerPerson,
                                               int numberOfDrivers) {
         int requiredNumberOfHoursPerPerson = calculateRequiredNumberOfHoursPerPerson(hoursToCompleteOrder,
@@ -44,12 +45,11 @@ public class TimeCalculator {
         return Driver.MAX_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
     }
 
-    /** если необходимое кол-во дней на выполнение заказа больше ,чем кол-во дней до конца месяца,
-     * то для поиска водителей время будет равно кол-ву дней до конца месяца * на 8 часов каждый день,
-     * тк после этого их часы обнулятся.
-     * Иначе, время для поиска водителя = полное время, необходимое на выполнение заказа/2, тк выполнят его пополам.
+    /**
+     * calculate necessary number of valid working time for every driver depending on number of days to
+     * complete month
+     * @return necessary number of valid hours per driver for searching
      */
-
     public int calculateRequiredNumberOfHoursPerPerson(int hoursToCompleteOrder, int numberOfWorkingHoursPerDayPerPerson,
                                                        int numberOfDrivers) {
         if (hoursToCompleteOrder <= TIME_OF_ORDER_FOR_ONE_DRIVER_MAX) {
@@ -87,6 +87,11 @@ public class TimeCalculator {
         }
     }
 
+    /**
+     * calculate hours for driving all distance including way from home and coming back depending on
+     * received average velocity and hours for loading and unloading cargoes.
+     * @return total required number of hours to complete order
+     */
     public Map<City, Integer> calculateTimeForOrderFromEveryCity(Set<City> setOfCities, Long orderId) {
         Map<City, Integer> mapOfHoursForEveryStartCity = new HashMap<>();
         for (City city : setOfCities) {
@@ -100,10 +105,20 @@ public class TimeCalculator {
         return mapOfHoursForEveryStartCity;
     }
 
+    /**
+     * calculate hours for driving all distance including way from home and coming back depending on
+     * received average velocity
+     * @return required number of hours for driving only to complete order
+     */
     public int calculateHoursForDrivingByDistance(Double distance) {
         return (int) Math.ceil(distance / (double)AVERAGE_VELOCITY);
     }
 
+    /**
+     * calculate time for loading and unloading all of cargoes from order.
+     * 1 hour is given for both loading and unloading every cargo.
+     * @return total time for loading and unloading
+     */
     public int calculateHoursForLoadingUnloading(List<Waypoint> listOfWaypoints) {
         return listOfWaypoints.size() / 2;
     }

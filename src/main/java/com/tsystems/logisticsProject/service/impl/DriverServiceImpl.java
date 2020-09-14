@@ -6,21 +6,22 @@ import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.exception.checked.NotUniqueDriverTelephoneNumberException;
 import com.tsystems.logisticsProject.exception.checked.NotUniqueUserNameException;
-import com.tsystems.logisticsProject.exception.unchecked.EntityNotFoundException;
 import com.tsystems.logisticsProject.mapper.*;
 import com.tsystems.logisticsProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class DriverServiceImpl implements DriverService {
+
+    private static final Logger LOG = Logger.getLogger(DriverServiceImpl.class.getName());
 
     private ApplicationEventPublisher applicationEventPublisher;
     private DriverMapper driverMapper;
@@ -39,11 +40,15 @@ public class DriverServiceImpl implements DriverService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    /**
+     * reset number of working hours for all drivers on first day of every month
+     */
     @Scheduled(cron = "0 0 0 1 * ?")
     public void ScheduledTasks() {
         List<Driver> listOfAllDrivers = driverDao.findAll();
         for (Driver driver : listOfAllDrivers) {
             driver.setHoursThisMonth(0);
+            LOG.info("All driver`s working hours have been reset");
             driverDao.update(driver);
             applicationEventPublisher.publishEvent(new UpdateEvent());
         }
@@ -87,12 +92,17 @@ public class DriverServiceImpl implements DriverService {
         }
     }
 
+    /**
+     *  tries to get user with current username
+     *  list of latest orders
+     * @throws NotUniqueUserNameException if user with current username found
+     */
     public void checkUserNameToCreateDriver(String userName) throws NotUniqueUserNameException {
         try {
             userService.findByUsername(userName);
             throw new NotUniqueUserNameException(userName);
         } catch (NoResultException exception) {
-            // лог
+            LOG.info("user with this userName wasn`t found");
         }
     }
 
@@ -101,6 +111,11 @@ public class DriverServiceImpl implements DriverService {
         userService.add(username, "ROLE_DRIVER");
     }
 
+    /**
+     * tries to find another driver with the same telephone number
+     * before update driver
+     * @throws NotUniqueDriverTelephoneNumberException if another driver with the telephone same number was found
+     */
     @Transactional
     public void update(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException {
         try {

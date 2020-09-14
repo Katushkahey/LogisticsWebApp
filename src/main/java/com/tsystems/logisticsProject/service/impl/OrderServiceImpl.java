@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -28,6 +29,8 @@ public class OrderServiceImpl implements OrderService {
 
     private WaypointService waypointService;
     private OrderDao orderDao;
+
+    private static final Logger LOG = Logger.getLogger(OrderAssignmentService.class.getName());
 
     @Autowired
     public void setDependencies(OrderDao orderDao, WaypointService waypointService, OrderClientMapper orderClientMapper,
@@ -117,7 +120,6 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setTruckNumber(cf.getTruckNumber());
         orderDto.setDrivers(cf.getDrivers());
         orderDto.setStatus(OrderStatus.WAITING.toString());
-
         update(orderAdminMapper.toEntity(orderDto));
     }
 
@@ -127,6 +129,7 @@ public class OrderServiceImpl implements OrderService {
         orderAdminDto.setStatus(OrderStatus.NOT_ASSIGNED.toString());
         orderAdminDto.setDrivers(null);
         update(orderAdminMapper.toEntity(orderAdminDto));
+        LOG.info("Asignment for order " + orderAdminDto.getNumber() + "has been canceled");
     }
 
     @Transactional

@@ -28,6 +28,12 @@ public class AssignmentParametersCalculator {
         this.truckService = truckService;
     }
 
+    /**
+     * select required number drivers from total list with min valid working time in this month in order
+     *  to leave drivers with big valid number of working hours for longer orders. This allows
+     *  for more optimal usage of resources
+     * @return list of drivers with min valid time
+     */
     public List<Driver> returnDriversWithMinValidTimeAsList(List<Driver> listOfDrivers, int numberOfDrivers) {
         List<Driver> listOfDriversToReturn = new ArrayList<>();
         while (numberOfDrivers > 0) {
@@ -71,6 +77,11 @@ public class AssignmentParametersCalculator {
         return setOfCities;
     }
 
+    /**
+     * calculate required number of drivers to complete order depending on calculated total hours
+     * to complete order.
+     * @return recommended number of drivers for this order
+     */
     public Map<City, Integer> calculateMaxOptionalNumberOfDriversForOrderFromEveryCity(Set<City> listOfCities, Long orderId) {
         Map<City, Integer> mapOfMaxOptionalNumberOfDrivers = new HashMap<>();
         Map<City, Integer> mapOfHoursForEveryStartCity = timeCalculator.calculateTimeForOrderFromEveryCity(listOfCities,
@@ -88,6 +99,11 @@ public class AssignmentParametersCalculator {
         return mapOfMaxOptionalNumberOfDrivers;
     }
 
+
+    /**
+     * find all trucks that are not broken and whose capacity is suitable for this order
+     * @return list of suitable trucks
+     */
     public List<Truck> getListOfTruckForOrder(Long orderId) {
         List<Waypoint> listOfWaypoints = orderService.findWaypointsForCurrentOrderById(orderId);
         double maxWeightForOrder = orderService.getMaxWeightForOrderById(listOfWaypoints) / 1000;

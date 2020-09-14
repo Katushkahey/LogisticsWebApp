@@ -87,7 +87,7 @@ public class AdminOrdersController {
     public String saveOrder(@PathVariable("orderId") Long orderId,
                             @PathVariable("combinationId") int combinationId) {
         OrderAdminDto orderDto = orderService.findById(orderId);
-        CombinationForOrderDto cfo = orderAssignmentService.getCombinationForOrderByIndex(combinationId - 1);
+        CombinationForOrderDto cfo = orderAssignmentService.getCombinationForOrderByIndex(combinationId - 1, orderDto.getNumber());
         orderService.assign(orderDto, cfo);
         return "redirect:/order/info";
     }

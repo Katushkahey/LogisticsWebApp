@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/driver")
@@ -25,6 +26,8 @@ public class DriverController {
     private DriverService driverService;
     private WaypointService waypointService;
     private OrderService orderService;
+
+    private static final Logger LOG = Logger.getLogger(DriverController.class.getName());
 
     @Autowired
     public void setDependencies(DriverService driverService, WaypointService waypointService, OrderService orderService,

@@ -21,6 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Data
 @Component
@@ -37,6 +38,8 @@ public class RawOrderSessionService {
     private List<NewOrderWaypointDto> listOfWaypoints;
     private Double totalWeight = 0.0;
     NewOrderDto orderDto;
+
+    private static final Logger LOG = Logger.getLogger(OrderAssignmentService.class.getName());
 
     @Autowired
     public RawOrderSessionService(TruckService truckService, OrderDao orderDao, NewOrderMapper newOrderMapper,
@@ -60,6 +63,7 @@ public class RawOrderSessionService {
 
     public void addLoadingWaypoint(NewOrderWaypointDto waypointDto) throws TooLargeOrderTotalWeightException {
         if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
+            LOG.info("Total weight of new order is too large");
             throw new TooLargeOrderTotalWeightException(totalWeight + waypointDto.getCargoWeight(), truckService.getMaxCapacity());
         } else {
             waypointDto.setId(listOfWaypoints.isEmpty() ? 1L : listOfWaypoints.get(listOfWaypoints.size() - 1).getId() + 1);
@@ -100,6 +104,7 @@ public class RawOrderSessionService {
         for (NewOrderWaypointDto waypointDto1 : listOfWaypoints) {
             if (waypointDto1.getId() == waypointDto.getId()) {
                 if (totalWeight - waypointDto1.getCargoWeight() + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
+                    LOG.info("Total weight of new order is too large");
                     throw new TooLargeOrderTotalWeightException(totalWeight - waypointDto1.getCargoWeight()
                             + waypointDto.getCargoWeight(), truckService.getMaxCapacity());
                 }
@@ -163,6 +168,7 @@ public class RawOrderSessionService {
 
     private void deleteUnLoadingWaypoint(NewOrderWaypointDto waypointDto) throws TooLargeOrderTotalWeightException {
         if (totalWeight + waypointDto.getCargoWeight() > truckService.getMaxCapacity()) {
+            LOG.info("Total weight of new order is too large");
             throw new TooLargeOrderTotalWeightException(waypointDto.getCargoWeight(), truckService.getMaxCapacity());
         } else {
             totalWeight += waypointDto.getCargoWeight();
