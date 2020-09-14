@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.utils;
 
 import com.tsystems.logisticsProject.entity.City;
+import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Waypoint;
 import com.tsystems.logisticsProject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ public class TimeCalculator {
     private final int TIME_OF_ORDER_FOR_ONE_DRIVER_MAX = 12;
     private final int AVERAGE_VELOCITY = 60;
     private  final int NUMBER_OF_HOURS_IN_DAY = 24;
-    private  final int NUMBER_OF_HOURS_IN_MONTH = 176;
 
     private OrderService orderService;
     private DistanceCalculator distanceCalculator;
@@ -41,7 +41,7 @@ public class TimeCalculator {
                                               int numberOfDrivers) {
         int requiredNumberOfHoursPerPerson = calculateRequiredNumberOfHoursPerPerson(hoursToCompleteOrder,
                 numberOfWorkingHoursPerDayPerPerson, numberOfDrivers);
-        return NUMBER_OF_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
+        return Driver.MAX_HOURS_IN_MONTH - requiredNumberOfHoursPerPerson;
     }
 
     /** если необходимое кол-во дней на выполнение заказа больше ,чем кол-во дней до конца месяца,
@@ -103,7 +103,7 @@ public class TimeCalculator {
     public int calculateHoursForDrivingByDistance(Double distance) {
         return (int) Math.ceil(distance / (double)AVERAGE_VELOCITY);
     }
-    
+
     public int calculateHoursForLoadingUnloading(List<Waypoint> listOfWaypoints) {
         return listOfWaypoints.size() / 2;
     }

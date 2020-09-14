@@ -28,7 +28,6 @@ public class AssignmentParametersCalculator {
         this.truckService = truckService;
     }
 
-    // нет теста 4
     public List<Driver> returnDriversWithMinValidTimeAsList(List<Driver> listOfDrivers, int numberOfDrivers) {
         List<Driver> listOfDriversToReturn = new ArrayList<>();
         while (numberOfDrivers > 0) {
@@ -64,7 +63,7 @@ public class AssignmentParametersCalculator {
         return mapOfTrucksForEveryCity;
     }
 
-    private Set<City> getSetOfCitiesFromListOfTrucks(List<Truck> listOfTruck) {
+    public Set<City> getSetOfCitiesFromListOfTrucks(List<Truck> listOfTruck) {
         Set<City> setOfCities = new HashSet<>();
         for (Truck truck : listOfTruck) {
             setOfCities.add(truck.getCurrentCity());
@@ -72,7 +71,6 @@ public class AssignmentParametersCalculator {
         return setOfCities;
     }
 
-    // нет теста 2
     public Map<City, Integer> calculateMaxOptionalNumberOfDriversForOrderFromEveryCity(Set<City> listOfCities, Long orderId) {
         Map<City, Integer> mapOfMaxOptionalNumberOfDrivers = new HashMap<>();
         Map<City, Integer> mapOfHoursForEveryStartCity = timeCalculator.calculateTimeForOrderFromEveryCity(listOfCities,
@@ -91,18 +89,13 @@ public class AssignmentParametersCalculator {
     }
 
     public List<Truck> getListOfTruckForOrder(Long orderId) {
-        double maxWeightForOrder = calculateMaxOneTimeWeightForOrder(orderId) / 1000;
+        List<Waypoint> listOfWaypoints = orderService.findWaypointsForCurrentOrderById(orderId);
+        double maxWeightForOrder = orderService.getMaxWeightForOrderById(listOfWaypoints) / 1000;
         try {
             return truckService.findTrucksForOrder(maxWeightForOrder);
         } catch (NoResultException e) {
             throw new EntityNotFoundException("weight " + maxWeightForOrder, Truck.class);
         }
-    }
-
-    // нет теста 1
-    private double calculateMaxOneTimeWeightForOrder(Long orderId) {
-        List<Waypoint> listOfWaypoints = orderService.findWaypointsForCurrentOrderById(orderId);
-        return orderService.getMaxWeightForOrderById(listOfWaypoints);
     }
 
 }
