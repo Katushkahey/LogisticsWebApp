@@ -5,19 +5,12 @@ import lombok.*;
 
 import javax.persistence.*;;
 import java.util.List;
-import java.util.Random;
-
 @Data
 @Entity
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @Table(name = "orders")
 public class Order extends AbstractEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

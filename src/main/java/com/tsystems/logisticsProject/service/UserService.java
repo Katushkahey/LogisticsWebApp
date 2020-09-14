@@ -7,10 +7,6 @@ public interface UserService extends UserDetailsService {
 
     User findByUsername(String username);
 
-    void add(User user, String authority);
-
-    User returnUserToCreateDriver(String userName);
-
-    boolean checkUserNameToCreateDriver(String userName);
+    void add(String username, String authority);
 
 }

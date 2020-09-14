@@ -57,9 +57,9 @@
                     <tbody>
                         <c:forEach var="combination" items="${listOfCombinations}">
                             <tr id="combination-${combination.id}">
-                                <td scope="row" align="center">${combination.truck.number}</td>
-                                <td scope="row" align="center">${combination.listOfDrivers}</td>
-                                <td scope="row" align="center">${combination.truck.currentCity.name}</td>
+                                <td scope="row" align="center">${combination.truckNumber}</td>
+                                <td scope="row" align="center">${combination.drivers}</td>
+                                <td scope="row" align="center">${combination.city}</td>
                                 <td scope="row" align="center">${combination.totalHours}</td>
                                 <td scope="row" align="center">${combination.totalBillableHours}</td>
                                 <td scope="row" align="center"><a class="btn btn-success"

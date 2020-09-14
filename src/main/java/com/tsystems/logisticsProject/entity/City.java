@@ -13,11 +13,6 @@ import java.util.List;
 @Table(name = "cities")
 public class City extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
     @NonNull
     @Column(name = "lat")
     @NotNull

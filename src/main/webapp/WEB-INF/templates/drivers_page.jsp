@@ -68,7 +68,7 @@
 </div>
 </br></br>
 <div>
-    <a class="btn btn-success" data-toggle="modal" data-target="#create_truck">Create Driver</a>
+    <a class="btn btn-success" data-toggle="modal" data-target="#create_driver">Create Driver</a>
     </br></br>
     <div class="mainDiv">
         <div class="tableTab">
@@ -96,9 +96,9 @@
                                 <td scope="row" align="center">${driver.surname}</td>
                                 <td scope="row" align="center">${driver.telephoneNumber}</td>
                                 <td scope="row" align="center">${driver.hoursThisMonth}</td>
-                                <td scope="row" align="center">${driver.currentCity.name}</td>
+                                <td scope="row" align="center">${driver.cityName}</td>
                                 <c:choose>
-                                    <c:when test="${driver.currentOrder.id==null}">
+                                    <c:when test="${driver.available}">
                                         <td scope="row" align="center"> Yes </td>
                                     </c:when>
                                     <c:otherwise>
@@ -106,13 +106,12 @@
                                     </c:otherwise>
                                 </c:choose>
                                 <td scope="row" align="center"><button type="button" class="btn btn-secondary"
-                                        <c:if test="${driver.currentOrder!=null}"><c:out
+                                        <c:if test="${driver.available == false}"><c:out
                                                 value="disabled='disabled'"/></c:if>
                                                                        data-toggle="modal" data-target="#edit_driver"
-
                                                                        data-driver-id="${driver.id}"> Edit </button>
                                 <c:choose>
-                                <c:when test="${driver.currentOrder != null}">
+                                <c:when test="${driver.available == false}">
                                         <td scope="row" align="center"><button type="button" class="btn btn-secondary"
                                                                                value="disabled='disabled'"> Delete </button></td>
                                     </c:when>
@@ -139,7 +138,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/drivers/edit_driver/" method="get" class="formWithValidation" role="form">
+                <form action="/drivers/edit_driver/" method="post" class="formWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="idInput" visibility: hidden>ID</label>
                         <div class="col-sm-9">
@@ -185,7 +184,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="create_truck" tabindex="-1" aria-labelledby="createLabel" aria-hidden="true">
+<div class="modal fade" id="create_driver" tabindex="-1" aria-labelledby="createLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -195,7 +194,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/drivers/create_driver/" method="get" class="formCreateWithValidation" role="form">
+                <form action="/drivers/create_driver/" method="post" class="formCreateWithValidation" role="form">
                     <div class="form-group">
                         <label class="col-sm-3 control-label" for="input1">Name</label>
                         <div class="col-sm-9">
@@ -246,7 +245,7 @@
     $("#edit_driver").on('show.bs.modal', function (e) {
         var driverId = $(e.relatedTarget).data('driver-id');
         var cols = $('#driver-' + driverId + ' td');
-        var id = driverId
+        var id = driverId;
         var name = $(cols[1]).text();
         var surname = $(cols[2]).text();
         var telephone = $(cols[3]).text();
@@ -262,6 +261,7 @@
         form[0].reset();
     });
     var form = document.querySelector('.formWithValidation')
+    var id = form.querySelector('.id')
     var name2 = form.querySelector('.name2')
     var surname = form.querySelector('.surname')
     var telephone = form.querySelector('.telephone')
@@ -316,7 +316,25 @@
         }
 
         if (errors_counter < 1) {
-            form.submit()
+            $.ajax({
+                url: '/drivers/edit_driver',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    id: id.value,
+                    name: name2.value,
+                    surname: surname.value,
+                    telephoneNumber: telephone.value,
+                    cityName: city.value,
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert(result.responseText);
+                }
+            });
         }
     })
 </script>
@@ -340,6 +358,7 @@
     var telephone2 = form2.querySelector('.telephone')
     var userName = form2.querySelector('.user')
     var fields2 = form2.querySelectorAll('.field')
+    var city2 = form2.querySelector('.city')
 
     form2.addEventListener("submit", function (event) {
         event.preventDefault()
@@ -398,7 +417,26 @@
         }
 
         if (errors_counter2 < 1) {
-            form2.submit()
+            // form2.submit()
+            $.ajax({
+                url: '/drivers/create_driver',
+                datatype: 'json',
+                type: "POST",
+                dataType: 'JSON',
+                data: JSON.stringify({
+                    name: name3.value,
+                    surname: surname2.value,
+                    telephoneNumber: telephone2.value,
+                    cityName: city2.value,
+                    userName: userName.value
+                }),
+                success : function(data) {
+                    window.location.reload();
+                },
+                error : function(result) {
+                    alert(result.responseText);
+                }
+            });
         }
     })
 </script>

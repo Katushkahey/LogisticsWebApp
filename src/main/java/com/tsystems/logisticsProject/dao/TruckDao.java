@@ -6,20 +6,18 @@ import java.util.List;
 
 public interface TruckDao extends GenericDao<Truck> {
 
-    void add(Truck truck);
-
-    boolean findByNumber(String number);
-
-    void update(Truck truck);
-
-    void delete(Truck truck);
+    Truck findByNumber(String number);
 
     List<Truck> findAll();
 
     Truck findById(Long id);
 
-    boolean checkEditedNumber(String number, Long id);
-
     List<Truck> findTrucksForOrder(double maxOneTimeWeight);
+
+    Long getBrokenTrucks();
+
+    Long getAvailableTrucks();
+
+    Long getEmployedTrucks();
 
 }

@@ -1,6 +1,6 @@
 package com.tsystems.logisticsProject.config;
 
-import com.tsystems.logisticsProject.util.MySimpleUrlAuthenticationSuccessHandler;
+import com.tsystems.logisticsProject.service.impl.MySimpleUrlAuthenticationSuccessHandler;
 import com.tsystems.logisticsProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.
                 authorizeRequests().
                 antMatchers("/login").anonymous().
-                antMatchers("/", "/driver/**", "/admin/**").authenticated().
+                antMatchers("/driver/**", "/admin/**").authenticated().
                 antMatchers("/driver/**").hasRole("DRIVER").
                 antMatchers("/admin/**", "/order/**", "/truck/*", "/drivers/**", "/create_order/**").hasRole("ADMIN").
 

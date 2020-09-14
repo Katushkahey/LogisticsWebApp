@@ -4,25 +4,16 @@ import com.tsystems.logisticsProject.entity.enums.DriverState;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.YearMonth;
 
 @Data
 @Entity
+@ToString
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @Table(name = "drivers")
 public class Driver extends AbstractEntity {
 
     public static final int MAX_HOURS_IN_MONTH = 176;
-    private static LocalDate firstDayOfCurrentMounth = YearMonth.now().atDay(1);
-
-
-    @ToString.Exclude
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
 
     @NonNull
     @Column(name = "name")
@@ -32,23 +23,20 @@ public class Driver extends AbstractEntity {
     @Column(name = "surname")
     private String surname;
 
-    @ToString.Exclude
     @NonNull
     @Column(name = "telephone_number")
     private String telephoneNumber;
 
-    @ToString.Exclude
     @Column(name = "hours_this_month")
     private int hoursThisMonth;
 
-    @ToString.Exclude
     @NonNull
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
     private DriverState driverState;
 
-    @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @NonNull
     @ManyToOne
     @JoinColumn(name = "current_city_id")
@@ -69,10 +57,5 @@ public class Driver extends AbstractEntity {
 
     @Column(name = "start_working_time")
     private Long startWorkingTime;
-
-    @Override
-    public String toString() {
-        return "" + name + " " + surname;
-    }
 
 }

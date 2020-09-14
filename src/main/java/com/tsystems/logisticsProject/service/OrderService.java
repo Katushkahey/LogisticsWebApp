@@ -1,55 +1,42 @@
 package com.tsystems.logisticsProject.service;
 
+import com.tsystems.logisticsProject.dto.CombinationForOrderDto;
+import com.tsystems.logisticsProject.dto.OrderAdminDto;
+import com.tsystems.logisticsProject.dto.OrderClientDto;
+import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.entity.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public interface OrderService {
 
     List<Waypoint> findWaypointsForCurrentOrderById(Long id);
 
-    HashMap<Order, Double> findCompletedOrders();
+    OrderAdminDto findById(Long id);
 
-    HashMap<Order, Double> findUnassignedOrders();
+    OrderAdminDto findByNumber(String number);
 
-    HashMap<Order, Double> findWaitingOrders();
-
-    HashMap<Order, Double> findOrdersInProgress();
-
-    Order findById(Long id);
-
-    List<Cargo> getListOfCargoesForCurrentOrderById(Long id);
-
-    double getMaxWeightDuringTheRouteOfCurrentOrderById(Long id);
+    double getMaxWeightForOrderById(List<Waypoint> listOfWaypoint);
 
     void deleteById(Long id);
 
-    Map<Order, List<Driver>> getMapOfDriversForWaitingOrders();
+    List<OrderAdminDto> getListOfWaitingOrders();
 
-    Map<Order, List<Driver>> getMapOfDriversForUnassignedOrders();
+    List<OrderAdminDto> getListOfUnassignedOrders();
 
-    Map<Order, List<Driver>> getMapOfDriversForCompletedOrders();
+    List<OrderAdminDto> getListOfCompletedOrders();
 
-    Map<Order, List<Driver>> getMapOfDriversForOrdersInProgress();
+    List<OrderAdminDto> getListOfOrdersInProgress();
 
     void add(Order order);
 
     void update(Order order);
 
-    void startOrder(Long id);
+    void update(OrderDriverDto orderDriverDto);
 
-    HashMap<Order, List<Waypoint>> findListOfWaypointsForCompletedOrders();
+    void assign(OrderAdminDto orderDto, CombinationForOrderDto cf);
 
-    HashMap<Order, List<Waypoint>> findListOfWaypointsForWaytingOrders();
+    void cancelAssignment(OrderAdminDto orderAdminDto);
 
-    HashMap<Order, List<Waypoint>> findListOfWaypointsForOrdersInProgress();
-
-    HashMap<Order, List<Waypoint>> findListOfWaypointsForUnassignedOrders();
-
-    void assign(Long orderId, Truck truck, List<Driver> listOfDrivers);
-
-    void cancelAssignment(Long orderId);
+    List<OrderClientDto> getTopOrders();
 }

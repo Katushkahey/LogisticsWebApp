@@ -91,17 +91,16 @@
                             </tr>
                     </thead>
                     <tbody>
-                        <c:forEach var="order" items="${mapOfOrders.keySet()}" varStatus="loop">
+                        <c:forEach var="order" items="${listOfOrders}" varStatus="loop">
                             <tr>
                                 <td scope="row" align="center">${loop.count}</td>
                                 <td scope="row" align="center">${order.number}</td>
-                                <td scope="row" align="center">${mapOfDriversForOrders.get(order)}</td>
-                                <td scope="row" align="center">${order.orderTruck.number}</td>
-                                <td scope="row" align="center">${mapOfOrders.get(order)}</td>
+                                <td scope="row" align="center">${order.drivers}</td>
+                                <td scope="row" align="center">${order.truckNumber}</td>
+                                <td scope="row" align="center">${order.maxWeight}</td>
                                 <td scope="row" align="center">${order.cargoes}</td>
-                                <td scope="row" align="center">${listOfWaypoints.get(order).get(0).city.name}</td>
-                                <td scope="row"
-                                    align="center">${listOfWaypoints.get(order).get(listOfWaypoints.get(order).size() - 1).city.name}</td>
+                                <td scope="row" align="center">${order.cityFrom}</td>
+                                <td scope="row" align="center">${order.cityTo}</td>
                                 <td scope="row" align="center"><a class="btn btn-secondary"
                                                                   href="/order/show_info/${order.id}"> Details </a></td>
                                 <td scope="row" align="center"><a class="btn btn-danger"

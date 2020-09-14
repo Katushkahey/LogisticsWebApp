@@ -1,46 +1,35 @@
 package com.tsystems.logisticsProject.service;
 
-
+import com.tsystems.logisticsProject.dto.DriverAdminDto;
+import com.tsystems.logisticsProject.dto.DriverDto;
 import com.tsystems.logisticsProject.entity.*;
-import com.tsystems.logisticsProject.entity.enums.DriverState;
+import com.tsystems.logisticsProject.exception.checked.NotUniqueDriverTelephoneNumberException;
+import com.tsystems.logisticsProject.exception.checked.NotUniqueUserNameException;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public interface DriverService {
 
-    Driver findById(Long id);
+    DriverDto getDriverByPrincipalName(String name);
 
-    Driver getDriverByPrincipalName(String name);
+    List<DriverAdminDto> getListOfDrivers();
 
-    List<Waypoint> getListOfWaypointsFromPrincipal(String name);
+    void checkUserNameToCreateDriver(String userName) throws NotUniqueUserNameException;
 
-    List<Driver> getPartnersFromPrincipal(String name);
+    void createNewUser(String username);
 
-    List<Driver> getListOfDrivers();
-
-    List<Driver> getParnersForCurrentOrder(Long orderId);
+    void ScheduledTasks();
 
     void deleteById(Long id);
 
-    boolean checkEditedTelephoneNumber(String telephoneNumber, Long id);
+    void add(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException;
 
-    boolean checkUserNameToCreateDriver(String userName);
+    void update(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException;
 
-    User returnUserToCreateDriver(String userName);
-
-    void add(String name, String surname, String telephoneNumber, String cityName, User user);
-
-    boolean findDriverByTelephoneNumber(String telephineNumber);
-
-    void update(Long id, String name, String surname, String telephoneNumber, String cityName);
-
-    void update(Long id, String telephoneNumber);
-
-    void editState(Long id, DriverState state);
-
-    void finishOrder(Long id);
+    void update(DriverDto driverDto);
 
     List<Driver> findDriversForTruck(City city, int maxSpentTimeForDriver);
 
-    void update(Driver driver);
+    LinkedHashMap<String, Long> getDriversInfo();
 }
