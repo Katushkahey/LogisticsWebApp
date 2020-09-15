@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.config;
 
 import com.tsystems.logisticsProject.entity.User;
+import com.tsystems.logisticsProject.exception.unchecked.EntityNotFoundException;
 import com.tsystems.logisticsProject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,7 +31,7 @@ public class AuthProviderImpl implements AuthenticationProvider {
         String username = authentication.getName();
         User user = userService.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new EntityNotFoundException(username, User.class);
         }
         String password = authentication.getCredentials().toString();
         if (!passwordEncoder.matches(password, user.getPassword())) {

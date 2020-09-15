@@ -58,6 +58,7 @@ public class DriversController {
     public String createDriver(HttpServletRequest request) {
         try {
             DriverAdminDto driverAdminDto = objectMapper.readValue(request.getInputStream(), DriverAdminDto.class);
+            driverService.checkTelephoneNumberToCreateDriver(driverAdminDto.getTelephoneNumber());
             driverService.checkUserNameToCreateDriver(driverAdminDto.getUserName());
             driverService. createNewUser(driverAdminDto.getUserName());
             LOG.info("new user created");

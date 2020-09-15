@@ -1,6 +1,7 @@
 package com.tsystems.logisticsProject.mapper;
 
 import com.tsystems.logisticsProject.dao.*;
+import com.tsystems.logisticsProject.dto.DriverDto;
 import com.tsystems.logisticsProject.dto.DriverShortDto;
 import com.tsystems.logisticsProject.dto.OrderDriverDto;
 import com.tsystems.logisticsProject.dto.WaypointDto;
@@ -8,7 +9,9 @@ import com.tsystems.logisticsProject.entity.Driver;
 import com.tsystems.logisticsProject.entity.Order;
 import com.tsystems.logisticsProject.entity.Truck;
 import com.tsystems.logisticsProject.entity.Waypoint;
+import com.tsystems.logisticsProject.entity.enums.DriverState;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
+import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ public class OrderDriverMapper {
 
     private ModelMapper modelMapper;
     private DriverShortMapper driverShortMapper;
+    private DriverMapper driverMapper;
     private WaypointMapper waypointMapper;
     private OrderDao orderDao;
     private DriverDao driverDao;
@@ -34,10 +38,11 @@ public class OrderDriverMapper {
     @Autowired
     public void setDependencies(ModelMapper modelMapper, WaypointMapper waypointMapper, OrderDao orderDao,
                                 WaypointDao waypointDao, TruckDao truckDao, DriverShortMapper driverShortMapper,
-                                DriverDao driverDao) {
+                                DriverDao driverDao, DriverMapper driverMapper) {
         this.modelMapper = modelMapper;
         this.waypointMapper = waypointMapper;
         this.driverShortMapper = driverShortMapper;
+        this.driverMapper = driverMapper;
         this.orderDao = orderDao;
         this.waypointDao = waypointDao;
         this.truckDao = truckDao;
@@ -92,8 +97,14 @@ public class OrderDriverMapper {
     private void finishOrder(OrderDriverDto source, Order destination) {
         List<Driver> listOfDriver = driverDao.findAllDriversForCurrentOrder(orderDao.findByNumber(source.getNumber()));
         for (Driver driver : listOfDriver) {
-            driver.setCurrentOrder(null);
-            driverDao.update(driver);
+            DriverDto driverDto = driverMapper.toDto(driver);
+            driverDto.setDriverState(DriverState.REST.toString());
+            driverDto.setOrderNumber(null);
+            driverDao.update(driverMapper.toEntity(driverDto));
+        }
+        for (Waypoint waypoint: waypointDao.getListOfWaypointsByOrderId(source.getId())) {
+            waypoint.setStatus(WaypointStatus.DONE);
+            waypointDao.update(waypoint);
         }
         Truck truck = truckDao.findByNumber(source.getTruckNumber());
         truck.setOrder(null);

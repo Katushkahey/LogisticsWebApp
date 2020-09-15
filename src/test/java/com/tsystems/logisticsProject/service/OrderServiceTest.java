@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
-public class OderServiceTest {
+public class OrderServiceTest {
 
     @Mock
     private OrderService orderService;
@@ -38,7 +38,7 @@ public class OderServiceTest {
     }
 
     @Test
-    public void testCalculateMaxOneTimeWeightForHeaviListr() {
+    public void testCalculateMaxOneTimeWeightForHeavyList() {
         double expectedTotalWeight = 24000.0;
         double testTotalWeight = orderService.getMaxWeightForOrderById(heavyList);
         Assert.assertEquals(expectedTotalWeight, testTotalWeight, 1);

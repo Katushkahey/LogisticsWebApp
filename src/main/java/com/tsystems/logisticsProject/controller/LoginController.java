@@ -12,7 +12,6 @@ public class LoginController {
         return "redirect: /login";
     }
 
-
     @GetMapping("/login")
     public String login(@RequestParam(name = "error", required = false) Boolean error, Model model) {
         if (Boolean.TRUE.equals(error)) {
@@ -20,4 +19,5 @@ public class LoginController {
         }
         return "login";
     }
+
 }

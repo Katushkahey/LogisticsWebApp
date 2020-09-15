@@ -82,20 +82,28 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Transactional
-    public void add(DriverAdminDto driverAdminDto) throws NotUniqueDriverTelephoneNumberException {
+    public void add(DriverAdminDto driverAdminDto) {
+        driverDao.add(driverAdminMapper.toEntity(driverAdminDto));
+        applicationEventPublisher.publishEvent(new UpdateEvent());
+    }
+
+    /**
+     *  tries to get driver with current telephoneNumber
+     * @throws NotUniqueDriverTelephoneNumberException if driver with current telephoneNumber was found
+     */
+    @Transactional
+    public void checkTelephoneNumberToCreateDriver(String telephoneNumber) throws NotUniqueDriverTelephoneNumberException {
         try {
-            driverDao.findByTelephoneNubmer(driverAdminDto.getTelephoneNumber());
-            throw new NotUniqueDriverTelephoneNumberException(driverAdminDto.getTelephoneNumber());
+            driverDao.findByTelephoneNubmer(telephoneNumber);
+            throw new NotUniqueDriverTelephoneNumberException(telephoneNumber);
         } catch (NoResultException e) {
-            driverDao.add(driverAdminMapper.toEntity(driverAdminDto));
-            applicationEventPublisher.publishEvent(new UpdateEvent());
+            LOG.info("telephoneNumber is unique :" + telephoneNumber);
         }
     }
 
     /**
      *  tries to get user with current username
-     *  list of latest orders
-     * @throws NotUniqueUserNameException if user with current username found
+     * @throws NotUniqueUserNameException if user with current username was found
      */
     public void checkUserNameToCreateDriver(String userName) throws NotUniqueUserNameException {
         try {

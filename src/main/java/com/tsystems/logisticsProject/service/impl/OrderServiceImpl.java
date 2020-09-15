@@ -5,6 +5,7 @@ import com.tsystems.logisticsProject.dto.*;
 import com.tsystems.logisticsProject.entity.*;
 import com.tsystems.logisticsProject.entity.enums.Action;
 import com.tsystems.logisticsProject.entity.enums.OrderStatus;
+import com.tsystems.logisticsProject.entity.enums.WaypointStatus;
 import com.tsystems.logisticsProject.event.UpdateEvent;
 import com.tsystems.logisticsProject.mapper.*;
 import com.tsystems.logisticsProject.service.OrderService;

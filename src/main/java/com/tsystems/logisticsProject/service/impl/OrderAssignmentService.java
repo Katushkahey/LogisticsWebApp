@@ -15,13 +15,13 @@ import java.util.logging.Logger;
 @Component
 public class OrderAssignmentService {
 
-
     private List<CombinationForOrderDto> listOfCombinationForOrderDto;
     private long combinationId;
+
     private DriverService driverService;
-    private CombinationForOrderMapper combinationForOrderMapper;
     private TimeCalculator timeCalculator;
     private AssignmentParametersCalculator assignmentParametersCalculator;
+    private CombinationForOrderMapper combinationForOrderMapper;
 
     private static final Logger LOG = Logger.getLogger(OrderAssignmentService.class.getName());
 

@@ -30,8 +30,8 @@ public class AssignmentParametersCalculator {
 
     /**
      * select required number drivers from total list with min valid working time in this month in order
-     *  to leave drivers with big valid number of working hours for longer orders. This allows
-     *  for more optimal usage of resources
+     *  to leave drivers with biger valid number of working hours for longer orders. This allows
+     *  for more optimal usage of resources.
      * @return list of drivers with min valid time
      */
     public List<Driver> returnDriversWithMinValidTimeAsList(List<Driver> listOfDrivers, int numberOfDrivers) {
