@@ -90,7 +90,7 @@ public class DriverMapper {
                 Date endWorkingTime = new Date();
                 Date startWorkingTime = new Date(lastInstance.getStartWorkingTime());
                 Long totalWorkingTimePerInterval = endWorkingTime.getTime() - startWorkingTime.getTime();
-                int totalWorkingHoursPerInterval = (int) Math.ceil(totalWorkingTimePerInterval / 1000 / 60 / 60);
+                int totalWorkingHoursPerInterval = (int) Math.ceil((double)(totalWorkingTimePerInterval) / 1000 / 60 / 60);
                 destination.setHoursThisMonth(lastInstance.getHoursThisMonth() + totalWorkingHoursPerInterval);
                 destination.setDriverState(DriverState.valueOf(currentState));
             }
